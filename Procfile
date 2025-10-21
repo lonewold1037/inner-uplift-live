@@ -1,3 +1,3 @@
-web: bundle exec rails server
+web: bundle exec puma -C config/puma.rb
 worker: bundle exec good_job start
-release: bin/render-build.sh
+release: bundle exec rails db:migrate
