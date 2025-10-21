@@ -1,0 +1,101 @@
+<div class="max-w-2xl mx-auto space-y-8">
+  <% case reflection.status %>
+  <% when 'generating_recap', 'processing_voice', 'generating_preview', 'mixing' %>
+    <%# ----- All IN-PROGRESS States ----- %>
+    <%
+      title = case reflection.status
+              when 'generating_recap'   then 'Generating Your Recap...'
+              when 'processing_voice'   then 'Analyzing Your Voice...'
+              when 'generating_preview' then 'Generating Audio Preview...'
+              when 'mixing'             then 'Mixing Your Final Audio...'
+              end
+    %>
+    <div class="text-center">
+      <h1 class="text-4xl font-extrabold text-white tracking-wide animate-pulse"><%= title %></h1>
+      <p class="text-lg text-slate-300 mt-2">This may take a moment. Please wait.</p>
+    </div>
+
+  <% when 'pending' %>
+    <%# ----- STATE: PENDING (Recap Confirmation) ----- %>
+    <div class="text-center">
+      <h1 class="text-4xl font-extrabold text-white tracking-wide">
+        Your Inner Uplift Recap
+      </h1>
+    </div>
+    <div class="bg-black/50 backdrop-blur-xl p-6 rounded-2xl shadow-lg border border-white/20 text-left">
+      <p class="text-white font-bold text-lg mb-4">
+        Does this sound right? We'll use this to generate your personalized audio.
+      </p>
+      <p class="text-slate-300 italic">"<%= reflection.recap %>"</p>
+    </div>
+    <div class="flex justify-center space-x-4">
+      <%= link_to "Yep! Proceed to Voice Recording →",
+                  record_reflection_path(reflection),
+                  class: "bg-sky-600 hover:bg-sky-500 text-white font-bold py-3 px-5 rounded-lg",
+                  data: { turbo_frame: "_top" } %>
+
+      <%= link_to "No, let me start over.",
+                  new_reflection_path,
+                  class: "bg-slate-600 hover:bg-slate-500 text-white font-bold py-3 px-5 rounded-lg" %>
+    </div>
+
+  <% when 'ready_to_mix' %>
+    <%# ----- STATE: READY TO MIX (Soundscape Form) ----- %>
+    <%= render partial: 'reflections/mix_in_audio', locals: { reflection: reflection, soundscapes: soundscapes } %>
+
+  <% when 'completed' %>
+    <%# ----- STATE: COMPLETED (Final Audio Player) ----- %>
+    <div class="text-center">
+      <h1 class="text-4xl font-extrabold text-white tracking-wide">✨ Your Inner Uplift is Ready ✨</h1>
+      <p class="text-lg text-slate-300 mt-4">Listen to your new creation below.</p>
+    </div>
+    <div class="bg-black/50 backdrop-blur-xl p-6 rounded-2xl shadow-lg border border-white/20">
+      <% if reflection.final_audio.attached? %>
+        <div class="flex flex-col items-center justify-center space-y-6">
+          <audio controls class="w-full max-w-md rounded-lg">
+            <source src="<%= url_for(reflection.final_audio) %>" type="audio/mpeg">
+            Your browser does not support the audio element.
+          </audio>
+          
+          <%# NEW: Remix Soundscape Section %>
+          <div class="w-full max-w-md pt-6 border-t border-white/20">
+            <p class="text-lg font-bold text-white mb-4 text-center">Try a different vibe:</p>
+            <%= form_with(model: reflection,
+                          url: remix_audio_reflection_path(reflection),
+                          method: :post,
+                          data: { turbo: true },
+                          class: "flex flex-col gap-3 items-center") do |form| %>
+              <%= form.collection_select :soundscape_id,
+                                          soundscapes,
+                                          :id,
+                                          :category,
+                                          { selected: reflection.soundscape_id },
+                                          { class: "w-full bg-slate-800/70 text-white border-2 border-white/30 rounded-lg px-4 py-3 text-base focus:outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-400/50", style: "color-scheme: dark;" } %>
+              <%= form.submit "Remix Audio",
+                              class: "w-full bg-purple-600 hover:bg-purple-500 text-white font-bold px-6 py-3 rounded-lg text-base cursor-pointer transition-all shadow-lg hover:shadow-purple-500/50" %>
+            <% end %>
+          </div>
+          
+          <div class="flex justify-center items-center space-x-4 pt-4">
+            <%= link_to "Purchase your 5 Minute Version for $1.99", "#", class: "bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg" %>
+            <%= link_to "Start All Over", new_reflection_path, class: "bg-slate-600 hover:bg-slate-500 text-white font-bold py-3 px-6 rounded-lg shadow" %>
+          </div>
+        </div>
+      <% else %>
+        <p class="text-center text-red-400">⚠️ Error: Final audio not found.</p>
+      <% end %>
+    </div>
+
+  <% when 'failed' %>
+    <%# ----- STATE: FAILED ----- %>
+    <div class="text-center">
+      <h1 class="text-4xl font-extrabold text-red-400 tracking-wide">Something Went Wrong</h1>
+      <p class="text-lg text-slate-300 mt-4">We're sorry, but we couldn't create your audio.</p>
+    </div>
+    <div class="bg-black/50 backdrop-blur-xl p-6 rounded-2xl shadow-lg border border-white/20">
+      <p class="text-white mb-4">You can try creating a new reflection.</p>
+      <%= link_to "Start Over", new_reflection_path, class: "bg-sky-600 hover:bg-sky-500 text-white font-bold py-3 px-5 rounded-lg" %>
+    </div>
+
+  <% end %>
+</div>

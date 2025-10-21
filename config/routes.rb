@@ -1,0 +1,37 @@
+# config/routes.rb
+Rails.application.routes.draw do
+  # Health check for uptime monitoring
+  get "up" => "rails/health#show", as: :rails_health_check
+
+  # Mount ActionCable for WebSocket connections
+  mount ActionCable.server => '/cable'
+
+  # Public homepage
+  root "pages#home"
+
+  # User dashboard
+  get "dashboard", to: "users#dashboard"
+
+  # Devise routes for authentication
+  devise_for :users
+
+  # Reflection feature routes
+  resources :reflections, only: [:new, :create, :show] do
+    member do
+      # Page where the user speaks their mantra
+      get  "record"
+
+      # Action that receives the uploaded audio from the recording page
+      post "receive_audio"
+
+      # Action that receives the chosen soundscape and starts the mixing job
+      post "mix_audio"
+      
+      # Action that changes/swaps out the soundscape .mp3 for different on final playback page
+      post "remix_audio"
+    end
+  end
+
+  # Optional browse routes for soundscapes
+  resources :soundscapes, only: [:index, :show]
+end

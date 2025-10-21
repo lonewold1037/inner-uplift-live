@@ -1,0 +1,73 @@
+<div class="bg-black/50 backdrop-blur-xl p-8 rounded-2xl shadow-lg border border-white/20">
+
+  <%= form_with(model: reflection, url: reflections_path) do |form| %>
+    <% if form.object.errors.any? %>
+      <div class="bg-red-500/20 text-red-300 p-3 rounded-lg mb-6">
+        <h2 class="font-bold"><%= pluralize(form.object.errors.count, "error") %> prohibited this reflection from being saved:</h2>
+        <ul>
+          <% form.object.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+      <div class="col-span-1 md:col-span-2">
+        <%= form.label :name_for_recap, "What name should we use in the audio?", class: "block text-white font-bold text-lg mb-2" %>
+        <%= form.text_field :name_for_recap, class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 focus:outline-none focus:border-sky-400" %>
+      </div>
+
+      <div>
+        <%= form.label :remember_when, "I remember...", class: "block text-white font-bold text-lg mb-2" %>
+        <%= form.text_area :remember_when, rows: 4, class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 focus:outline-none focus:border-sky-400" %>
+      </div>
+
+      <div>
+        <%= form.label :felt_like, "It made me feel...", class: "block text-white font-bold text-lg mb-2" %>
+        <%= form.text_area :felt_like, rows: 4, class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 focus:outline-none focus:border-sky-400" %>
+      </div>
+
+      <div>
+        <%= form.label :because_of, "But/And because...", class: "block text-white font-bold text-lg mb-2" %>
+        <%= form.text_area :because_of, rows: 4, class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 focus:outline-none focus:border-sky-400" %>
+      </div>
+
+      <div>
+        <%= form.label :lift_up_request, "I want to hear...", class: "block text-white font-bold text-lg mb-2" %>
+        <%= form.text_area :lift_up_request, rows: 4, class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 focus:outline-none focus:border-sky-400" %>
+      </div>
+
+      <div class="col-span-1 md:col-span-2">
+        <%= form.label :style, "Choose a Style for the Summation:", class: "block text-white font-bold text-lg mb-2" %>
+        <%= form.select :style,
+                        Reflection::STYLES,
+                        { prompt: "Select a style" },
+                        { class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 focus:outline-none focus:border-sky-400" } %>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-center mt-8">
+      <%= form.submit "Generate Your Inner Uplift",
+                      id: "generate-recap",
+                      class: "w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline cursor-pointer transition-colors" %>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  const recapButton = document.getElementById("generate-recap");
+  if (recapButton) {
+    const form = recapButton.closest("form");
+    form?.addEventListener("submit", (event) => {
+      recapButton.disabled = true;
+      recapButton.innerHTML = `
+        <svg class="animate-spin h-5 w-5 inline-block mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Generating...
+      `;
+    });
+  }
+</script>

@@ -1,0 +1,47 @@
+2025-10-03 15:05:42.174 UTC [4998] LOG:  starting PostgreSQL 17.6 on x86_64-alpine-linux-musl, compiled by cc (Alpine 14.2.0) 14.2.0, 64-bit
+2025-10-03 15:05:42.174 UTC [4998] LOG:  listening on IPv6 address "::1", port 5432
+2025-10-03 15:05:42.174 UTC [4998] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2025-10-03 15:05:42.175 UTC [4998] FATAL:  could not create lock file "/run/postgresql/.s.PGSQL.5432.lock": No such file or directory
+2025-10-03 15:05:42.177 UTC [4998] LOG:  database system is shut down
+2025-10-03 15:06:52.944 UTC [5591] LOG:  starting PostgreSQL 17.6 on x86_64-alpine-linux-musl, compiled by cc (Alpine 14.2.0) 14.2.0, 64-bit
+2025-10-03 15:06:52.944 UTC [5591] LOG:  listening on IPv6 address "::1", port 5432
+2025-10-03 15:06:52.944 UTC [5591] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2025-10-03 15:06:52.946 UTC [5591] LOG:  listening on Unix socket "/run/postgresql/.s.PGSQL.5432"
+2025-10-03 15:06:52.950 UTC [5600] LOG:  database system was shut down at 2025-10-03 15:05:30 UTC
+2025-10-03 15:06:52.956 UTC [5591] LOG:  database system is ready to accept connections
+2025-10-03 15:07:08.512 UTC [5720] LOG:  invalid length of startup packet
+2025-10-03 15:07:08.526 UTC [5721] LOG:  invalid length of startup packet
+2025-10-03 15:07:08.538 UTC [5722] LOG:  invalid length of startup packet
+2025-10-03 15:07:08.551 UTC [5723] LOG:  invalid length of startup packet
+2025-10-03 15:11:53.050 UTC [5598] LOG:  checkpoint starting: time
+2025-10-03 15:12:20.495 UTC [8128] FATAL:  database "inner_uplift_dev_queue" does not exist
+2025-10-03 15:12:20.506 UTC [8133] FATAL:  database "inner_uplift_dev_queue" does not exist
+2025-10-03 15:12:21.027 UTC [5598] LOG:  checkpoint complete: wrote 1094 buffers (6.7%); 1 WAL file(s) added, 0 removed, 0 recycled; write=27.544 s, sync=0.242 s, total=27.978 s; sync files=310, longest=0.012 s, average=0.001 s; distance=8596 kB, estimate=8596 kB; lsn=0/1D28BF0, redo lsn=0/1D28750
+2025-10-03 15:12:21.028 UTC [5598] LOG:  checkpoint starting: immediate force wait
+2025-10-03 15:12:21.033 UTC [5598] LOG:  checkpoint complete: wrote 1 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.005 s; sync files=1, longest=0.001 s, average=0.001 s; distance=1 kB, estimate=7736 kB; lsn=0/1D28CC0, redo lsn=0/1D28C68
+2025-10-03 15:12:21.297 UTC [5598] LOG:  checkpoint starting: immediate force wait
+2025-10-03 15:12:21.305 UTC [5598] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.002 s, total=0.009 s; sync files=2, longest=0.001 s, average=0.001 s; distance=1 kB, estimate=6963 kB; lsn=0/1D291F8, redo lsn=0/1D291A0
+2025-10-03 15:12:42.463 UTC [8373] ERROR:  database "inner_uplift_dev_queue" already exists
+2025-10-03 15:12:42.463 UTC [8373] STATEMENT:  CREATE DATABASE inner_uplift_dev_queue;
+2025-10-03 15:12:42.476 UTC [8385] ERROR:  database "inner_uplift_test_queue" already exists
+2025-10-03 15:12:42.476 UTC [8385] STATEMENT:  CREATE DATABASE inner_uplift_test_queue;
+2025-10-03 15:17:21.349 UTC [5598] LOG:  checkpoint starting: time
+2025-10-03 15:21:51.277 UTC [5598] LOG:  checkpoint complete: wrote 3767 buffers (23.0%); 0 WAL file(s) added, 0 removed, 1 recycled; write=269.677 s, sync=0.246 s, total=269.928 s; sync files=1282, longest=0.004 s, average=0.001 s; distance=17133 kB, estimate=17133 kB; lsn=0/2DE4788, redo lsn=0/2DE46F8
+2025-10-03 15:32:21.383 UTC [5598] LOG:  checkpoint starting: time
+2025-10-03 15:32:22.095 UTC [5598] LOG:  checkpoint complete: wrote 8 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.703 s, sync=0.004 s, total=0.712 s; sync files=8, longest=0.001 s, average=0.001 s; distance=2 kB, estimate=15420 kB; lsn=0/2DE4F58, redo lsn=0/2DE4F00
+2025-10-03 15:37:21.167 UTC [5598] LOG:  checkpoint starting: time
+2025-10-03 15:37:24.990 UTC [5598] LOG:  checkpoint complete: wrote 39 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=3.808 s, sync=0.012 s, total=3.824 s; sync files=32, longest=0.002 s, average=0.001 s; distance=57 kB, estimate=13883 kB; lsn=0/2DF3688, redo lsn=0/2DF35F8
+2025-10-03 15:47:22.095 UTC [5598] LOG:  checkpoint starting: time
+2025-10-03 15:47:25.819 UTC [5598] LOG:  checkpoint complete: wrote 38 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=3.708 s, sync=0.013 s, total=3.725 s; sync files=37, longest=0.002 s, average=0.001 s; distance=62 kB, estimate=12501 kB; lsn=0/2E03160, redo lsn=0/2E03108
+2025-10-03 16:07:23.130 UTC [5598] LOG:  checkpoint starting: time
+2025-10-03 16:07:27.352 UTC [5598] LOG:  checkpoint complete: wrote 43 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=4.208 s, sync=0.010 s, total=4.223 s; sync files=40, longest=0.006 s, average=0.001 s; distance=119 kB, estimate=11263 kB; lsn=0/2E21150, redo lsn=0/2E210C0
+2025-10-03 16:12:23.387 UTC [5598] LOG:  checkpoint starting: time
+2025-10-03 16:12:27.109 UTC [5598] LOG:  checkpoint complete: wrote 38 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=3.708 s, sync=0.010 s, total=3.722 s; sync files=35, longest=0.003 s, average=0.001 s; distance=73 kB, estimate=10144 kB; lsn=0/2E33550, redo lsn=0/2E334C0
+2025-10-03 16:17:23.208 UTC [5598] LOG:  checkpoint starting: time
+2025-10-03 16:17:23.316 UTC [5598] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.101 s, sync=0.002 s, total=0.108 s; sync files=2, longest=0.002 s, average=0.001 s; distance=7 kB, estimate=9130 kB; lsn=0/2E35370, redo lsn=0/2E35318
+2025-10-03 16:22:23.374 UTC [5598] LOG:  checkpoint starting: time
+2025-10-03 16:22:23.884 UTC [5598] LOG:  checkpoint complete: wrote 6 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.502 s, sync=0.004 s, total=0.511 s; sync files=6, longest=0.002 s, average=0.001 s; distance=22 kB, estimate=8220 kB; lsn=0/2E3ACB0, redo lsn=0/2E3AC58
+2025-10-03 16:27:23.952 UTC [5598] LOG:  checkpoint starting: time
+2025-10-03 16:27:24.060 UTC [5598] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.101 s, sync=0.002 s, total=0.108 s; sync files=2, longest=0.001 s, average=0.001 s; distance=6 kB, estimate=7398 kB; lsn=0/2E3C6E0, redo lsn=0/2E3C688
+2025-10-03 16:32:23.120 UTC [5598] LOG:  checkpoint starting: time
+2025-10-03 16:32:23.228 UTC [5598] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.101 s, sync=0.002 s, total=0.108 s; sync files=2, longest=0.001 s, average=0.001 s; distance=8 kB, estimate=6659 kB; lsn=0/2E3E970, redo lsn=0/2E3E918

@@ -1,0 +1,20 @@
+{
+  "name": "Inner Uplift - Rails PWA",
+  "image": "mcr.microsoft.com/devcontainers/ruby:3.4",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    }
+  },
+  "forwardPorts": [3000, 3036, 5433],
+  "portsAttributes": {
+    "3000": { "label": "Rails Server", "onAutoForward": "notify" },
+    "3036": { "label": "Vite Dev Server", "onAutoForward": "silent" },
+    "5433": { "label": "PostgreSQL", "onAutoForward": "silent" }
+  },
+  "postCreateCommand": "sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y postgresql postgresql-contrib libpq-dev ffmpeg && bundle install && yarn install",
+  "postStartCommand": "bash -lc '~/startapp.sh || true'",
+  "postStopCommand": "bash -lc '~/stopapp.sh || true'",
+  "remoteUser": "vscode"
+}
+

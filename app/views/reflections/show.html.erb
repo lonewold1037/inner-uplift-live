@@ -1,0 +1,15 @@
+<%= turbo_stream_from @reflection %>
+
+<script>
+  console.log('🔌 Subscribing to reflection:', <%= @reflection.id %>);
+  
+  document.addEventListener('turbo:before-stream-render', (event) => {
+    console.log('📥 Turbo Stream received!', event.detail);
+  });
+</script>
+
+<div class="min-h-screen flex flex-col items-center justify-center px-4 py-16 -mt-16">
+  <div id="reflection_status_area_<%= @reflection.id %>" class="max-w-2xl w-full space-y-8">
+    <%= render "status_content", reflection: @reflection, soundscapes: @soundscapes %>
+  </div>
+</div>

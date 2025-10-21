@@ -1,0 +1,86 @@
+<div class="min-h-screen flex items-center justify-center py-12 px-4 -mt-16">
+  <div class="max-w-2xl w-full space-y-8">
+    <div>
+      <h1 class="text-center text-4xl font-extrabold text-white tracking-wide">
+        Speak the Inner Uplift Mantra
+      </h1>
+    </div>
+    <div class="bg-black/50 backdrop-blur-xl p-8 rounded-2xl shadow-lg border border-white/20 text-center">
+      <p class="mb-6 text-xl text-white font-bold leading-relaxed">
+        "I, <%= @reflection.name_for_recap %>, am about to understand how powerful customized self reflection can be..."
+      </p>
+      <button id="recordButton" class="bg-green-600 hover:bg-green-500 text-white font-bold py-4 px-8 rounded-full focus:outline-none focus:shadow-outline">
+        Start Recording
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const recordButton = document.getElementById('recordButton');
+    if (!recordButton) return;
+    
+    let mediaRecorder;
+    let audioChunks = [];
+
+    // Remove any existing listeners
+    const newButton = recordButton.cloneNode(true);
+    recordButton.parentNode.replaceChild(newButton, recordButton);
+
+    newButton.addEventListener('click', async () => {
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+        newButton.textContent = 'Start Recording';
+        newButton.classList.remove('bg-red-500', 'animate-pulse');
+        newButton.classList.add('bg-green-600');
+      } else {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          mediaRecorder = new MediaRecorder(stream);
+          audioChunks = [];
+
+          mediaRecorder.ondataavailable = event => {
+            audioChunks.push(event.data);
+          };
+
+          mediaRecorder.onstop = async () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            const formData = new FormData();
+            formData.append('audio', audioBlob, 'recording.webm');
+
+            newButton.textContent = 'Uploading & Processing...';
+            newButton.disabled = true;
+
+            const response = await fetch('<%= receive_audio_reflection_path(@reflection) %>', {
+              method: 'POST',
+              body: formData,
+              headers: {
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+                'X-Requested-With': 'XMLHttpRequest'
+              }
+            });
+
+            if (response.redirected) {
+              window.location.href = response.url;
+            } else {
+              console.error('Upload succeeded but the server did not redirect.', response);
+              newButton.textContent = 'Error - Try Again';
+              newButton.disabled = false;
+              alert('There was an unexpected server error. Please try recording again.');
+            }
+          };
+
+          mediaRecorder.start();
+          newButton.textContent = 'Stop Recording';
+          newButton.classList.remove('bg-green-600');
+          newButton.classList.add('bg-red-500', 'animate-pulse');
+
+        } catch (error) {
+          console.error('Error accessing microphone:', error);
+          alert('Could not access the microphone. Please check your browser permissions.');
+        }
+      }
+    });
+  })();
+</script>

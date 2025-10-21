@@ -1,0 +1,55 @@
+<div class="text-center">
+  <h1 class="text-4xl font-extrabold text-white tracking-wide">
+    Mix Your Soundscape
+  </h1>
+  <p class="mt-2 text-lg text-slate-300">
+    Select a background vibe to mix with your recording.
+  </p>
+</div>
+
+<div class="bg-black/50 backdrop-blur-xl p-6 rounded-2xl shadow-lg border border-white/20">
+  <%= form_with(model: reflection,
+                url: mix_audio_reflection_path(reflection),
+                method: :post,
+                data: { turbo: true },
+                id: "mix-audio-form") do |form| %>
+    <div class="space-y-4">
+      
+      <%= form.label :soundscape_id, "Choose your vibe:", class: "block text-white font-bold text-lg" %>
+      
+      <%= form.collection_select :soundscape_id,
+                                  soundscapes,
+                                  :id,
+                                  :category,
+                                  { prompt: "Select a vibe..." },
+                                  id: "soundscape-select",
+                                  class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 focus:outline-none focus:border-sky-400" %>
+
+      <%= form.submit "Mix In Audio",
+                      id: "mix-submit-button",
+                      class: "w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-3 px-4 rounded-lg cursor-pointer transition-all" %>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  (function() {
+    const form = document.getElementById('mix-audio-form');
+    const button = document.getElementById('mix-submit-button');
+    const select = document.getElementById('soundscape-select');
+    
+    if (form && button) {
+      form.addEventListener('submit', (e) => {
+        if (!select.value) {
+          e.preventDefault();
+          alert('Please select a vibe first!');
+          return;
+        }
+        
+        button.disabled = true;
+        button.classList.add('opacity-50', 'cursor-not-allowed');
+        button.innerHTML = '🎛️ Mixing...';
+      });
+    }
+  })();
+</script>

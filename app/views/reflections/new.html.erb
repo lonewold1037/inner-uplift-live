@@ -1,0 +1,17 @@
+<div class="min-h-screen flex items-center justify-center py-12 px-4 -mt-16">
+  <div class="max-w-2xl w-full space-y-8">
+
+    <div>
+      <h1 class="text-center text-4xl font-extrabold text-white tracking-wide">
+        Create Your Inner Uplift
+      </h1>
+      <p class="mt-2 text-center text-lg text-slate-300">
+        What's on your mind? Let's craft a message just for you.
+      </p>
+    </div>
+
+    <%# This now simply renders the form partial, which has its own styling %>
+    <%= render 'form', reflection: @reflection %>
+
+  </div>
+</div>

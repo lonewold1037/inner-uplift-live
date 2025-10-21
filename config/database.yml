@@ -1,0 +1,39 @@
+# config/database.yml
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: <%= ENV.fetch("POSTGRES_USER", "postgres") %>
+  password: <%= ENV.fetch("POSTGRES_PASSWORD", "postgres") %>
+  host: <%= ENV.fetch("POSTGRES_HOST", "/tmp/pgsocket") %>
+  port: <%= ENV.fetch("POSTGRES_PORT", 5433) %>
+
+development:
+  primary:
+    <<: *default
+    database: inner_uplift_v2_development
+  
+  queue:
+    <<: *default
+    database: inner_uplift_v2_development_queue
+    migrations_paths: db/queue_migrate
+
+test:
+  primary:
+    <<: *default
+    database: inner_uplift_v2_test
+
+  queue:
+    <<: *default
+    database: inner_uplift_v2_test_queue
+    migrations_paths: db/queue_migrate
+
+production:
+  primary:
+    <<: *default
+    url: <%= ENV["DATABASE_URL"] %>
+  
+  queue:
+    <<: *default
+    url: <%= ENV["DATABASE_URL"] %>
+    migrations_paths: db/queue_migrate

@@ -1,0 +1,29 @@
+# docker-compose.yml
+version: "3.9"
+
+services:
+  web:
+    build: .
+    command: ["./bin/dev"]
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/rails
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_HOST=db
+    depends_on:
+      - db
+
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: inner_uplift_dev
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

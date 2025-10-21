@@ -1,0 +1,26 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+/* Force dark dropdown styling */
+select option {
+  background-color: #1e293b !important;
+  color: white !important;
+}
+
+select option:checked,
+select option:hover {
+  background-color: #0ea5e9 !important;
+  color: white !important;
+}
+
+/* Apply Bebas Neue globally */
+body {
+  font-family: 'Bebas Neue', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+/* Keep form inputs normal case for better UX */
+input, textarea, select {
+  text-transform: none;
+}
