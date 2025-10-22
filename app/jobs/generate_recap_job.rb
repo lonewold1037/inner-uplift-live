@@ -48,7 +48,7 @@ class GenerateRecapJob < ApplicationJob
 
       headers = {
         "Content-Type" => "application/json",
-        "Authorization" => "Bearer #{Rails.application.credentials.openai[:api_key]}"
+        "Authorization" => "Bearer #{ENV['OPENAI_API_KEY']}"
       }
       body = {
         model: "gpt-4-turbo",
