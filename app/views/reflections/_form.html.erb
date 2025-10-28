@@ -14,7 +14,7 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
       <div class="col-span-1 md:col-span-2">
-        <%= form.label :name_for_recap, "What name should we use in the audio?", class: "block text-white font-bold text-lg mb-2" %>
+        <%= form.label :name_for_recap, "What name do you go by?", class: "block text-white font-bold text-lg mb-2" %>
         <%= form.text_field :name_for_recap, class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 focus:outline-none focus:border-sky-400" %>
       </div>
 
@@ -39,7 +39,7 @@
       </div>
 
       <div class="col-span-1 md:col-span-2">
-        <%= form.label :style, "Choose a Style for the Summation:", class: "block text-white font-bold text-lg mb-2" %>
+        <%= form.label :style, "Choose a Style for your Memflection:", class: "block text-white font-bold text-lg mb-2" %>
         <%= form.select :style,
                         Reflection::STYLES,
                         { prompt: "Select a style" },
