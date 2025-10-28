@@ -88,4 +88,8 @@ Rails.application.configure do
   #
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+
+  # ActionCable configuration for WebSocket connections
+  config.action_cable.url = "wss://inner-uplift.onrender.com/cable"
+  config.action_cable.allowed_request_origins = [ "https://inner-uplift.onrender.com" ]
 end
