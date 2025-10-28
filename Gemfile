@@ -48,3 +48,4 @@ end
 gem "vite_rails", "~> 3.0"
 gem "solid_cache"
 gem "redis"
+gem "aws-sdk-s3", require: false
