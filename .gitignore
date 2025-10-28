@@ -48,3 +48,5 @@ node_modules
 *.local
 
 db/seed_assets/audio/*.mp3
+aws/
+awscliv2.zip
