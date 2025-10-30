@@ -9,6 +9,10 @@ Rails.application.routes.draw do
   # Public homepage
   root "pages#home"
 
+  # Public pages
+  get "privacy", to: "pages#privacy"
+  get "terms", to: "pages#terms"
+
   # User dashboard
   get "dashboard", to: "users#dashboard"
 
