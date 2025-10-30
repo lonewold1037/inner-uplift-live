@@ -23,6 +23,7 @@
     
     let mediaRecorder;
     let audioChunks = [];
+    let mediaStream;
 
     // Remove any existing listeners
     const newButton = recordButton.cloneNode(true);
@@ -36,8 +37,8 @@
         newButton.classList.add('bg-green-600');
       } else {
         try {
-          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          mediaRecorder = new MediaRecorder(stream);
+          mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          mediaRecorder = new MediaRecorder(mediaStream);
           audioChunks = [];
 
           mediaRecorder.ondataavailable = event => {
@@ -45,6 +46,11 @@
           };
 
           mediaRecorder.onstop = async () => {
+            // CRITICAL: Stop all media tracks immediately
+            if (mediaStream) {
+              mediaStream.getTracks().forEach(track => track.stop());
+            }
+
             const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
             const formData = new FormData();
             formData.append('audio', audioBlob, 'recording.webm');
@@ -62,7 +68,7 @@
             });
 
             if (response.redirected) {
-              Turbo.visit(response.url);
+              window.location.href = response.url;
             } else {
               console.error('Upload succeeded but the server did not redirect.', response);
               newButton.textContent = 'Error - Try Again';
