@@ -47,7 +47,7 @@ class ProcessAudioJob < ApplicationJob
       )
 
       reflection.update!(status: 'ready_to_mix')
-      sleep 2 # Allow page to reconnect if refreshed
+      sleep 5 # Allow page to reconnect if refreshed
       broadcast_status_update(reflection)
       Rails.logger.info "✅ Preview audio attached. Reflection ##{reflection.id} is ready to mix."
 
@@ -81,7 +81,7 @@ class ProcessAudioJob < ApplicationJob
     tmp_wav  = Rails.root.join("tmp", "#{SecureRandom.hex}.wav")
     begin
       File.binwrite(tmp_webm, attachment.download)
-      success = system("ffmpeg -y -i #{tmp_webm} -ar 44100 -ac 1 -c:a pcm_s16le #{tmp_wav}", out: File::NULL, err: File::NULL)
+      success = system("ffmpeg -y -i #{tmp_webm} -ar 22050 -ac 1 -ab 128k -c:a pcm_s16le #{tmp_wav}", out: File::NULL, err: File::NULL)
       return tmp_wav.to_s if success
       nil
     ensure
