@@ -62,7 +62,7 @@
             });
 
             if (response.redirected) {
-              window.location.href = response.url;
+              Turbo.visit(response.url);
             } else {
               console.error('Upload succeeded but the server did not redirect.', response);
               newButton.textContent = 'Error - Try Again';
