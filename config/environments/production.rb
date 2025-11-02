@@ -93,7 +93,6 @@ Rails.application.configure do
   config.action_cable.url = "wss://inner-uplift.onrender.com/cable"
   config.action_cable.allowed_request_origins = [ "https://inner-uplift.onrender.com" ]
 
-  # Use Redis for ActionCable in production
-  config.action_cable.adapter = :redis
-  config.action_cable.redis_url = ENV['REDIS_URL']
+  # Mount ActionCable on /cable
+  config.action_cable.mount_path = '/cable'
 end
