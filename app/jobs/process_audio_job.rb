@@ -12,17 +12,13 @@ class ProcessAudioJob < ApplicationJob
   MAX_WAIT_SECONDS = 60
 
   def perform(reflection)
-    wav_file_path = nil
     begin
       reflection.update!(status: 'processing_voice')
       Rails.logger.info "--- Starting ProcessAudioJob for reflection ID: #{reflection.id} ---"
 
       raise "Voice recording is not attached." unless reflection.voice_recording.attached?
 
-      wav_file_path = convert_to_wav(reflection.voice_recording)
-      raise "Could not convert voice recording to WAV." unless wav_file_path
-
-      new_voice_id = create_voice_clone(reflection, wav_file_path)
+      new_voice_id = create_voice_clone(reflection, reflection.voice_recording)
       raise "Failed to create ElevenLabs voice clone." unless new_voice_id
 
       unless wait_for_voice_ready(new_voice_id)
@@ -50,8 +46,7 @@ class ProcessAudioJob < ApplicationJob
 
     rescue => e
       handle_failure(reflection, e.message)
-    ensure
-      FileUtils.rm_f(wav_file_path) if wav_file_path
+    # No ensure block needed anymore!
     end
   end
 
@@ -72,30 +67,21 @@ class ProcessAudioJob < ApplicationJob
     )
   end
 
-  def convert_to_wav(attachment)
-    tmp_webm = Rails.root.join("tmp", "#{SecureRandom.hex}.webm")
-    tmp_wav  = Rails.root.join("tmp", "#{SecureRandom.hex}.wav")
-    begin
-      File.binwrite(tmp_webm, attachment.download)
-      success = system("ffmpeg -y -i #{tmp_webm} -ar 44100 -ac 1 -c:a pcm_s16le #{tmp_wav}", out: File::NULL, err: File::NULL)
-      return tmp_wav.to_s if success
-      nil
-    ensure
-      FileUtils.rm_f(tmp_webm)
-    end
-  end
-
-  def create_voice_clone(reflection, wav_file_path)
+    def create_voice_clone(reflection, webm_attachment)
     tmp_mp3 = Rails.root.join("tmp", "#{SecureRandom.hex}.mp3")
-  
+    tmp_webm = Rails.root.join("tmp", "#{SecureRandom.hex}.webm")
+    
     begin
-      Rails.logger.info "🎵 Converting WAV to MP3 for ElevenLabs..."
+      # Save the webm
+      File.binwrite(tmp_webm, webm_attachment.download)
       
-      # Convert WAV to MP3 for ElevenLabs
-      success = system("ffmpeg -y -i #{wav_file_path} -acodec libmp3lame -q:a 2 #{tmp_mp3}", out: File::NULL, err: File::NULL)
+      Rails.logger.info "🎵 Converting WebM directly to MP3 for ElevenLabs..."
+      
+      # Convert WebM → MP3 directly (preserves original quality!)
+      success = system("ffmpeg -y -i #{tmp_webm} -acodec libmp3lame -b:a 192k #{tmp_mp3}", out: File::NULL, err: File::NULL)
       
       unless success
-        Rails.logger.error "❌ FFmpeg WAV->MP3 conversion failed!"
+        Rails.logger.error "❌ FFmpeg WebM→MP3 conversion failed!"
         return nil
       end
       
@@ -118,6 +104,7 @@ class ProcessAudioJob < ApplicationJob
       end
     ensure
       FileUtils.rm_f(tmp_mp3) if tmp_mp3
+      FileUtils.rm_f(tmp_webm) if tmp_webm
     end
   end
 
