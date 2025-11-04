@@ -15,7 +15,6 @@ class ProcessAudioJob < ApplicationJob
     wav_file_path = nil
     begin
       reflection.update!(status: 'processing_voice')
-      broadcast_status_update(reflection)
       Rails.logger.info "--- Starting ProcessAudioJob for reflection ID: #{reflection.id} ---"
 
       raise "Voice recording is not attached." unless reflection.voice_recording.attached?
@@ -35,7 +34,6 @@ class ProcessAudioJob < ApplicationJob
       edit_voice_settings(new_voice_id)
 
       reflection.update!(status: 'generating_preview')
-      broadcast_status_update(reflection)
 
       audio_data = synthesize_audio(reflection.recap, new_voice_id)
       raise "Failed to synthesize preview audio from recap." unless audio_data.present?
@@ -65,7 +63,6 @@ class ProcessAudioJob < ApplicationJob
     broadcast_status_update(reflection)
   end
 
-  # ✅ THE FIX IS HERE: This method now ALWAYS loads and passes the soundscapes variable.
   def broadcast_status_update(reflection)
     reflection.broadcast_replace_to(
       reflection,
