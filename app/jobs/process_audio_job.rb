@@ -87,11 +87,19 @@ class ProcessAudioJob < ApplicationJob
 
   def create_voice_clone(reflection, wav_file_path)
     tmp_mp3 = Rails.root.join("tmp", "#{SecureRandom.hex}.mp3")
-    
+  
     begin
+      Rails.logger.info "🎵 Converting WAV to MP3 for ElevenLabs..."
+      
       # Convert WAV to MP3 for ElevenLabs
       success = system("ffmpeg -y -i #{wav_file_path} -acodec libmp3lame -q:a 2 #{tmp_mp3}", out: File::NULL, err: File::NULL)
-      return nil unless success
+      
+      unless success
+        Rails.logger.error "❌ FFmpeg WAV->MP3 conversion failed!"
+        return nil
+      end
+      
+      Rails.logger.info "✅ MP3 conversion successful, uploading to ElevenLabs..."
       
       uri = URI.parse("https://api.elevenlabs.io/v1/voices/add")
       request = Net::HTTP::Post::Multipart.new(uri.path, {
@@ -100,7 +108,14 @@ class ProcessAudioJob < ApplicationJob
       })
       request['xi-api-key'] = ENV["ELEVEN_LABS_API_KEY"]
       response = Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(request) }
-      response.is_a?(Net::HTTPSuccess) ? JSON.parse(response.body)['voice_id'] : nil
+      
+      if response.is_a?(Net::HTTPSuccess)
+        Rails.logger.info "✅ Voice clone created successfully"
+        JSON.parse(response.body)['voice_id']
+      else
+        Rails.logger.error "❌ ElevenLabs API error: #{response.body}"
+        nil
+      end
     ensure
       FileUtils.rm_f(tmp_mp3) if tmp_mp3
     end
