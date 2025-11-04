@@ -77,7 +77,7 @@ class ProcessAudioJob < ApplicationJob
     tmp_wav  = Rails.root.join("tmp", "#{SecureRandom.hex}.wav")
     begin
       File.binwrite(tmp_webm, attachment.download)
-      success = system("ffmpeg -y -i #{tmp_webm} -ar 22050 -ac 1 -ab 128k -c:a pcm_s16le #{tmp_wav}", out: File::NULL, err: File::NULL)
+      success = system("ffmpeg -y -i #{tmp_webm} -ar 44100 -ac 1 -c:a pcm_s16le #{tmp_wav}", out: File::NULL, err: File::NULL)
       return tmp_wav.to_s if success
       nil
     ensure
@@ -85,15 +85,25 @@ class ProcessAudioJob < ApplicationJob
     end
   end
 
-  def create_voice_clone(reflection, file_path)
-    uri = URI.parse("https://api.elevenlabs.io/v1/voices/add")
-    request = Net::HTTP::Post::Multipart.new(uri.path, {
-      'name' => "Reflection Voice #{reflection.id}",
-      'files' => UploadIO.new(file_path, 'audio/wav', "sample.wav")
-    })
-    request['xi-api-key'] = ENV["ELEVEN_LABS_API_KEY"]
-    response = Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(request) }
-    response.is_a?(Net::HTTPSuccess) ? JSON.parse(response.body)['voice_id'] : nil
+  def create_voice_clone(reflection, wav_file_path)
+    tmp_mp3 = Rails.root.join("tmp", "#{SecureRandom.hex}.mp3")
+    
+    begin
+      # Convert WAV to MP3 for ElevenLabs
+      success = system("ffmpeg -y -i #{wav_file_path} -acodec libmp3lame -q:a 2 #{tmp_mp3}", out: File::NULL, err: File::NULL)
+      return nil unless success
+      
+      uri = URI.parse("https://api.elevenlabs.io/v1/voices/add")
+      request = Net::HTTP::Post::Multipart.new(uri.path, {
+        'name' => "Reflection Voice #{reflection.id}",
+        'files' => UploadIO.new(tmp_mp3.to_s, 'audio/mpeg', "sample.mp3")
+      })
+      request['xi-api-key'] = ENV["ELEVEN_LABS_API_KEY"]
+      response = Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(request) }
+      response.is_a?(Net::HTTPSuccess) ? JSON.parse(response.body)['voice_id'] : nil
+    ensure
+      FileUtils.rm_f(tmp_mp3) if tmp_mp3
+    end
   end
 
   def wait_for_voice_ready(voice_id)
