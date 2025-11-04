@@ -69,7 +69,7 @@
             });
 
             if (response.redirected || response.type === 'opaqueredirect') {
-              Turbo.visit('<%= reflection_path(@reflection) %>');
+              window.location.href = '<%= reflection_path(@reflection) %>';
             } else {
               console.error('Upload succeeded but the server did not redirect.', response);
               newButton.textContent = 'Error - Try Again';
