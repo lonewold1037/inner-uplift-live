@@ -40,10 +40,17 @@ class ReflectionsController < ApplicationController
     unless params[:audio].present?
       return redirect_to record_reflection_path(@reflection), alert: "No audio file was received."
     end
+
     @reflection.voice_recording.attach(params[:audio])
+
     if @reflection.save
       Rails.logger.info "🎤 Voice recording attached. Kicking off ProcessAudioJob for Reflection ##{@reflection.id}"
+      
+      # Set status immediately so user sees "Processing..." on the show page
+      @reflection.update!(status: 'processing_audio')
+
       ProcessAudioJob.perform_later(@reflection)
+
       redirect_to reflection_path(@reflection)
     else
       redirect_to record_reflection_path(@reflection), alert: "Could not save the audio recording."
