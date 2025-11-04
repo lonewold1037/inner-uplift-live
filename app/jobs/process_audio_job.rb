@@ -47,7 +47,6 @@ class ProcessAudioJob < ApplicationJob
       )
 
       reflection.update!(status: 'ready_to_mix')
-      sleep 5 # Allow page to reconnect if refreshed
       broadcast_status_update(reflection)
       Rails.logger.info "✅ Preview audio attached. Reflection ##{reflection.id} is ready to mix."
 
