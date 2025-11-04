@@ -145,7 +145,12 @@ class ProcessAudioJob < ApplicationJob
     return nil unless script.present?
     uri = URI.parse("https://api.elevenlabs.io/v1/text-to-speech/#{voice_id}")
     headers = { "Accept" => "audio/mpeg", "Content-Type" => "application/json", "xi-api-key" => ENV["ELEVEN_LABS_API_KEY"] }
-    body = { text: script, model_id: "eleven_multilingual_v2", voice_settings: { speed: 0.90 } }.to_json
+    body = {
+      text: script,
+      model_id: "eleven_multilingual_v2",
+      voice_settings: { speed: 0.90 },
+      output_format: "mp3_44100_128"
+    }.to_json
     response = Net::HTTP.post(uri, body, headers)
     response.is_a?(Net::HTTPSuccess) ? response.body : nil
   end
