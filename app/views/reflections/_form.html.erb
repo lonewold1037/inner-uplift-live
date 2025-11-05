@@ -14,7 +14,7 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
       <div class="col-span-1 md:col-span-2">
-        <%= form.label :name_for_recap, "What name do you go by?", class: "block text-white font-bold text-lg mb-2" %>
+        <%= form.label :name_for_recap, "Who is the Memflection for?", class: "block text-white font-bold text-lg mb-2" %>
         <%= form.text_field :name_for_recap, class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 focus:outline-none focus:border-sky-400" %>
       </div>
 
@@ -48,7 +48,7 @@
     </div>
 
     <div class="flex items-center justify-center mt-8">
-      <%= form.submit "Generate Your Inner Uplift",
+      <%= form.submit "Generate My Preview ✨",
                       id: "generate-recap",
                       class: "w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline cursor-pointer transition-colors" %>
     </div>
