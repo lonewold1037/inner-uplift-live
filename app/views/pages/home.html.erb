@@ -2,18 +2,18 @@
   <div class="max-w-3xl">
 
     <h1 class="text-6xl font-extrabold tracking-wide text-white">
-      Inner Uplift
+      Memflect
     </h1>
 
     <p class="mt-4 text-2xl text-slate-200">
-      Craft personalized audio monologues from your own experiences, in a voice that understands.
+      Turn your memories into transformative audio reflections, spoken in your own voice.
     </p>
 
     <%# This block now shows the "Get Started" button for guests %>
     <% unless user_signed_in? %>
       <div class="mt-10">
         <%# This link now correctly points to the new reflection form %>
-        <%= link_to "Get Started Now", new_reflection_path, class: "bg-sky-600 hover:bg-sky-500 text-white font-bold py-4 px-8 rounded-lg shadow-lg text-xl" %>
+        <%= link_to "Start my Memflection", new_reflection_path, class: "bg-sky-600 hover:bg-sky-500 text-white font-bold py-4 px-8 rounded-lg shadow-lg text-xl" %>
       </div>
     <% end %>
 
