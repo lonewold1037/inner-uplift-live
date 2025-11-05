@@ -19,12 +19,12 @@
     <%# ----- STATE: PENDING (Recap Confirmation) ----- %>
     <div class="text-center">
       <h1 class="text-4xl font-extrabold text-white tracking-wide">
-        Your Inner Uplift Recap
+        Your Memflection Content Preview
       </h1>
     </div>
     <div class="bg-black/50 backdrop-blur-xl p-6 rounded-2xl shadow-lg border border-white/20 text-left">
       <p class="text-white font-bold text-lg mb-4">
-        Does this sound right? We'll use this to generate your personalized audio.
+        Is this a good start, friend? We'll use this base script to help you generate your personalized audio reflection.
       </p>
       <p class="text-slate-300 italic">"<%= reflection.recap %>"</p>
     </div>
@@ -34,7 +34,7 @@
                   class: "bg-sky-600 hover:bg-sky-500 text-white font-bold py-3 px-5 rounded-lg",
                   data: { turbo_frame: "_top" } %>
 
-      <%= link_to "No, let me start over.",
+      <%= link_to "No, let me try that again.",
                   new_reflection_path,
                   class: "bg-slate-600 hover:bg-slate-500 text-white font-bold py-3 px-5 rounded-lg" %>
     </div>
