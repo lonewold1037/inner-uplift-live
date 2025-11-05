@@ -46,8 +46,8 @@
   <% when 'completed' %>
     <%# ----- STATE: COMPLETED (Final Audio Player) ----- %>
     <div class="text-center">
-      <h1 class="text-4xl font-extrabold text-white tracking-wide">✨ Your Inner Uplift is Ready ✨</h1>
-      <p class="text-lg text-slate-300 mt-4">Listen to your new creation below.</p>
+      <h1 class="text-4xl font-extrabold text-white tracking-wide">✨ Your Memflection is Ready ✨</h1>
+      <p class="text-lg text-slate-300 mt-4">Listen to your personalized audio reflection below.</p>
     </div>
     <div class="bg-black/50 backdrop-blur-xl p-6 rounded-2xl shadow-lg border border-white/20">
       <% if reflection.final_audio.attached? %>
@@ -59,7 +59,7 @@
           
           <%# NEW: Remix Soundscape Section %>
           <div class="w-full max-w-md pt-6 border-t border-white/20">
-            <p class="text-lg font-bold text-white mb-4 text-center">Try a different vibe:</p>
+            <p class="text-lg font-bold text-white mb-4 text-center">Want a different soundscape?</p>
             <%= form_with(model: reflection,
                           url: remix_audio_reflection_path(reflection),
                           method: :post,
