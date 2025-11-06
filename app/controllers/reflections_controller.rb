@@ -98,6 +98,33 @@ class ReflectionsController < ApplicationController
     redirect_to @reflection, alert: "Soundscape not found"
   end
 
+  def checkout
+    @reflection = Reflection.find(params[:id])
+    
+    session = Stripe::Checkout::Session.create(
+      payment_method_types: ['card'],
+      line_items: [{
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: 'Extended Memflection (5 minutes)',
+            description: 'Full-length personalized audio reflection'
+          },
+          unit_amount: 199 # $1.99 in cents
+        },
+        quantity: 1
+      }],
+      mode: 'payment',
+      success_url: reflection_url(@reflection) + '?purchased=true',
+      cancel_url: reflection_url(@reflection),
+      metadata: {
+        reflection_id: @reflection.id
+      }
+    )
+    
+    redirect_to session.url, allow_other_host: true
+  end
+
   private
 
   def set_reflection

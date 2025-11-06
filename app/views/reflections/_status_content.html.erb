@@ -79,7 +79,7 @@
           
           <%# Action Buttons - Stack on mobile, side by side on desktop %>
           <div class="flex flex-col md:flex-row justify-center items-stretch md:items-center gap-3 pt-4 w-full max-w-md">
-            <%= link_to "Purchase 5-Min Version ($1.99)", "#", 
+            <%= button_to "Purchase 5-Min Version ($1.99)", checkout_reflection_path(reflection), method: :post, 
                 class: "bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg text-center" %>
             <%= link_to "Start Over", new_reflection_path, 
                 class: "bg-slate-600 hover:bg-slate-500 text-white font-bold py-3 px-6 rounded-lg shadow text-center" %>

@@ -33,6 +33,9 @@ Rails.application.routes.draw do
       
       # Action that changes/swaps out the soundscape .mp3 for different on final playback page
       post "remix_audio"
+
+      # Stripe checkout for extended version
+      post "checkout"
     end
   end
 
