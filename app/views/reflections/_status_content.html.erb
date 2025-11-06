@@ -46,8 +46,10 @@
   <% when 'completed' %>
     <%# ----- STATE: COMPLETED (Final Audio Player) ----- %>
     <div class="text-center">
-      <h1 class="text-4xl font-extrabold text-white tracking-wide">✨ Your Memflection is Ready ✨</h1>
-      <p class="text-lg text-slate-300 mt-4">Listen to your personalized audio reflection below.</p>
+      <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-wide">
+        ✨ Your Memflection is Ready ✨
+      </h1>
+      <p class="text-base md:text-lg text-slate-300 mt-4">Listen to your personalized audio reflection below.</p>
     </div>
     <div class="bg-black/50 backdrop-blur-xl p-6 rounded-2xl shadow-lg border border-white/20">
       <% if reflection.final_audio.attached? %>
@@ -57,7 +59,7 @@
             Your browser does not support the audio element.
           </audio>
           
-          <%# NEW: Remix Soundscape Section %>
+          <%# Remix Soundscape Section %>
           <div class="w-full max-w-md pt-6 border-t border-white/20">
             <p class="text-lg font-bold text-white mb-4 text-center">Want a different soundscape?</p>
             <%= form_with(model: reflection,
@@ -76,9 +78,12 @@
             <% end %>
           </div>
           
-          <div class="flex justify-center items-center space-x-4 pt-4">
-            <%= link_to "Purchase your 5 Minute Version for $1.99", "#", class: "bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg" %>
-            <%= link_to "Start All Over", new_reflection_path, class: "bg-slate-600 hover:bg-slate-500 text-white font-bold py-3 px-6 rounded-lg shadow" %>
+          <%# Action Buttons - Stack on mobile, side by side on desktop %>
+          <div class="flex flex-col md:flex-row justify-center items-stretch md:items-center gap-3 pt-4 w-full max-w-md">
+            <%= link_to "Purchase 5-Min Version ($1.99)", "#", 
+                class: "bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg text-center" %>
+            <%= link_to "Start Over", new_reflection_path, 
+                class: "bg-slate-600 hover:bg-slate-500 text-white font-bold py-3 px-6 rounded-lg shadow text-center" %>
           </div>
         </div>
       <% else %>
