@@ -64,8 +64,7 @@
             <p class="text-lg font-bold text-white mb-4 text-center">Want a different soundscape?</p>
             <%= form_with(model: reflection,
                           url: remix_audio_reflection_path(reflection),
-                          method: :post,
-                          data: { turbo: true },
+                          method: :post,                         
                           class: "flex flex-col gap-3 items-center") do |form| %>
               <%= form.collection_select :soundscape_id,
                                           soundscapes,
