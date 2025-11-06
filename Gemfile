@@ -49,3 +49,6 @@ gem "vite_rails", "~> 3.0"
 gem "solid_cache"
 gem "redis"
 gem "aws-sdk-s3", require: false
+
+# Stripe for payments
+gem 'stripe', '~> 12.0'
