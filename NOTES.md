@@ -15,3 +15,9 @@
 - Form: `app/views/reflections/_form.html.erb`
 - Status: `app/views/reflections/_status_content.html.erb`
 - Controller: `app/controllers/reflections_controller.rb`
+
+## TODO: Normalize Soundscapes
+- Download from S3 bucket
+- Run: `ffmpeg-normalize *.mp3 -o normalized/ -c:a libmp3lame -b:a 192k`
+- Re-upload to replace originals
+- Target: -16 LUFS (podcast standard)
