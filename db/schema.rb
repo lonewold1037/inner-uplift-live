@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_10_13_032344) do
+ActiveRecord::Schema[7.2].define(version: 2025_11_06_041525) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -149,6 +149,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_13_032344) do
     t.bigint "soundscape_id"
     t.string "eleven_labs_voice_id"
     t.string "status"
+    t.boolean "purchased"
+    t.text "extended_recap"
     t.index ["soundscape_id"], name: "index_reflections_on_soundscape_id"
     t.index ["status"], name: "index_reflections_on_status"
     t.index ["user_id"], name: "index_reflections_on_user_id"
