@@ -51,5 +51,16 @@
         button.innerHTML = '🎛️ Mixing...';
       });
     }
+    // Auto-submit when soundscape is selected
+    if (select) {
+      select.addEventListener('change', () => {
+        if (select.value) {
+          button.disabled = true;
+          button.classList.add('opacity-50', 'cursor-not-allowed');
+          button.innerHTML = '🎛️ Mixing...';
+          form.submit();
+        }
+      });
+    }
   })();
 </script>
