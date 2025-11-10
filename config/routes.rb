@@ -6,6 +6,9 @@ Rails.application.routes.draw do
   # Mount ActionCable for WebSocket connections
   mount ActionCable.server => '/cable'
 
+  # Stripe webhook (must be at top level, not nested)
+  post "webhooks/stripe", to: "stripe_webhooks#create"
+
   # Public homepage
   root "pages#home"
 
