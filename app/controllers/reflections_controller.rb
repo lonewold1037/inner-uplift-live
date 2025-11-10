@@ -116,7 +116,7 @@ class ReflectionsController < ApplicationController
         quantity: 1
       }],
       mode: 'payment',
-      success_url: dashboard_url + '?purchased=true',
+      success_url: dashboard_url + "?reflection_id=#{@reflection.id}",
       cancel_url: reflection_url(@reflection),
       metadata: {
         reflection_id: @reflection.id

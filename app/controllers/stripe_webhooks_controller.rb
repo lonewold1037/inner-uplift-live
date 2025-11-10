@@ -34,9 +34,15 @@ class StripeWebhooksController < ApplicationController
     
     reflection = Reflection.find(reflection_id)
     
-    # Find or create user
+    # Find or create user with login token
     user = User.find_or_create_by(email: customer_email) do |u|
-      u.password = SecureRandom.hex(16) # Random password
+      u.password = SecureRandom.hex(16)
+      u.login_token = SecureRandom.urlsafe_base64(32)
+    end
+    
+    # If user already exists but has no token, generate one
+    if user.login_token.blank?
+      user.update!(login_token: SecureRandom.urlsafe_base64(32))
     end
     
     # Link reflection to user and mark as purchased
@@ -45,10 +51,12 @@ class StripeWebhooksController < ApplicationController
       purchased: true
     )
     
+    # Update checkout session metadata with login token for success URL
+    # Note: We can't update the session after creation, so we'll pass it via our own redirect
+    
     # Generate GPT title and trigger extended recap job
     GenerateTitleAndExtendedRecapJob.perform_later(reflection)
     
-    # TODO: Send welcome email
-    Rails.logger.info "✅ User created and reflection linked. Extended recap job queued."
+    Rails.logger.info "✅ User created with token: #{user.login_token}. Extended recap job queued."
   end
 end
