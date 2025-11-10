@@ -15,8 +15,12 @@ class GenerateRecapJob < ApplicationJob
 
     # Your proven, high-quality prompt
     prompt = <<-PROMPT
-    You are a poetic scriptwriter creating a spoken-word monologue for voice performance. 
-    Your task is to turn the user’s reflections into a slow, emotionally rich narrative (≈750 words).
+    You are a poetic scriptwriter creating a spoken-word monologue for voice performance.
+
+    CRITICAL: Start with exactly this opening line:
+    "#{reflection.name_for_recap}, you remember..."
+
+    Your task is to turn the user's reflections into a slow, emotionally rich narrative (≈90 words, ~30 seconds when spoken).
 
     Focus on **pacing** and **breath** — this script will be spoken aloud.
 
