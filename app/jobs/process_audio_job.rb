@@ -124,16 +124,19 @@ class ProcessAudioJob < ApplicationJob
   def edit_voice_settings(voice_id)
     uri = URI.parse("https://api.elevenlabs.io/v1/voices/#{voice_id}/settings/edit")
     headers = { "Content-Type" => "application/json", "xi-api-key" => ENV["ELEVEN_LABS_API_KEY"] }
-    body = { stability: 0.35, similarity_boost: 0.95 }.to_json
+    body = { stability: 0.35, similarity_boost: 0.95, style: "emotional", use_speaker_boost: true }.to_json
     Net::HTTP.post(uri, body, headers)
   end
 
   def synthesize_audio(script, voice_id)
     return nil unless script.present?
+
+    poetic_script = add_poetic_pauses(script)
+
     uri = URI.parse("https://api.elevenlabs.io/v1/text-to-speech/#{voice_id}")
     headers = { "Accept" => "audio/mpeg", "Content-Type" => "application/json", "xi-api-key" => ENV["ELEVEN_LABS_API_KEY"] }
     body = {
-      text: script,
+      text: poetic_script,
       model_id: "eleven_multilingual_v2",
       voice_settings: { speed: 0.90 },
       output_format: "mp3_44100_128"
@@ -148,5 +151,21 @@ class ProcessAudioJob < ApplicationJob
     request = Net::HTTP::Delete.new(uri)
     request['xi-api-key'] = ENV["ELEVEN_LABS_API_KEY"]
     Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(request) }
+  end
+
+    # --- Add this helper ---
+  def add_poetic_pauses(text)
+    return "" unless text.present?
+
+    text
+      # turn normal clause endings into gentle pauses
+      .gsub(/([a-z])([,;:])\s/i, '\1...\2 ')
+      # soften sentence breaks a bit
+      .gsub(/([^.])\.\s+([A-Z])/, '\1... \2')
+      # slight hesitation before connectors
+      .gsub(/\b(but|and|so|yet)\b/i, '...\1')
+      # clean up accidental triple dots
+      .gsub(/\.{4,}/, '...')
+      .strip
   end
 end
