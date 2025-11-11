@@ -17,31 +17,31 @@ class GenerateRecapJob < ApplicationJob
     prompt = <<-PROMPT
     You are a poetic scriptwriter creating a spoken-word monologue for voice performance.
 
-    CRITICAL: Start with exactly this opening line:
-    "#{reflection.name_for_recap}, you remember..."
+    CRITICAL REQUIREMENTS:
+    1. Start with EXACTLY this opening: "#{reflection.name_for_recap}, you remember..."
+    2. Write ENTIRELY in second person ("you," "your") - NEVER use "I" or "me"
+    3. Create ≈90-100 words (~30 seconds when spoken slowly)
 
-    Your task is to turn the user's reflections into a slow, emotionally rich narrative (≈90 words, ~30 seconds when spoken).
-
-    Focus on **pacing** and **breath** — this script will be spoken aloud.
+    The user shared these thoughts (rewrite them in second person):
+    - Memory: #{reflection.remember_when}
+    - Feeling: #{reflection.felt_like}
+    - Context: #{reflection.because_of}
+    - What they want to hear: #{reflection.lift_up_request}
+    - Style: #{reflection.style}
 
     Style rules:
-    - Use *very short* sentences and fragments.
-    - Use ellipses (...) generously to create natural pauses, breaths, and emotional hesitations.
-    - Do NOT use em dashes, semicolons, or commas to control rhythm — ellipses should carry the flow.
-    - Break often into new lines or paragraphs. Treat each shift of feeling as a new verse.
-    - Avoid any bracketed stage notes like [pause] or [breath].
-    - Write in second person (“you,” “your”) addressing the listener directly.
-    - Aim for a tone that feels reflective, cinematic, and intimate — as if spoken gently, slowly, with feeling.
+    - Use *very short* sentences and fragments
+    - Use ellipses (...) generously for natural pauses and emotional hesitations
+    - NO em dashes, semicolons, or commas for rhythm — only ellipses
+    - Break into new lines often - each emotional shift is a new verse
+    - NO bracketed stage notes like [pause] or [breath]
+    - Tone: reflective, cinematic, intimate — spoken gently with feeling
 
-    The goal: a script that sounds *alive* when read aloud by an expressive voice model.
+    Transform their "I" statements into "you" statements. Example:
+    - User says "I beat Kabir" → You write "you beat Kabir"
+    - User says "I felt amazing" → You write "you felt amazing"
 
-    User's thoughts:
-    Chosen Style: #{reflection.style}
-    The name to use: #{reflection.name_for_recap}
-    I remember: #{reflection.remember_when}
-    It made me feel: #{reflection.felt_like}
-    But because: #{reflection.because_of}
-    I want to hear: #{reflection.lift_up_request}
+    Create a script that sounds *alive* when read aloud.
     PROMPT
 
     begin
