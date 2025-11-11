@@ -19,6 +19,7 @@ class Reflection < ApplicationRecord
   has_one_attached :preview_audio
   has_one_attached :full_audio
   has_one_attached :final_audio
+  has_one_attached :extended_audio
 
   # Validations
   validates :style, inclusion: { in: STYLES }, allow_nil: true
