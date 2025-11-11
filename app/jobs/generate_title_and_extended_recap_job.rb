@@ -48,39 +48,41 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
   def generate_extended_recap(reflection)
     prompt = <<-PROMPT
     You are continuing a spoken-word monologue that has already begun.
-    
-    The opening (already recorded) is:
+
+    The opening (Act 1) is:
     "#{reflection.recap}"
-    
-    Your task: Continue this exact same style and tone for approximately 880 more tokens (4.5 minutes when spoken).
-    
-    CRITICAL STYLE MATCHING RULES:
-    - Match the existing rhythm, pacing, and emotional tone EXACTLY
-    - Continue using the same sentence structure patterns (short fragments, ellipses)
-    - Maintain the same perspective (second person "you")
-    - Keep the same level of poetic imagery and intimacy
-    - DO NOT restart or summarize — pick up seamlessly where it left off
-    
-    Expand deeply on:
-    - Sensory details of the memory
-    - Emotional layers and meaning
-    - The transformation or lesson within the experience
-    
-    Original context to reference:
-    Style: #{reflection.style}
-    Setting: #{reflection.setting}
-    Name: #{reflection.name_for_recap}
-    Memory: #{reflection.remember_when}
-    Feeling: #{reflection.felt_like}
-    Because: #{reflection.because_of}
-    Uplift request: #{reflection.lift_up_request}
-    
-    Continue the narrative now:
+
+    Your task: continue this monologue through **Acts 2-5**, lasting about 4.5 minutes (≈ 900-1000 words).
+
+    🎭 ROLE & PURPOSE
+    - You are the same poetic screenwriter — calm, intimate, reflective.
+    - Extend the emotional journey that began in Act 1, carrying the same rhythm and voice.
+    - Your job is to **expand, not retell**. Deepen the moment, broaden the meaning.
+
+    🔥 CONTINUATION STYLE RULES
+    - Match Act 1's tone, pacing, and syntax — gentle flow, short natural phrases.
+    - Stay entirely in **second person** ("you", "your").
+    - Do **not** reintroduce the character or summarize what's already said.
+    - Avoid inventing new events or imagery not implied by the user's memory.
+    - Each act should feel like an evolution:
+        *Act 2 - Exploration*: describe emotional texture and environment more fully.  
+        *Act 3 - Reflection*: begin connecting emotion to insight.  
+        *Act 4 - Realization*: reveal a shift, lesson, or clarity.  
+        *Act 5 - Integration*: offer gentle closure, hope, or affirmation.
+    - Keep sensory language grounded in what's believable for the user's memory.
+    - End with a natural exhale — peace, understanding, or acceptance — not a hard conclusion.
+
+    🎨 THEMES TO WEAVE THROUGH
+    - Memory: #{reflection.remember_when}
+    - Feeling: #{reflection.felt_like}
+    - Context: #{reflection.because_of}
+    - What they want to hear: #{reflection.lift_up_request}
+    - Style tone: #{reflection.style}
+
+    Write Acts 2-5 now, in the same emotional voice as Act 1.
     PROMPT
 
     continuation = call_openai(prompt, max_tokens: 1300)
-    
-    # Combine original recap + continuation for the full extended version
     "#{reflection.recap}\n\n#{continuation}"
   end
 

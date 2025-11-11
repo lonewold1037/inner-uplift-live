@@ -15,33 +15,41 @@ class GenerateRecapJob < ApplicationJob
 
     # Your proven, high-quality prompt
     prompt = <<-PROMPT
-    You are a poetic scriptwriter creating a spoken-word monologue for voice performance.
+    You are a poetic screenwriter crafting the **opening act (Act 1)** of a spoken-word monologue for voice performance.
+    This is the first 30 seconds of a 5-minute emotional reflection that will later continue seamlessly.
 
-    CRITICAL REQUIREMENTS:
-    1. Start with EXACTLY this opening: "#{reflection.name_for_recap}, you remember..."
-    2. Write ENTIRELY in second person ("you," "your") - NEVER use "I" or "me"
-    3. Create ≈90-100 words (~30 seconds when spoken slowly)
+    ROLE & GOAL:
+    - You are setting the stage — evoking the scene, emotion, and theme of transformation.
+    - Your writing must sound cinematic and alive when spoken aloud.
 
-    The user shared these thoughts (rewrite them in second person):
+    STRUCTURE:
+    1. Begin **exactly** with "#{reflection.name_for_recap}, you remember..."
+    2. Speak entirely in **second person** ("you", "your") — never "I" or "me".
+    3. Length ≈ 120–140 words (about 35 seconds spoken).
+    4. Flow like a story, not bullet fragments — let it breathe naturally.
+
+    STYLE RULES:
+    - Tone: reflective, calm, intimate (like a narrator guiding gentle self-discovery)
+    - Use natural rhythm and pauses — light use of ellipses (...) or commas when they feel organic
+    - Avoid stage directions, brackets, or over-punctuation
+    - Each emotional shift may start a new short line
+    - Write in modern, elegant poetic prose
+
+    THEMES TO INTRODUCE:
+    - The **scene** or sensory moment from the memory
+    - The **emotion** that rose within
+    - The **realization or first glimmer of meaning**
+    - A gentle seed of **comfort or wisdom** (a thought, metaphor, or short quote)
+    - Leave space for deeper exploration in later acts — end with a feeling of *“to be continued”*
+
+    USER INPUTS (rewrite naturally in second person):
     - Memory: #{reflection.remember_when}
     - Feeling: #{reflection.felt_like}
     - Context: #{reflection.because_of}
     - What they want to hear: #{reflection.lift_up_request}
-    - Style: #{reflection.style}
+    - Style tone: #{reflection.style}
 
-    Style rules:
-    - Use *very short* sentences and fragments
-    - Use ellipses (...) generously for natural pauses and emotional hesitations
-    - NO em dashes, semicolons, or commas for rhythm — only ellipses
-    - Break into new lines often - each emotional shift is a new verse
-    - NO bracketed stage notes like [pause] or [breath]
-    - Tone: reflective, cinematic, intimate — spoken gently with feeling
-
-    Transform their "I" statements into "you" statements. Example:
-    - User says "I beat Kabir" → You write "you beat Kabir"
-    - User says "I felt amazing" → You write "you felt amazing"
-
-    Create a script that sounds *alive* when read aloud.
+    Write the opening act now — graceful, cinematic, emotionally intelligent.
     PROMPT
 
     begin
@@ -57,8 +65,8 @@ class GenerateRecapJob < ApplicationJob
       body = {
         model: "gpt-4-turbo",
         messages: [{ role: "user", content: prompt }],
-        temperature: 0.75,
-        max_tokens: 120
+        temperature: 0.82,
+        max_tokens: 200
       }.to_json
 
       response = http.post(uri.path, body, headers)
