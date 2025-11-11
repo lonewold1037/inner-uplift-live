@@ -20,7 +20,7 @@
               <tr class="bg-white/5 border-b border-white/10">
                 <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Name</th>
                 <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider hidden md:table-cell">Style</th>
-                <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider hidden lg:table-cell">Vibe</th>
+                <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider hidden lg:table-cell">Setting</th>
                 <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider hidden sm:table-cell">Date</th>
                 <th class="px-6 py-4 text-right text-xs font-semibold text-slate-300 uppercase tracking-wider">Audio</th>
               </tr>
@@ -35,7 +35,7 @@
                     <% end %>
                   </td>
                   <td class="px-6 py-4 text-slate-300 text-sm hidden md:table-cell"><%= reflection.style %></td>
-                  <td class="px-6 py-4 text-slate-300 text-sm hidden lg:table-cell"><%= reflection.vibe %></td>
+                  <td class="px-6 py-4 text-slate-300 text-sm hidden lg:table-cell"><%= reflection.setting %></td>
                   <td class="px-6 py-4 text-slate-300 text-sm hidden sm:table-cell"><%= reflection.created_at.strftime("%b %d, %Y") %></td>
                   <td class="px-6 py-4 text-right">
                     <% if reflection.extended_audio.attached? %>
