@@ -78,7 +78,7 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
     Continue the narrative now:
     PROMPT
 
-    continuation = call_openai(prompt, max_tokens: 880)
+    continuation = call_openai(prompt, max_tokens: 1300)
     
     # Combine original recap + continuation for the full extended version
     "#{reflection.recap}\n\n#{continuation}"
