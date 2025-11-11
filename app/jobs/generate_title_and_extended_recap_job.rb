@@ -52,6 +52,10 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
     The opening (Act 1) is:
     "#{reflection.recap}"
 
+    Do not alter or rephrase any part of Act 1. Copy it word-for-word exactly as given, 
+    then begin Act 2 immediately after the final line of Act 1.
+
+
     Your task: continue this monologue through **Acts 2-5**, lasting about 4.5 minutes (≈ 900-1000 words).
 
     🎭 ROLE & PURPOSE
@@ -100,7 +104,7 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
     body = {
       model: "gpt-4-turbo",
       messages: [{ role: "user", content: prompt }],
-      temperature: 0.75,
+      temperature: 0.82,
       max_tokens: max_tokens
     }.to_json
 

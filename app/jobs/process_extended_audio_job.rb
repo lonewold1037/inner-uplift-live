@@ -69,6 +69,8 @@ class ProcessExtendedAudioJob < ApplicationJob
   private
 
   def synthesize_extended_audio(script, voice_id)
+    poetic_script = add_poetic_pauses(script)
+
     uri = URI.parse("https://api.elevenlabs.io/v1/text-to-speech/#{voice_id}")
     headers = {
       "Accept" => "audio/mpeg",
@@ -76,7 +78,7 @@ class ProcessExtendedAudioJob < ApplicationJob
       "xi-api-key" => ENV["ELEVEN_LABS_API_KEY"]
     }
     body = {
-      text: script,
+      text: poetic_script,
       model_id: "eleven_multilingual_v2",
       voice_settings: { speed: 0.90 },
       output_format: "mp3_44100_128"
@@ -123,5 +125,20 @@ class ProcessExtendedAudioJob < ApplicationJob
   def handle_failure(reflection, message)
     Rails.logger.error "❌ ProcessExtendedAudioJob: #{message} for Reflection ##{reflection.id}"
     reflection.update!(status: 'failed')
+  end
+
+  def add_poetic_pauses(text)
+    return "" unless text.present?
+
+    text
+      # turn normal clause endings into gentle pauses
+      .gsub(/([a-z])([,;:])\s/i, '\1...\2 ')
+      # soften sentence breaks a bit
+      .gsub(/([^.])\.\s+([A-Z])/, '\1... \2')
+      # slight hesitation before connectors
+      .gsub(/\b(but|and|so|yet)\b/i, '...\1')
+      # clean up accidental triple dots
+      .gsub(/\.{4,}/, '...')
+      .strip
   end
 end
