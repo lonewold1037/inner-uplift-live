@@ -125,11 +125,10 @@ class ProcessAudioJob < ApplicationJob
     uri = URI.parse("https://api.elevenlabs.io/v1/voices/#{voice_id}/settings/edit")
     headers = { "Content-Type" => "application/json", "xi-api-key" => ENV["ELEVEN_LABS_API_KEY"] }
     body = {
-      stability: 0.35,
-      similarity_boost: 0.95,
-      style: 0.01,
+      stability: 0.30,
+      similarity_boost: 0.85,
       use_speaker_boost: true,
-      speed: 0.85
+      speed: 0.95
     }.to_json
     Net::HTTP.post(uri, body, headers)
   end
