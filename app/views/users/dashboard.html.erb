@@ -39,9 +39,15 @@
                   <td class="px-6 py-4 text-slate-300 text-sm hidden sm:table-cell"><%= reflection.created_at.strftime("%b %d, %Y") %></td>
                   <td class="px-6 py-4 text-right">
                     <% if reflection.extended_audio.attached? %>
-                      <div class="flex justify-end gap-3">
-                        <%= link_to "Play", url_for(reflection.extended_audio), class: "text-sky-400 hover:text-sky-300 font-medium", target: "_blank", data: { turbo: false } %>
-                        <%= link_to "Download", url_for(reflection.extended_audio), download: "#{reflection.title || 'memflection'}.mp3", class: "text-purple-400 hover:text-purple-300 font-medium", data: { turbo: false } %>
+                      <div class="flex justify-end items-center gap-3">
+                        <!-- HTML5 Audio Player -->
+                        <audio controls preload="metadata" class="h-10 max-w-xs">
+                          <source src="<%= url_for(reflection.extended_audio) %>" type="audio/mpeg">
+                          Your browser does not support audio playback.
+                        </audio>
+                        
+                        <!-- Download Link -->
+                        <%= link_to "Download", url_for(reflection.extended_audio), download: "#{reflection.title || 'memflection'}.mp3", class: "text-purple-400 hover:text-purple-300 font-medium whitespace-nowrap", data: { turbo: false } %>
                       </div>
                     <% else %>
                       <span class="text-slate-500 text-sm">Processing...</span>
