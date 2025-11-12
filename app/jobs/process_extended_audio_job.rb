@@ -80,7 +80,6 @@ class ProcessExtendedAudioJob < ApplicationJob
     body = {
       text: poetic_script,
       model_id: "eleven_multilingual_v2",
-      voice_settings: { speed: 0.90 },
       output_format: "mp3_44100_128"
     }.to_json
 

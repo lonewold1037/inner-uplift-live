@@ -124,21 +124,24 @@ class ProcessAudioJob < ApplicationJob
   def edit_voice_settings(voice_id)
     uri = URI.parse("https://api.elevenlabs.io/v1/voices/#{voice_id}/settings/edit")
     headers = { "Content-Type" => "application/json", "xi-api-key" => ENV["ELEVEN_LABS_API_KEY"] }
-    body = { stability: 0.35, similarity_boost: 0.95, style: "emotional", use_speaker_boost: true }.to_json
+    body = {
+      stability: 0.35,
+      similarity_boost: 0.95,
+      style: 0.15,
+      use_speaker_boost: true,
+      speed: 0.90
+    }.to_json
     Net::HTTP.post(uri, body, headers)
   end
 
   def synthesize_audio(script, voice_id)
     return nil unless script.present?
-
     poetic_script = add_poetic_pauses(script)
-
     uri = URI.parse("https://api.elevenlabs.io/v1/text-to-speech/#{voice_id}")
     headers = { "Accept" => "audio/mpeg", "Content-Type" => "application/json", "xi-api-key" => ENV["ELEVEN_LABS_API_KEY"] }
     body = {
       text: poetic_script,
       model_id: "eleven_multilingual_v2",
-      voice_settings: { speed: 0.90 },
       output_format: "mp3_44100_128"
     }.to_json
     response = Net::HTTP.post(uri, body, headers)
