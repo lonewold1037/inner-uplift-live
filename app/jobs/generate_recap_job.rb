@@ -15,41 +15,46 @@ class GenerateRecapJob < ApplicationJob
 
     # Your proven, high-quality prompt
     prompt = <<-PROMPT
-    You are a poetic screenwriter crafting the **opening act (Act 1)** of a spoken-word monologue for voice performance.
-    This is the first 30 seconds of a 5-minute emotional reflection that will later continue seamlessly.
+    You are a poetic screenwriter crafting **Act 1 (the opening)** of a 5-act spoken-word monologue.
+    This is the first 30 seconds that will continue into a 5-minute journey.
 
-    ROLE & GOAL:
-    - You are setting the stage — evoking the scene, emotion, and theme of transformation.
-    - Your writing must sound cinematic and alive when spoken aloud.
+    🎭 ROLE & GOAL:
+    - You are setting the stage for Acts 2-5 that will come later.
+    - This is Act 1: introduce the memory, emotion, and theme — don't try to resolve everything.
+    - Your writing must sound natural and alive when spoken aloud.
+    - Stay CLOSE to the user's own language and details — don't over-embellish.
 
-    STRUCTURE:
+    ⚠️ CRITICAL: DO NOT include "Act 1" or any labels in your output. Just write the spoken words.
+
+    📝 STRUCTURE:
     1. Begin **exactly** with "#{reflection.name_for_recap}, you remember..."
     2. Speak entirely in **second person** ("you", "your") — never "I" or "me".
     3. Length ≈ 120–140 words (about 35 seconds spoken).
-    4. Flow like a story, not bullet fragments — let it breathe naturally.
+    4. Flow like a story with natural rhythm — not choppy fragments.
 
-    STYLE RULES:
-    - Tone: reflective, calm, intimate (like a narrator guiding gentle self-discovery)
-    - Use natural rhythm and pauses — light use of ellipses (...) or commas when they feel organic
-    - Avoid stage directions, brackets, or over-punctuation
-    - Each emotional shift may start a new short line
-    - Write in modern, elegant poetic prose
+    🎨 STYLE RULES:
+    - Tone: reflective, calm, intimate (like a trusted friend guiding gentle self-discovery)
+    - Use natural rhythm and pauses — light use of ellipses (...) when they feel organic
+    - Avoid stage directions, brackets, or excessive punctuation
+    - Write in modern, elegant prose — poetic but grounded
+    - If the user used simple direct language, keep it simple and powerful
+    - Don't invent specific details (times, places, sensory scenes) unless they're strongly implied
 
-    THEMES TO INTRODUCE:
-    - The **scene** or sensory moment from the memory
-    - The **emotion** that rose within
-    - The **realization or first glimmer of meaning**
-    - A gentle seed of **comfort or wisdom** (a thought, metaphor, or short quote)
-    - Leave space for deeper exploration in later acts — end with a feeling of *“to be continued”*
+    🔥 ACT 1 THEMES TO INTRODUCE (not resolve):
+    - The memory itself (use their actual words/tone where possible)
+    - The emotion that rose within (use THEIR language: "like superman" = feel invincible, powerful)
+    - A brief glimmer of meaning or realization
+    - A seed of hope or strength
+    - End with forward momentum — leave space for Acts 2-5 to expand the journey
 
-    USER INPUTS (rewrite naturally in second person):
+    📍 USER'S ACTUAL STORY (stay true to these):
     - Memory: #{reflection.remember_when}
     - Feeling: #{reflection.felt_like}
     - Context: #{reflection.because_of}
     - What they want to hear: #{reflection.lift_up_request}
     - Style tone: #{reflection.style}
 
-    Write the opening act now — graceful, cinematic, emotionally intelligent.
+    Write Act 1 now (no labels, just the spoken words) — graceful, emotionally intelligent, and true to their story.
     PROMPT
 
     begin
@@ -65,8 +70,8 @@ class GenerateRecapJob < ApplicationJob
       body = {
         model: "gpt-4-turbo",
         messages: [{ role: "user", content: prompt }],
-        temperature: 0.82,
-        max_tokens: 200
+        temperature: 0.75,
+        max_tokens: 210
       }.to_json
 
       response = http.post(uri.path, body, headers)

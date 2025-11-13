@@ -94,26 +94,32 @@ class ProcessExtendedAudioJob < ApplicationJob
 
     mixed_file = Tempfile.new(["extended_mixed_", ".mp3"], binmode: true)
 
-    # FFmpeg command: Loop soundscape, mix with voice, fade out at 5 minutes
+    # FFmpeg command: Loop soundscape, mix with voice, fade out properly
     command = [
       "ffmpeg", "-y",
       "-i", voice_path,
-      "-stream_loop", "-1", "-i", soundscape_temp.path,  # Loop soundscape infinitely
+      "-stream_loop", "-1", "-i", soundscape_temp.path,
       "-filter_complex",
-      "[0:a]volume=1.5[v];[1:a]volume=0.15,afade=t=out:st=295:d=5[bg];[bg][v]amix=inputs=2:duration=first",
+      "[1:a]volume=0.15,afade=t=out:st=290:d=10[bg];[0:a]volume=1.5[v];[bg][v]amix=inputs=2:duration=longest:dropout_transition=0",
       "-t", "300",  # 5 minutes = 300 seconds
       "-c:a", "libmp3lame", "-q:a", "2",
       mixed_file.path
     ]
 
-    Rails.logger.info "▶️ Running FFmpeg (5-min mix): #{command.join(' ')}"
+    Rails.logger.info "▶️ Running FFmpeg (5-min mix with fade): #{command.join(' ')}"
 
     _stdout, stderr, status = Open3.capture3(*command)
 
     unless status.success?
       Rails.logger.error "❌ FFmpeg failed: #{stderr}"
       return nil
-    end
+  end
+
+  mixed_file
+ensure
+  soundscape_temp&.close
+  soundscape_temp&.unlink
+end
 
     mixed_file
   ensure
