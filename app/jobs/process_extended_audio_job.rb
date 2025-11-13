@@ -76,24 +76,22 @@ class ProcessExtendedAudioJob < ApplicationJob
 
     uri = URI.parse("https://api.elevenlabs.io/v1/text-to-speech/#{voice_id}")
 
-    # ✅ ADD TIMEOUT HANDLING
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
-    http.read_timeout = 120  # 2 minutes for long TTS generation
+    http.read_timeout = 180  # 3 minutes (generous for 5-min audio)
     http.open_timeout = 30
 
-    headers = {
-      "Accept" => "audio/mpeg",
-      "Content-Type" => "application/json",
-      "xi-api-key" => ENV["ELEVEN_LABS_API_KEY"]
-    }
-    body = {
+    request = Net::HTTP::Post.new(uri.request_uri)
+    request["Accept"] = "audio/mpeg"
+    request["Content-Type"] = "application/json"
+    request["xi-api-key"] = ENV["ELEVEN_LABS_API_KEY"]
+    request.body = {
       text: poetic_script,
       model_id: "eleven_multilingual_v2",
       output_format: "mp3_44100_128"
     }.to_json
 
-    response = Net::HTTP.post(uri, body, headers)
+    response = http.request(request)  # ✅ Uses your configured http object
     response.is_a?(Net::HTTPSuccess) ? response.body : nil
   end
 
