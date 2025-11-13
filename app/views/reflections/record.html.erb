@@ -5,9 +5,21 @@
         Speak the Memflect Mantra (slow and clearly)
       </h1>
     </div>
+
+    <!-- Audio Quality Warning Banner -->
+    <div class="bg-yellow-500/20 border border-yellow-500/50 text-white px-6 py-4 rounded-xl mb-6">
+      <p class="font-bold text-lg mb-2">🎤 For Best Audio Quality:</p>
+      <ul class="text-sm space-y-1.5">
+        <li>• <strong>Turn OFF Bluetooth</strong> (earbuds, headphones, speakers)</li>
+        <li>• Use your device's built-in microphone</li>
+        <li>• Find a quiet space with minimal background noise</li>
+      </ul>
+    </div>
+
     <div class="bg-black/50 backdrop-blur-xl p-8 rounded-2xl shadow-lg border border-white/20 text-center">
       <p class="mb-6 text-xl text-white font-bold leading-relaxed">
-        "I, <%= @reflection.name_for_recap %>, am excited to begin using Memflect to transform my memories into personalized audio reflections. I understand how powerful it can be to truly listen to my own experiences, spoken in my own voice, and I'm ready to use this as a meaningful tool for self-understanding and growth in my daily life."      </p>
+        "I, <%= @reflection.name_for_recap %>, am excited to begin using Memflect to transform my memories into personalized audio reflections. I understand how powerful it can be to truly listen to my own experiences, spoken in my own voice, and I'm ready to use this as a meaningful tool for self-understanding and growth in my daily life."
+      </p>
       <button id="recordButton" class="bg-green-600 hover:bg-green-500 text-white font-bold py-4 px-8 rounded-full focus:outline-none focus:shadow-outline">
         Start Recording
       </button>
