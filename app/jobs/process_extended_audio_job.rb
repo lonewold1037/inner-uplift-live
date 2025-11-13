@@ -54,6 +54,8 @@ class ProcessExtendedAudioJob < ApplicationJob
       reflection.update!(status: 'completed')
       Rails.logger.info "✅ Extended audio complete for Reflection ##{reflection.id}"
 
+      broadcast_dashboard_update(reflection)
+
       # TODO: Send email notification that extended audio is ready
 
     rescue => e
@@ -139,5 +141,19 @@ class ProcessExtendedAudioJob < ApplicationJob
       # clean up accidental triple dots
       .gsub(/\.{4,}/, '...')
       .strip
+  end
+
+  # ✅ ADD THIS NEW METHOD:
+  def broadcast_dashboard_update(reflection)
+    # Only broadcast if user exists (safety check)
+    return unless reflection.user_id.present?
+    
+    # Broadcast to the user's dashboard stream
+    Turbo::StreamsChannel.broadcast_replace_to(
+      "user_#{reflection.user_id}_dashboard",
+      target: "reflection_row_#{reflection.id}",
+      partial: "users/reflection_row",
+      locals: { reflection: reflection }
+    )
   end
 end

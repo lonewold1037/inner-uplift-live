@@ -1,0 +1,24 @@
+<tr class="hover:bg-white/5 transition-colors" id="reflection_row_<%= reflection.id %>">
+  <td class="px-6 py-4">
+    <p class="text-white font-medium"><%= reflection.title || "Untitled" %></p>
+    <% unless reflection.extended_audio.attached? %>
+      <p class="text-yellow-400 text-xs mt-1 animate-pulse">⏳ Processing...</p>
+    <% end %>
+  </td>
+  <td class="px-6 py-4 text-slate-300 text-sm hidden md:table-cell"><%= reflection.style %></td>
+  <td class="px-6 py-4 text-slate-300 text-sm hidden lg:table-cell"><%= reflection.soundscape&.category || "—" %></td>
+  <td class="px-6 py-4 text-slate-300 text-sm hidden sm:table-cell"><%= reflection.created_at.strftime("%b %d, %Y") %></td>
+  <td class="px-6 py-4 text-right">
+    <% if reflection.extended_audio.attached? %>
+      <div class="flex justify-end items-center gap-3">
+        <audio controls preload="metadata" class="h-10 max-w-xs">
+          <source src="<%= url_for(reflection.extended_audio) %>" type="audio/mpeg">
+          Your browser does not support audio playback.
+        </audio>
+        <%= link_to "Download", url_for(reflection.extended_audio), download: "#{reflection.title || 'memflection'}.mp3", class: "text-purple-400 hover:text-purple-300 font-medium whitespace-nowrap", data: { turbo: false } %>
+      </div>
+    <% else %>
+      <span class="text-slate-500 text-sm">Processing...</span>
+    <% end %>
+  </td>
+</tr>
