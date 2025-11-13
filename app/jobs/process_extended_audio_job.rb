@@ -6,7 +6,8 @@ require 'tempfile'
 
 class ProcessExtendedAudioJob < ApplicationJob
   queue_as :default
-  retry_on StandardError, wait: 5.seconds, attempts: 3
+  retry_on Net::ReadTimeout, wait: 10.seconds, attempts: 5  # Specific for timeouts
+  retry_on StandardError, wait: 5.seconds, attempts: 3       # Other errors
 
   def perform(reflection)
     Rails.logger.info "🎬 ProcessExtendedAudioJob: Starting for Reflection ##{reflection.id}"
@@ -74,6 +75,13 @@ class ProcessExtendedAudioJob < ApplicationJob
     poetic_script = add_poetic_pauses(script)
 
     uri = URI.parse("https://api.elevenlabs.io/v1/text-to-speech/#{voice_id}")
+
+    # ✅ ADD TIMEOUT HANDLING
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    http.read_timeout = 120  # 2 minutes for long TTS generation
+    http.open_timeout = 30
+
     headers = {
       "Accept" => "audio/mpeg",
       "Content-Type" => "application/json",

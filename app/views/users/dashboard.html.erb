@@ -51,6 +51,8 @@
                         <!-- Download Link -->
                         <%= link_to "Download", url_for(reflection.extended_audio), download: "#{reflection.title || 'memflection'}.mp3", class: "text-purple-400 hover:text-purple-300 font-medium whitespace-nowrap", data: { turbo: false } %>
                       </div>
+                    <% elsif reflection.status == 'failed' %>
+                      <span class="text-red-400 text-sm">⚠️ Generation failed - please contact support</span>
                     <% else %>
                       <span class="text-slate-500 text-sm">Processing...</span>
                     <% end %>
