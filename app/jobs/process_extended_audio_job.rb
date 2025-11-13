@@ -115,12 +115,6 @@ class ProcessExtendedAudioJob < ApplicationJob
       return nil
   end
 
-  mixed_file
-ensure
-  soundscape_temp&.close
-  soundscape_temp&.unlink
-end
-
     mixed_file
   ensure
     soundscape_temp&.close
