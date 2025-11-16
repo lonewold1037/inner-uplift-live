@@ -33,11 +33,20 @@ class MixAudioJob < ApplicationJob
 
       mixed_file = Tempfile.new(["mixed_", ".mp3"], binmode: true)
 
+      # Enhanced filter: EQ, compression, subtle reverb for natural blend
       command = [
         "ffmpeg", "-y",
         "-i", voice_temp.path,
         "-i", soundscape_temp.path,
-        "-filter_complex", "[0:a]volume=1.5[v];[1:a]volume=0.15[bg];[bg][v]amix=inputs=2:duration=longest",
+        "-filter_complex",
+        "[1:a]volume=0.15,equalizer=f=2000:width_type=h:width=2000:g=-3[bg];" +
+        "[0:a]volume=1.5," +
+        "highpass=f=80," +
+        "equalizer=f=200:width_type=h:width=100:g=2," +
+        "equalizer=f=3000:width_type=h:width=1000:g=1," +
+        "acompressor=threshold=-18dB:ratio=3:attack=20:release=200," +
+        "aecho=0.8:0.88:60:0.1[v];" +
+        "[bg][v]amix=inputs=2:duration=longest:dropout_transition=2",
         "-t", "30", "-c:a", "libmp3lame", "-q:a", "2",
         mixed_file.path
       ]

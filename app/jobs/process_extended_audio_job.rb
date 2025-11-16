@@ -102,14 +102,22 @@ class ProcessExtendedAudioJob < ApplicationJob
 
     mixed_file = Tempfile.new(["extended_mixed_", ".mp3"], binmode: true)
 
-    # FFmpeg command: Loop soundscape, mix with voice, fade out properly
+    # Enhanced filter: EQ, compression, subtle reverb + fade out
     command = [
       "ffmpeg", "-y",
       "-i", voice_path,
       "-stream_loop", "-1", "-i", soundscape_temp.path,
       "-filter_complex",
-      "[1:a]volume=0.15,afade=t=out:st=290:d=10[bg];[0:a]volume=1.5[v];[bg][v]amix=inputs=2:duration=longest:dropout_transition=0",
-      "-t", "300",  # 5 minutes = 300 seconds
+      "[1:a]volume=0.15,equalizer=f=2000:width_type=h:width=2000:g=-3[bg];" +
+      "[0:a]volume=1.5," +
+      "highpass=f=80," +
+      "equalizer=f=200:width_type=h:width=100:g=2," +
+      "equalizer=f=3000:width_type=h:width=1000:g=1," +
+      "acompressor=threshold=-18dB:ratio=3:attack=20:release=200," +
+      "aecho=0.8:0.88:60:0.1[v];" +
+      "[bg][v]amix=inputs=2:duration=longest:dropout_transition=2," +
+      "afade=t=out:st=290:d=10",
+      "-t", "300",
       "-c:a", "libmp3lame", "-q:a", "2",
       mixed_file.path
     ]
