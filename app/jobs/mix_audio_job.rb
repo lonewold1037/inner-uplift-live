@@ -39,8 +39,8 @@ class MixAudioJob < ApplicationJob
         "-i", voice_temp.path,
         "-i", soundscape_temp.path,
         "-filter_complex",
-        "[1:a]volume=0.15,equalizer=f=2000:width_type=h:width=2000:g=-3[bg];" +
-        "[0:a]volume=1.5," +
+        "[1:a]volume=0.12,equalizer=f=2000:width_type=h:width=2000:g=-3[bg];" +
+        "[0:a]volume=1.8," +
         "highpass=f=80," +
         "equalizer=f=200:width_type=h:width=100:g=2," +
         "equalizer=f=3000:width_type=h:width=1000:g=1," +

@@ -102,34 +102,33 @@ class ProcessExtendedAudioJob < ApplicationJob
 
     mixed_file = Tempfile.new(["extended_mixed_", ".mp3"], binmode: true)
 
-    # Enhanced filter: EQ, compression, subtle reverb + fade out
+    # Enhanced filter: EQ, compression, subtle reverb + fade MUSIC ONLY
     command = [
       "ffmpeg", "-y",
       "-i", voice_path,
       "-stream_loop", "-1", "-i", soundscape_temp.path,
       "-filter_complex",
-      "[1:a]volume=0.15,equalizer=f=2000:width_type=h:width=2000:g=-3[bg];" +
-      "[0:a]volume=1.5," +
+      "[1:a]volume=0.12,equalizer=f=2000:width_type=h:width=2000:g=-3,afade=t=out:st=290:d=10[bg];" +
+      "[0:a]volume=1.8," +
       "highpass=f=80," +
       "equalizer=f=200:width_type=h:width=100:g=2," +
       "equalizer=f=3000:width_type=h:width=1000:g=1," +
       "acompressor=threshold=-18dB:ratio=3:attack=20:release=200," +
       "aecho=0.8:0.88:60:0.1[v];" +
-      "[bg][v]amix=inputs=2:duration=longest:dropout_transition=2," +
-      "afade=t=out:st=290:d=10",
+      "[bg][v]amix=inputs=2:duration=longest:dropout_transition=2",
       "-t", "300",
       "-c:a", "libmp3lame", "-q:a", "2",
       mixed_file.path
     ]
 
-    Rails.logger.info "▶️ Running FFmpeg (5-min mix with fade): #{command.join(' ')}"
+    Rails.logger.info "▶️ Running FFmpeg (5-min mix with enriched blend): #{command.join(' ')}"
 
     _stdout, stderr, status = Open3.capture3(*command)
 
     unless status.success?
       Rails.logger.error "❌ FFmpeg failed: #{stderr}"
       return nil
-  end
+    end
 
     mixed_file
   ensure
