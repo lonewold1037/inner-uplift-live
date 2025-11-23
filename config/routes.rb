@@ -19,6 +19,11 @@ Rails.application.routes.draw do
   # User dashboard
   get "dashboard", to: "users#dashboard"
 
+  # config/routes.rb
+  # Add these inside your existing routes block:
+  get 'reflections/:id/preview_audio', to: 'downloads#preview_audio', as: 'preview_audio'
+  get 'reflections/:id/extended_audio', to: 'downloads#extended_audio', as: 'extended_audio'
+
   # Devise routes for authentication
   devise_for :users
 

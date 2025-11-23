@@ -55,7 +55,7 @@
       <% if reflection.final_audio.attached? %>
         <div class="flex flex-col items-center justify-center space-y-6">
           <audio controls class="w-full max-w-md rounded-lg">
-            <source src="<%= url_for(reflection.final_audio) %>" type="audio/mpeg">
+            <source src="<%= preview_audio_path(reflection) %>" type="audio/mpeg">
             Your browser does not support the audio element.
           </audio>
           

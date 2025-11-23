@@ -44,7 +44,7 @@
                       <div class="flex justify-end items-center gap-3">
                         <!-- HTML5 Audio Player -->
                         <audio controls preload="metadata" class="h-10 max-w-xs">
-                          <source src="<%= url_for(reflection.extended_audio) %>" type="audio/mpeg">
+                          <source src="<%= extended_audio_path(reflection) %>" type="audio/mpeg">
                           Your browser does not support audio playback.
                         </audio>
                         
