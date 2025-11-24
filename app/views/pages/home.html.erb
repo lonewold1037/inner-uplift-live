@@ -1,7 +1,7 @@
 <div class="min-h-screen flex flex-col items-center justify-center text-center p-8 pt-8">
   <div class="max-w-3xl">
 
-    <h1 class="text-6xl font-extrabold tracking-wide text-white">
+    <h1 class="text-6xl font-bold tracking-wider tracking-wide text-white">
       Memflect
     </h1>
 
@@ -13,7 +13,7 @@
     <% unless user_signed_in? %>
       <div class="mt-10">
         <%# This link now correctly points to the new reflection form %>
-        <%= link_to "Start my Memflection", new_reflection_path, class: "bg-sky-600 hover:bg-sky-500 text-white font-bold py-4 px-8 rounded-lg shadow-lg text-xl" %>
+        <%= link_to "Start my Memflection", new_reflection_path, class: "bg-sky-600 hover:bg-sky-500 text-white font-semibold tracking-wide py-4 px-8 rounded-lg shadow-lg text-xl" %>
       </div>
     <% end %>
 
