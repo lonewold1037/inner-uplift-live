@@ -14,7 +14,7 @@
                 id: "mix-audio-form") do |form| %>
     <div class="space-y-4">
       
-      <%= form.label :soundscape_id, "Choose your vibe:", class: "block text-white font-bold text-lg" %>
+      <%= form.label :soundscape_id, "Choose your vibe:", class: "block text-white font-medium tracking-wide text-lg" %>
       
       <%= form.collection_select :soundscape_id,
                                   soundscapes,
@@ -26,7 +26,7 @@
 
       <%= form.submit "Mix My Memflection",
                       id: "mix-submit-button",
-                      class: "w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-3 px-4 rounded-lg cursor-pointer transition-all" %>
+                      class: "w-full bg-sky-600 hover:bg-sky-500 text-white font-semibold tracking-wide py-3 px-4 rounded-lg cursor-pointer transition-all" %>
     </div>
   <% end %>
 </div>

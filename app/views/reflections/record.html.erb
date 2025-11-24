@@ -1,26 +1,27 @@
 <div class="min-h-screen flex items-center justify-center py-12 px-4 pt-8">
   <div class="max-w-2xl w-full space-y-8">
-    <div>
-      <h1 class="text-center text-4xl font-bold tracking-wider text-white tracking-wide">
-        Speak the Memflect Mantra (slow and clearly)
-      </h1>
-    </div>
-
-    <!-- Audio Quality Warning Banner -->
-    <div class="bg-yellow-500/20 border border-yellow-500/50 text-white px-6 py-4 rounded-xl mb-6">
-      <p class="font-bold text-lg mb-2">🎤 For Best Audio Quality:</p>
-      <ul class="text-sm space-y-1.5">
+    
+    <!-- Audio Quality Warning Banner - NOW AT TOP -->
+    <div class="bg-yellow-500/20 border-2 border-yellow-500/60 text-white px-8 py-6 rounded-xl text-center">
+      <p class="font-semibold tracking-wide text-xl mb-4">🎤 For Best Audio Quality:</p>
+      <ul class="text-base space-y-2 text-center inline-block text-left">
         <li>• <strong>Turn OFF Bluetooth</strong> (earbuds, headphones, speakers)</li>
         <li>• Use your device's built-in microphone</li>
         <li>• Find a quiet space with minimal background noise</li>
       </ul>
     </div>
 
+    <div>
+      <h1 class="text-center text-4xl font-bold tracking-wider text-white">
+        Speak the Memflect Mantra (slow and clearly)
+      </h1>
+    </div>
+
     <div class="bg-black/50 backdrop-blur-xl p-8 rounded-2xl shadow-lg border border-white/20 text-center">
-      <p class="mb-6 text-xl text-white font-bold leading-relaxed">
+      <p class="mb-6 text-xl text-white font-semibold tracking-wide leading-relaxed">
         "I, <%= @reflection.name_for_recap %>, am excited to begin using Memflect to transform my memories into personalized audio reflections. I understand how powerful it can be to truly listen to my own experiences, spoken in my own voice, and I'm ready to use this as a meaningful tool for self-understanding and growth in my daily life."
       </p>
-      <button id="recordButton" class="bg-green-600 hover:bg-green-500 text-white font-semibold tracking-wide py-4 px-8 rounded-full focus:outline-none focus:shadow-outline">
+      <button id="recordButton" class="bg-green-600 hover:bg-green-500 text-white font-semibold tracking-wider py-4 px-8 rounded-full focus:outline-none focus:shadow-outline">
         Start Recording
       </button>
     </div>
