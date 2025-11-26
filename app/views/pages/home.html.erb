@@ -1,21 +1,49 @@
-<div class="min-h-screen flex flex-col items-center justify-center text-center p-8 pt-8">
+<div class="min-h-screen flex flex-col items-center justify-center text-center p-8 pt-8 relative">
   <div class="max-w-3xl">
 
-    <h1 class="text-6xl font-bold tracking-wider tracking-wide text-white">
-      Memflect
-    </h1>
+    <!-- Floating Animated Logo -->
+    <div class="relative mb-8">
+      <h1 class="text-7xl font-bold tracking-wider text-white relative z-10">
+        <span class="inline-block animate-float" style="animation-delay: 0s;">M</span>
+        <span class="inline-block animate-float" style="animation-delay: 0.1s;">E</span>
+        <span class="inline-block animate-float" style="animation-delay: 0.2s;">M</span>
+        <span class="inline-block animate-float" style="animation-delay: 0.3s;">F</span>
+        <span class="inline-block animate-float" style="animation-delay: 0.4s;">L</span>
+        <span class="inline-block animate-float" style="animation-delay: 0.5s;">E</span>
+        <span class="inline-block animate-float" style="animation-delay: 0.6s;">C</span>
+        <span class="inline-block animate-float" style="animation-delay: 0.7s;">T</span>
+      </h1>
+      <div class="absolute inset-0 blur-3xl bg-gradient-to-r from-purple-500 via-pink-500 to-sky-500 opacity-30 animate-pulse -z-10"></div>
+    </div>
 
-    <p class="mt-4 text-2xl text-slate-200">
+    <p class="mt-6 text-2xl text-slate-200 font-light tracking-wide">
       Turn your memories into transformative audio reflections, spoken in your own voice.
     </p>
 
     <%# This block now shows the "Get Started" button for guests %>
     <% unless user_signed_in? %>
-      <div class="mt-10 text-center">
-        <%# This link now correctly points to the new reflection form %>
-        <%= link_to "Start my Memflection", new_reflection_path, class: "inline-block bg-sky-600 hover:bg-sky-500 text-white font-medium tracking-wider py-4 px-8 rounded-lg shadow-lg text-xl" %>
+      <div class="mt-12 text-center">
+        <%= link_to "Start my Memflection", new_reflection_path, class: "inline-block bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-medium tracking-widest py-5 px-10 rounded-xl shadow-2xl text-xl transform hover:scale-105 transition-all duration-300" %>
       </div>
     <% end %>
 
   </div>
 </div>
+
+<style>
+  @keyframes float {
+    0%, 100% { 
+      transform: translateY(0px) rotateY(0deg);
+      text-shadow: 0 0 20px rgba(147, 51, 234, 0.5);
+    }
+    50% { 
+      transform: translateY(-20px) rotateY(10deg);
+      text-shadow: 0 0 40px rgba(147, 51, 234, 0.8);
+    }
+  }
+  
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+    display: inline-block;
+  }
+</style>
