@@ -127,7 +127,7 @@ class ProcessAudioJob < ApplicationJob
     body = {
       stability: 0.36,
       similarity_boost: 0.74,
-      use_speaker_boost: false,
+      use_speaker_boost: true,
       speed: 0.93
     }.to_json
     Net::HTTP.post(uri, body, headers)
