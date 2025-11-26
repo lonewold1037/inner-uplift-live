@@ -3,6 +3,10 @@ Rails.application.routes.draw do
   # Health check for uptime monitoring
   get "up" => "rails/health#show", as: :rails_health_check
 
+  # PWA routes
+  get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
+  get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
+
   # Mount ActionCable for WebSocket connections
   mount ActionCable.server => '/cable'
 
@@ -19,8 +23,7 @@ Rails.application.routes.draw do
   # User dashboard
   get "dashboard", to: "users#dashboard"
 
-  # config/routes.rb
-  # Add these inside your existing routes block:
+  # Audio download routes
   get 'reflections/:id/preview_audio', to: 'downloads#preview_audio', as: 'preview_audio'
   get 'reflections/:id/extended_audio', to: 'downloads#extended_audio', as: 'extended_audio'
 
