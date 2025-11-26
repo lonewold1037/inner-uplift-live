@@ -1,5 +1,5 @@
-<div class="min-h-screen flex items-center justify-center py-12 px-4 pt-8">
-  <div class="max-w-2xl w-full space-y-8">
+<div class="min-h-screen flex items-center justify-center py-8 px-4 pt-24">
+  <div class="max-w-2xl w-full space-y-6">
     
     <!-- STEP 1 Header -->
     <div>
@@ -8,20 +8,20 @@
       </h1>
     </div>
     
-    <!-- Audio Quality Warning Banner - FIXED WRAPPING -->
-    <div class="bg-yellow-500/20 border-2 border-yellow-500/60 text-white px-6 py-6 rounded-xl">
-      <p class="font-semibold tracking-wider text-xl mb-4 text-center">🎤 For Best Audio Quality:</p>
-      <ul class="text-base space-y-2.5 max-w-lg mx-auto">
+    <!-- Audio Quality Warning Banner - DARK CRIMSON -->
+    <div class="bg-red-950/40 border-2 border-red-700/60 text-white px-6 py-6 rounded-xl">
+      <p class="font-semibold tracking-wide text-xl mb-4 text-center">🎤 For Best Audio Quality:</p>
+      <ul class="text-sm space-y-2 text-left mx-auto" style="max-width: 28rem;">
         <li class="flex items-start">
-          <span class="mr-2 flex-shrink-0">•</span>
+          <span class="mr-2 flex-shrink-0 mt-0.5">•</span>
           <span><strong>Turn OFF Bluetooth</strong> (earbuds, headphones, speakers)</span>
         </li>
         <li class="flex items-start">
-          <span class="mr-2 flex-shrink-0">•</span>
+          <span class="mr-2 flex-shrink-0 mt-0.5">•</span>
           <span>Use your device's <strong>built-in microphone</strong></span>
         </li>
         <li class="flex items-start">
-          <span class="mr-2 flex-shrink-0">•</span>
+          <span class="mr-2 flex-shrink-0 mt-0.5">•</span>
           <span>Find a <strong>quiet space</strong> with minimal background noise</span>
         </li>
       </ul>
@@ -40,7 +40,7 @@
       <p class="mb-6 text-lg text-white font-medium tracking-wide leading-relaxed">
         "I, <%= @reflection.name_for_recap %>, am excited to begin using Memflect to transform my memories into personalized audio reflections. I understand how powerful it can be to truly listen to my own experiences, spoken in my own voice, and I'm ready to use this as a meaningful tool for self-understanding and growth in my daily life."
       </p>
-      <button id="recordButton" class="inline-block bg-green-600 hover:bg-green-500 text-white font-medium tracking-widest py-5 px-10 rounded-full focus:outline-none focus:shadow-outline text-lg shadow-lg hover:shadow-green-500/50 transition-all">
+      <button id="recordButton" class="inline-block bg-green-600 hover:bg-green-500 text-white font-medium tracking-wider py-5 px-10 rounded-full focus:outline-none focus:shadow-outline text-lg shadow-lg hover:shadow-green-500/50 transition-all">
         Start Recording
       </button>
     </div>
