@@ -1,9 +1,20 @@
+<!-- iOS Install Instructions Banner (hidden by default) -->
+<div id="ios-install-banner" class="hidden fixed top-0 left-0 right-0 bg-sky-600 text-white p-4 shadow-lg z-50">
+  <div class="max-w-4xl mx-auto flex items-start justify-between">
+    <div class="flex-1 text-sm tracking-wide">
+      <p class="font-semibold tracking-wider mb-2">📱 INSTALL MEMFLECT</p>
+      <p>Tap the <strong>Share button</strong> <svg class="inline w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M16 5l-1.42 1.42-1.59-1.59V16h-1.98V4.83L9.42 6.42 8 5l4-4 4 4zm4 5v11c0 1.1-.9 2-2 2H6c-1.11 0-2-.9-2-2V10c0-1.11.89-2 2-2h3v2H6v11h12V10h-3V8h3c1.1 0 2 .89 2 2z"/></svg> then <strong>"Add to Home Screen"</strong></p>
+    </div>
+    <button onclick="document.getElementById('ios-install-banner').classList.add('hidden')" class="text-white hover:text-gray-200 ml-4 text-xl">✕</button>
+  </div>
+</div>
+
 <div class="min-h-screen flex flex-col items-center justify-center text-center p-8 pt-8 relative">
   <div class="max-w-3xl">
 
     <!-- Floating Animated Logo -->
     <div class="relative mb-8">
-      <h1 class="text-7xl font-bold tracking-wider text-white relative z-10">
+      <h1 class="text-5xl md:text-7xl font-bold tracking-wider text-white relative z-10 whitespace-nowrap">
         <span class="inline-block animate-float" style="animation-delay: 0s;">M</span>
         <span class="inline-block animate-float" style="animation-delay: 0.1s;">E</span>
         <span class="inline-block animate-float" style="animation-delay: 0.2s;">M</span>
@@ -24,6 +35,13 @@
     <% unless user_signed_in? %>
       <div class="mt-12 text-center">
         <%= link_to "Start my Memflection", new_reflection_path, class: "inline-block bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-medium tracking-widest py-5 px-10 rounded-xl shadow-2xl text-xl transform hover:scale-105 transition-all duration-300" %>
+        
+        <!-- Android Install Button (hidden by default) -->
+        <div id="android-install-button" class="hidden mt-6">
+          <button onclick="installPWA()" class="inline-block bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-medium tracking-widest py-4 px-8 rounded-xl shadow-2xl text-lg transform hover:scale-105 transition-all duration-300">
+            📱 Install App
+          </button>
+        </div>
       </div>
     <% end %>
 
@@ -47,3 +65,46 @@
     display: inline-block;
   }
 </style>
+
+<script>
+  // PWA Install Detection
+  let deferredPrompt;
+  
+  window.addEventListener('load', () => {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isAndroid = /Android/.test(navigator.userAgent);
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    
+    // Don't show prompts if already installed
+    if (isStandalone) {
+      return;
+    }
+    
+    // Show iOS instructions
+    if (isIOS) {
+      document.getElementById('ios-install-banner').classList.remove('hidden');
+    }
+    
+    // Show Android install button when prompt is available
+    if (isAndroid) {
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        document.getElementById('android-install-button').classList.remove('hidden');
+      });
+    }
+  });
+  
+  // Android install function
+  function installPWA() {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('PWA installed');
+        }
+        deferredPrompt = null;
+      });
+    }
+  }
+</script>
