@@ -1,5 +1,38 @@
 <%= turbo_stream_from "user_#{current_user.id}_dashboard" %>
 
+<!-- Audio Player Modal (Hidden by default) -->
+<div id="audioModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+  <div class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 rounded-2xl shadow-2xl max-w-4xl w-full p-8 border border-white/20 relative">
+    <!-- Close Button -->
+    <button onclick="closeAudioModal()" class="absolute top-4 right-4 text-white/60 hover:text-white text-3xl">&times;</button>
+    
+    <!-- Reflection Title -->
+    <h2 id="modalTitle" class="text-3xl font-bold tracking-wider text-white text-center mb-8">Loading...</h2>
+    
+    <!-- Large Play/Pause Button -->
+    <div class="flex justify-center mb-8">
+      <button id="modalPlayBtn" onclick="toggleModalPlay()" class="bg-lime-500 hover:bg-lime-400 rounded-full p-8 transition-all transform hover:scale-110 shadow-2xl">
+        <svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+      </button>
+    </div>
+    
+    <!-- Waveform -->
+    <div id="modalWaveform" class="mb-6 bg-black/30 rounded-lg p-4"></div>
+    
+    <!-- Time Display -->
+    <div id="modalTime" class="text-center text-slate-300 text-xl mb-4">0:00 / 0:00</div>
+    
+    <!-- Download Button -->
+    <div class="text-center">
+      <a id="modalDownload" href="#" download class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-medium tracking-widest py-3 px-8 rounded-xl shadow-lg transition-all">
+        Download MP3
+      </a>
+    </div>
+  </div>
+</div>
+
 <div class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 px-4 py-16">
   <div class="container mx-auto max-w-6xl">
     <div class="text-center mb-12">
@@ -22,9 +55,8 @@
               <tr class="bg-white/5 border-b border-white/10">
                 <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Name</th>
                 <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider hidden md:table-cell">Style</th>
-                <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider hidden lg:table-cell">Setting</th>
                 <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider hidden sm:table-cell">Date</th>
-                <th class="px-6 py-4 text-right text-xs font-semibold text-slate-300 uppercase tracking-wider">Audio</th>
+                <th class="px-6 py-4 text-center text-xs font-semibold text-slate-300 uppercase tracking-wider">Play</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-white/10">
@@ -37,87 +69,19 @@
                     <% end %>
                   </td>
                   <td class="px-6 py-4 text-slate-300 text-sm hidden md:table-cell"><%= reflection.style %></td>
-                  <td class="px-6 py-4 text-slate-300 text-sm hidden lg:table-cell"><%= reflection.soundscape&.category || "—" %></td>
                   <td class="px-6 py-4 text-slate-300 text-sm hidden sm:table-cell"><%= reflection.created_at.strftime("%b %d, %Y") %></td>
-                  <td class="px-6 py-4 text-right">
+                  <td class="px-6 py-4 text-center">
                     <% if reflection.extended_audio.attached? %>
-                      <div class="flex justify-end items-center gap-3">
-                        <!-- WaveSurfer Audio Player -->
-                        <div class="flex items-center gap-2 bg-black/30 rounded-lg px-3 py-2 max-w-md">
-                          <!-- Play/Pause Button -->
-                          <button onclick="togglePlay<%= reflection.id %>()" id="playBtn<%= reflection.id %>" class="text-lime-500 hover:text-lime-400 transition-colors">
-                            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                              <path d="M8 5v14l11-7z"/>
-                            </svg>
-                          </button>
-                          
-                          <!-- Waveform Container -->
-                          <div id="waveform<%= reflection.id %>" class="flex-1 min-w-[200px]"></div>
-                          
-                          <!-- Time Display -->
-                          <div id="time<%= reflection.id %>" class="text-slate-300 text-xs whitespace-nowrap min-w-[60px]">0:00 / 0:00</div>
-                        </div>
-                        
-                        <!-- Download Link -->
-                        <%= link_to "Download", url_for(reflection.extended_audio), download: "#{reflection.title || 'memflection'}.mp3", class: "text-purple-400 hover:text-purple-300 font-medium whitespace-nowrap", data: { turbo: false } %>
-                      </div>
-
-                      <!-- WaveSurfer Script for this reflection -->
-                      <script>
-                        (function() {
-                          const wavesurfer<%= reflection.id %> = WaveSurfer.create({
-                            container: '#waveform<%= reflection.id %>',
-                            waveColor: '#84cc16',
-                            progressColor: '#65a30d',
-                            cursorColor: '#fbbf24',
-                            barWidth: 2,
-                            barGap: 1,
-                            barRadius: 2,
-                            height: 40,
-                            normalize: true,
-                            backend: 'MediaElement'
-                          });
-
-                          wavesurfer<%= reflection.id %>.load('<%= extended_audio_path(reflection) %>');
-
-                          // Update play button icon
-                          wavesurfer<%= reflection.id %>.on('play', function() {
-                            document.getElementById('playBtn<%= reflection.id %>').innerHTML = '<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/></svg>';
-                          });
-
-                          wavesurfer<%= reflection.id %>.on('pause', function() {
-                            document.getElementById('playBtn<%= reflection.id %>').innerHTML = '<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
-                          });
-
-                          // Update time display
-                          wavesurfer<%= reflection.id %>.on('audioprocess', function() {
-                            const current = wavesurfer<%= reflection.id %>.getCurrentTime();
-                            const duration = wavesurfer<%= reflection.id %>.getDuration();
-                            document.getElementById('time<%= reflection.id %>').textContent = 
-                              formatTime(current) + ' / ' + formatTime(duration);
-                          });
-
-                          wavesurfer<%= reflection.id %>.on('ready', function() {
-                            const duration = wavesurfer<%= reflection.id %>.getDuration();
-                            document.getElementById('time<%= reflection.id %>').textContent = 
-                              '0:00 / ' + formatTime(duration);
-                          });
-
-                          // Play/Pause toggle
-                          window['togglePlay<%= reflection.id %>'] = function() {
-                            wavesurfer<%= reflection.id %>.playPause();
-                          };
-
-                          function formatTime(seconds) {
-                            const minutes = Math.floor(seconds / 60);
-                            const secs = Math.floor(seconds % 60);
-                            return minutes + ':' + (secs < 10 ? '0' : '') + secs;
-                          }
-                        })();
-                      </script>
-
+                      <button 
+                        onclick="openAudioModal('<%= reflection.title || 'Untitled' %>', '<%= extended_audio_path(reflection) %>', '<%= url_for(reflection.extended_audio) %>')"
+                        class="inline-flex items-center gap-2 bg-lime-500 hover:bg-lime-400 text-white font-medium py-3 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M8 5v14l11-7z"/>
+                        </svg>
+                        Play
+                      </button>
                     <% elsif reflection.status == 'failed' %>
-                      <span class="text-red-400 text-sm">⚠️ Generation failed - please contact support</span>
+                      <span class="text-red-400 text-sm">⚠️ Generation failed</span>
                     <% else %>
                       <span class="text-slate-500 text-sm">Processing...</span>
                     <% end %>
@@ -140,3 +104,80 @@
     <% end %>
   </div>
 </div>
+
+<script>
+  let modalWavesurfer = null;
+
+  function openAudioModal(title, audioUrl, downloadUrl) {
+    // Show modal
+    document.getElementById('audioModal').classList.remove('hidden');
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalDownload').href = downloadUrl;
+    
+    // Initialize WaveSurfer if not already
+    if (!modalWavesurfer) {
+      modalWavesurfer = WaveSurfer.create({
+        container: '#modalWaveform',
+        waveColor: '#84cc16',
+        progressColor: '#65a30d',
+        cursorColor: '#fbbf24',
+        barWidth: 3,
+        barGap: 2,
+        barRadius: 3,
+        height: 120,
+        normalize: true,
+        backend: 'MediaElement'
+      });
+
+      // Update play button
+      modalWavesurfer.on('play', function() {
+        document.getElementById('modalPlayBtn').innerHTML = '<svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/></svg>';
+      });
+
+      modalWavesurfer.on('pause', function() {
+        document.getElementById('modalPlayBtn').innerHTML = '<svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+      });
+
+      // Update time
+      modalWavesurfer.on('audioprocess', function() {
+        const current = modalWavesurfer.getCurrentTime();
+        const duration = modalWavesurfer.getDuration();
+        document.getElementById('modalTime').textContent = formatTime(current) + ' / ' + formatTime(duration);
+      });
+
+      modalWavesurfer.on('ready', function() {
+        const duration = modalWavesurfer.getDuration();
+        document.getElementById('modalTime').textContent = '0:00 / ' + formatTime(duration);
+      });
+    }
+    
+    // Load audio
+    modalWavesurfer.load(audioUrl);
+  }
+
+  function closeAudioModal() {
+    document.getElementById('audioModal').classList.add('hidden');
+    if (modalWavesurfer) {
+      modalWavesurfer.pause();
+    }
+  }
+
+  function toggleModalPlay() {
+    if (modalWavesurfer) {
+      modalWavesurfer.playPause();
+    }
+  }
+
+  function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return minutes + ':' + (secs < 10 ? '0' : '') + secs;
+  }
+
+  // Close modal on Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeAudioModal();
+    }
+  });
+</script>

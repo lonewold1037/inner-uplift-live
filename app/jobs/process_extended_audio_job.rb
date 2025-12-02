@@ -115,7 +115,8 @@ class ProcessExtendedAudioJob < ApplicationJob
       "equalizer=f=3000:width_type=h:width=1000:g=1," +
       "acompressor=threshold=-18dB:ratio=3:attack=20:release=200," +
       "aecho=0.8:0.88:60:0.1[v];" +
-      "[bg][v]amix=inputs=2:duration=longest:dropout_transition=2",
+      "[bg][v]amix=inputs=2:duration=longest:dropout_transition=2[mixed];",
+      "[mixed]loudnorm=I=-16:LRA=11:TP=-1.5",
       "-t", "300",
       "-c:a", "libmp3lame", "-q:a", "2",
       mixed_file.path

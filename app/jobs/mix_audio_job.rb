@@ -1,4 +1,3 @@
-# app/jobs/mix_audio_job.rb
 require 'open3'
 require 'tempfile'
 
@@ -33,7 +32,7 @@ class MixAudioJob < ApplicationJob
 
       mixed_file = Tempfile.new(["mixed_", ".mp3"], binmode: true)
 
-      # Enhanced filter: EQ, compression, subtle reverb for natural blend
+      # Enhanced filter with LOUDNESS NORMALIZATION for maximum volume
       command = [
         "ffmpeg", "-y",
         "-i", voice_temp.path,
@@ -46,7 +45,8 @@ class MixAudioJob < ApplicationJob
         "equalizer=f=3000:width_type=h:width=1000:g=1," +
         "acompressor=threshold=-18dB:ratio=3:attack=20:release=200," +
         "aecho=0.8:0.88:60:0.1[v];" +
-        "[bg][v]amix=inputs=2:duration=longest:dropout_transition=2",
+        "[bg][v]amix=inputs=2:duration=longest:dropout_transition=2[mixed];" +
+        "[mixed]loudnorm=I=-16:LRA=11:TP=-1.5",
         "-t", "30", "-c:a", "libmp3lame", "-q:a", "2",
         mixed_file.path
       ]

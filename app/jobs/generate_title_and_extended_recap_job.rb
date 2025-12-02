@@ -52,7 +52,7 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
     Act 1 (already recorded) is:
     "#{reflection.recap}"
 
-    Your task: Continue with Acts 2-5 for approximately 850-900 words (about 4 minutes 30 seconds when spoken).
+    Your task: Continue with Acts 2-5 for approximately 750-800 words (about 4 minutes 15 seconds when spoken).
 
     ⚠️ CRITICAL: DO NOT include act numbers, chapter titles, or section headers like "Act 2 - Exploration" in your output. Just write the flowing spoken words as one continuous monologue.
 
@@ -86,7 +86,7 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
     - Style tone: #{reflection.style}
 
     ⚡ CRITICAL ENDING INSTRUCTION:
-    - Plan so it concludes naturally around 850-900 words
+    - Plan so it concludes naturally around 750-800 words
     - End with a powerful, complete final thought (not mid-sentence)
     - The last sentence should feel like a satisfying conclusion
     - Leave the listener feeling uplifted, understood, and complete
