@@ -31,19 +31,19 @@
       Turn your memories into transformative audio reflections, spoken in your own voice.
     </p>
 
-    <%# This block now shows the "Get Started" button for guests %>
-    <% unless user_signed_in? %>
-      <div class="mt-12 text-center">
-        <%= link_to "Start my Memflection", new_reflection_path, class: "inline-block bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-medium tracking-widest py-5 px-10 rounded-xl shadow-2xl text-xl transform hover:scale-105 transition-all duration-300" %>
-        
-        <!-- Android Install Button (hidden by default) -->
+    <!-- Show button for EVERYONE (guests and logged-in users) -->
+    <div class="mt-12 text-center">
+      <%= link_to "Start my Memflection", new_reflection_path, class: "inline-block bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-medium tracking-widest py-5 px-10 rounded-xl shadow-2xl text-xl transform hover:scale-105 transition-all duration-300" %>
+      
+      <!-- Android Install Button (hidden by default, only for guests) -->
+      <% unless user_signed_in? %>
         <div id="android-install-button" class="hidden mt-6">
           <button onclick="installPWA()" class="inline-block bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-medium tracking-widest py-4 px-8 rounded-xl shadow-2xl text-lg transform hover:scale-105 transition-all duration-300">
             📱 Install App
           </button>
         </div>
-      </div>
-    <% end %>
+      <% end %>
+    </div>
 
   </div>
 </div>
