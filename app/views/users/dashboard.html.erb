@@ -18,8 +18,8 @@
       </button>
     </div>
     
-    <!-- Waveform -->
-    <div id="modalWaveform" class="mb-6 bg-black/30 rounded-lg p-4"></div>
+    <!-- Particle Visualizer Canvas -->
+    <canvas id="particleCanvas" class="mb-6 rounded-lg w-full" height="200"></canvas>
     
     <!-- Time Display -->
     <div id="modalTime" class="text-center text-slate-300 text-xl mb-4">0:00 / 0:00</div>
@@ -36,7 +36,7 @@
 <div class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 px-4 py-16">
   <div class="container mx-auto max-w-6xl">
     <div class="text-center mb-12">
-      <h1 class="text-5xl font-bold tracking-wider text-white tracking-wide mb-2">My Memflections</h1>
+      <h1 class="text-5xl font-bold tracking-wider text-white tracking-wide mb-2">Your Memflections</h1>
       <p class="text-slate-300 text-lg">Your personalized audio reflections</p>
     </div>
 
@@ -106,65 +106,141 @@
 </div>
 
 <script>
-  let modalWavesurfer = null;
+  let audioContext, analyser, dataArray, audioElement, animationId;
+  const canvas = document.getElementById('particleCanvas');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+
+  class Particle {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.size = Math.random() * 3 + 1;
+      this.speedX = Math.random() * 2 - 1;
+      this.speedY = Math.random() * 2 - 1;
+      this.color = `hsl(${Math.random() * 60 + 80}, 100%, 50%)`; // Lime green hues
+    }
+    
+    update(audioLevel) {
+      this.x += this.speedX * (1 + audioLevel);
+      this.y += this.speedY * (1 + audioLevel);
+      
+      // Wrap around edges
+      if (this.x > canvas.width) this.x = 0;
+      if (this.x < 0) this.x = canvas.width;
+      if (this.y > canvas.height) this.y = 0;
+      if (this.y < 0) this.y = canvas.height;
+      
+      // Size pulsates with audio
+      this.size = (Math.random() * 2 + 1) * (1 + audioLevel * 2);
+    }
+    
+    draw() {
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  function initParticles() {
+    particles = [];
+    for (let i = 0; i < 100; i++) {
+      particles.push(new Particle(
+        Math.random() * canvas.width,
+        Math.random() * canvas.height
+      ));
+    }
+  }
+
+  function animate() {
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.1)'; // Slight trail effect
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    if (analyser) {
+      analyser.getByteFrequencyData(dataArray);
+      const average = dataArray.reduce((a, b) => a + b) / dataArray.length / 255;
+      
+      particles.forEach(particle => {
+        particle.update(average);
+        particle.draw();
+      });
+    } else {
+      // When not playing, gentle drift
+      particles.forEach(particle => {
+        particle.update(0);
+        particle.draw();
+      });
+    }
+    
+    animationId = requestAnimationFrame(animate);
+  }
 
   function openAudioModal(title, audioUrl, downloadUrl) {
-    // Show modal
     document.getElementById('audioModal').classList.remove('hidden');
     document.getElementById('modalTitle').textContent = title;
     document.getElementById('modalDownload').href = downloadUrl;
     
-    // Initialize WaveSurfer if not already
-    if (!modalWavesurfer) {
-      modalWavesurfer = WaveSurfer.create({
-        container: '#modalWaveform',
-        waveColor: '#84cc16',
-        progressColor: '#65a30d',
-        cursorColor: '#fbbf24',
-        barWidth: 3,
-        barGap: 2,
-        barRadius: 3,
-        height: 120,
-        normalize: true,
-        backend: 'MediaElement'
-      });
-
-      // Update play button
-      modalWavesurfer.on('play', function() {
-        document.getElementById('modalPlayBtn').innerHTML = '<svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/></svg>';
-      });
-
-      modalWavesurfer.on('pause', function() {
-        document.getElementById('modalPlayBtn').innerHTML = '<svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
-      });
-
-      // Update time
-      modalWavesurfer.on('audioprocess', function() {
-        const current = modalWavesurfer.getCurrentTime();
-        const duration = modalWavesurfer.getDuration();
-        document.getElementById('modalTime').textContent = formatTime(current) + ' / ' + formatTime(duration);
-      });
-
-      modalWavesurfer.on('ready', function() {
-        const duration = modalWavesurfer.getDuration();
-        document.getElementById('modalTime').textContent = '0:00 / ' + formatTime(duration);
-      });
+    // Set canvas size
+    canvas.width = canvas.offsetWidth;
+    
+    // Initialize particles
+    initParticles();
+    
+    // Start animation
+    animate();
+    
+    // Setup audio
+    if (!audioElement) {
+      audioElement = new Audio();
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      analyser = audioContext.createAnalyser();
+      analyser.fftSize = 256;
+      dataArray = new Uint8Array(analyser.frequencyBinCount);
+      
+      const source = audioContext.createMediaElementSource(audioElement);
+      source.connect(analyser);
+      analyser.connect(audioContext.destination);
     }
     
-    // Load audio
-    modalWavesurfer.load(audioUrl);
+    audioElement.src = audioUrl;
+    
+    // Update play button
+    audioElement.addEventListener('play', () => {
+      document.getElementById('modalPlayBtn').innerHTML = '<svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/></svg>';
+    });
+    
+    audioElement.addEventListener('pause', () => {
+      document.getElementById('modalPlayBtn').innerHTML = '<svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+    });
+    
+    // Update time
+    audioElement.addEventListener('timeupdate', () => {
+      const current = audioElement.currentTime;
+      const duration = audioElement.duration || 0;
+      document.getElementById('modalTime').textContent = formatTime(current) + ' / ' + formatTime(duration);
+    });
+    
+    audioElement.addEventListener('loadedmetadata', () => {
+      document.getElementById('modalTime').textContent = '0:00 / ' + formatTime(audioElement.duration);
+    });
   }
 
   function closeAudioModal() {
     document.getElementById('audioModal').classList.add('hidden');
-    if (modalWavesurfer) {
-      modalWavesurfer.pause();
+    if (audioElement) {
+      audioElement.pause();
     }
+    cancelAnimationFrame(animationId);
   }
 
   function toggleModalPlay() {
-    if (modalWavesurfer) {
-      modalWavesurfer.playPause();
+    if (audioElement) {
+      if (audioElement.paused) {
+        audioElement.play();
+      } else {
+        audioElement.pause();
+      }
     }
   }
 
