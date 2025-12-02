@@ -42,15 +42,80 @@
                   <td class="px-6 py-4 text-right">
                     <% if reflection.extended_audio.attached? %>
                       <div class="flex justify-end items-center gap-3">
-                        <!-- HTML5 Audio Player -->
-                        <audio controls preload="metadata" class="h-10 max-w-xs">
-                          <source src="<%= extended_audio_path(reflection) %>" type="audio/mpeg">
-                          Your browser does not support audio playback.
-                        </audio>
+                        <!-- WaveSurfer Audio Player -->
+                        <div class="flex items-center gap-2 bg-black/30 rounded-lg px-3 py-2 max-w-md">
+                          <!-- Play/Pause Button -->
+                          <button onclick="togglePlay<%= reflection.id %>()" id="playBtn<%= reflection.id %>" class="text-lime-500 hover:text-lime-400 transition-colors">
+                            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M8 5v14l11-7z"/>
+                            </svg>
+                          </button>
+                          
+                          <!-- Waveform Container -->
+                          <div id="waveform<%= reflection.id %>" class="flex-1 min-w-[200px]"></div>
+                          
+                          <!-- Time Display -->
+                          <div id="time<%= reflection.id %>" class="text-slate-300 text-xs whitespace-nowrap min-w-[60px]">0:00 / 0:00</div>
+                        </div>
                         
                         <!-- Download Link -->
                         <%= link_to "Download", url_for(reflection.extended_audio), download: "#{reflection.title || 'memflection'}.mp3", class: "text-purple-400 hover:text-purple-300 font-medium whitespace-nowrap", data: { turbo: false } %>
                       </div>
+
+                      <!-- WaveSurfer Script for this reflection -->
+                      <script>
+                        (function() {
+                          const wavesurfer<%= reflection.id %> = WaveSurfer.create({
+                            container: '#waveform<%= reflection.id %>',
+                            waveColor: '#84cc16',
+                            progressColor: '#65a30d',
+                            cursorColor: '#fbbf24',
+                            barWidth: 2,
+                            barGap: 1,
+                            barRadius: 2,
+                            height: 40,
+                            normalize: true,
+                            backend: 'MediaElement'
+                          });
+
+                          wavesurfer<%= reflection.id %>.load('<%= extended_audio_path(reflection) %>');
+
+                          // Update play button icon
+                          wavesurfer<%= reflection.id %>.on('play', function() {
+                            document.getElementById('playBtn<%= reflection.id %>').innerHTML = '<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/></svg>';
+                          });
+
+                          wavesurfer<%= reflection.id %>.on('pause', function() {
+                            document.getElementById('playBtn<%= reflection.id %>').innerHTML = '<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+                          });
+
+                          // Update time display
+                          wavesurfer<%= reflection.id %>.on('audioprocess', function() {
+                            const current = wavesurfer<%= reflection.id %>.getCurrentTime();
+                            const duration = wavesurfer<%= reflection.id %>.getDuration();
+                            document.getElementById('time<%= reflection.id %>').textContent = 
+                              formatTime(current) + ' / ' + formatTime(duration);
+                          });
+
+                          wavesurfer<%= reflection.id %>.on('ready', function() {
+                            const duration = wavesurfer<%= reflection.id %>.getDuration();
+                            document.getElementById('time<%= reflection.id %>').textContent = 
+                              '0:00 / ' + formatTime(duration);
+                          });
+
+                          // Play/Pause toggle
+                          window['togglePlay<%= reflection.id %>'] = function() {
+                            wavesurfer<%= reflection.id %>.playPause();
+                          };
+
+                          function formatTime(seconds) {
+                            const minutes = Math.floor(seconds / 60);
+                            const secs = Math.floor(seconds % 60);
+                            return minutes + ':' + (secs < 10 ? '0' : '') + secs;
+                          }
+                        })();
+                      </script>
+
                     <% elsif reflection.status == 'failed' %>
                       <span class="text-red-400 text-sm">⚠️ Generation failed - please contact support</span>
                     <% else %>
