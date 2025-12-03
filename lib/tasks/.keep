@@ -1,51 +1,73 @@
 # lib/tasks/soundscapes.rake
 namespace :soundscapes do
-  desc "Upload Zen Meditation soundscapes from local folder"
+  desc "Upload Zen Meditation soundscapes from Google Drive"
   task upload_zen_batch_1: :environment do
-    # Define the soundscapes to upload
+    require 'open-uri'
+    
     soundscapes = [
-      { filename: "breath-of-life_5-minutes-320858.mp3", name: "Breath of Life", category: "Zen Meditation" },
-      { filename: "deep-meditation-192828.mp3", name: "Deep Meditation", category: "Zen Meditation" },
-      { filename: "path-to-harmony-313385.mp3", name: "Path to Harmony", category: "Zen Meditation" },
-      { filename: "reflected-light-147979.mp3", name: "Reflected Light", category: "Zen Meditation" }
+      { 
+        file_id: "1owFNquleHL4Bv8BJgJ2nhSxVdRGb8kmb",
+        filename: "breath-of-life_5-minutes-320858.mp3",
+        name: "Breath of Life",
+        category: "Zen Meditation"
+      },
+      { 
+        file_id: "15B7COuVP-Z31cXmCxOYn0dHZ-VUbPHfs",
+        filename: "deep-meditation-192828.mp3",
+        name: "Deep Meditation",
+        category: "Zen Meditation"
+      },
+      { 
+        file_id: "1-tuiybrI9adrWjXWCFz4ElS8cc46ZBLY",
+        filename: "path-to-harmony-313385.mp3",
+        name: "Path to Harmony",
+        category: "Zen Meditation"
+      },
+      { 
+        file_id: "1qy7k4SGAuSWun4Hd9_F56TH_Nxc3Nuax",
+        filename: "reflected-light-147979.mp3",
+        name: "Reflected Light",
+        category: "Zen Meditation"
+      }
     ]
 
     puts "🎵 Starting upload of #{soundscapes.count} Zen Meditation tracks..."
 
-    soundscapes.each do |soundscape_data|
+    soundscapes.each do |data|
       # Check if already exists
-      existing = Soundscape.find_by(name: soundscape_data[:name])
-      if existing
-        puts "⏭️  Skipping '#{soundscape_data[:name]}' - already exists"
+      if Soundscape.exists?(name: data[:name])
+        puts "⏭️  Skipping '#{data[:name]}' - already exists"
         next
       end
 
-      # Prompt for file path
-      puts "\n📂 Please provide the full path to: #{soundscape_data[:filename]}"
-      print "Path: "
-      file_path = STDIN.gets.chomp
-
-      unless File.exist?(file_path)
-        puts "❌ File not found: #{file_path}"
-        next
+      puts "📥 Downloading: #{data[:name]}..."
+      
+      # Google Drive direct download URL
+      download_url = "https://drive.google.com/uc?export=download&id=#{data[:file_id]}"
+      
+      begin
+        # Download file
+        file = URI.open(download_url)
+        
+        # Create soundscape
+        soundscape = Soundscape.create!(
+          name: data[:name],
+          category: data[:category]
+        )
+        
+        # Attach file
+        soundscape.audio_file.attach(
+          io: file,
+          filename: data[:filename],
+          content_type: "audio/mpeg"
+        )
+        
+        puts "✅ Uploaded: #{data[:name]}"
+      rescue => e
+        puts "❌ Error uploading #{data[:name]}: #{e.message}"
       end
-
-      # Create soundscape record
-      soundscape = Soundscape.create!(
-        name: soundscape_data[:name],
-        category: soundscape_data[:category]
-      )
-
-      # Attach audio file
-      soundscape.audio_file.attach(
-        io: File.open(file_path),
-        filename: soundscape_data[:filename],
-        content_type: "audio/mpeg"
-      )
-
-      puts "✅ Uploaded: #{soundscape_data[:name]}"
     end
 
-    puts "\n🎉 Upload complete!"
+    puts "\n🎉 Upload complete! Total Zen Meditation tracks: #{Soundscape.where(category: 'Zen Meditation').count}"
   end
 end
