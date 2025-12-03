@@ -1,0 +1,51 @@
+# lib/tasks/soundscapes.rake
+namespace :soundscapes do
+  desc "Upload Zen Meditation soundscapes from local folder"
+  task upload_zen_batch_1: :environment do
+    # Define the soundscapes to upload
+    soundscapes = [
+      { filename: "breath-of-life_5-minutes-320858.mp3", name: "Breath of Life", category: "Zen Meditation" },
+      { filename: "deep-meditation-192828.mp3", name: "Deep Meditation", category: "Zen Meditation" },
+      { filename: "path-to-harmony-313385.mp3", name: "Path to Harmony", category: "Zen Meditation" },
+      { filename: "reflected-light-147979.mp3", name: "Reflected Light", category: "Zen Meditation" }
+    ]
+
+    puts "🎵 Starting upload of #{soundscapes.count} Zen Meditation tracks..."
+
+    soundscapes.each do |soundscape_data|
+      # Check if already exists
+      existing = Soundscape.find_by(name: soundscape_data[:name])
+      if existing
+        puts "⏭️  Skipping '#{soundscape_data[:name]}' - already exists"
+        next
+      end
+
+      # Prompt for file path
+      puts "\n📂 Please provide the full path to: #{soundscape_data[:filename]}"
+      print "Path: "
+      file_path = STDIN.gets.chomp
+
+      unless File.exist?(file_path)
+        puts "❌ File not found: #{file_path}"
+        next
+      end
+
+      # Create soundscape record
+      soundscape = Soundscape.create!(
+        name: soundscape_data[:name],
+        category: soundscape_data[:category]
+      )
+
+      # Attach audio file
+      soundscape.audio_file.attach(
+        io: File.open(file_path),
+        filename: soundscape_data[:filename],
+        content_type: "audio/mpeg"
+      )
+
+      puts "✅ Uploaded: #{soundscape_data[:name]}"
+    end
+
+    puts "\n🎉 Upload complete!"
+  end
+end
