@@ -72,14 +72,17 @@
                   <td class="px-6 py-4 text-slate-300 text-sm hidden sm:table-cell"><%= reflection.created_at.strftime("%b %d, %Y") %></td>
                   <td class="px-6 py-4 text-center">
                     <% if reflection.extended_audio.attached? %>
-                      <button 
-                        onclick="openAudioModal('<%= reflection.title || 'Untitled' %>', '<%= extended_audio_path(reflection) %>', '<%= url_for(reflection.extended_audio) %>')"
-                        class="inline-flex items-center gap-2 bg-lime-500 hover:bg-lime-400 text-white font-medium py-3 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg">
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M8 5v14l11-7z"/>
-                        </svg>
-                        Play
-                      </button>
+                      <div class="flex flex-col items-center gap-2">
+                        <button 
+                          onclick="openAudioModal('<%= reflection.title || 'Untitled' %>', '<%= extended_audio_path(reflection) %>', '<%= extended_audio_path(reflection) %>')"
+                          class="inline-flex items-center gap-2 bg-lime-500 hover:bg-lime-400 text-white font-medium py-3 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg">
+                          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                          </svg>
+                          Play
+                        </button>
+                        <%= link_to "Download", extended_audio_path(reflection), class: "text-purple-400 hover:text-purple-300 font-medium text-sm" %>
+                      </div>
                     <% elsif reflection.status == 'failed' %>
                       <span class="text-red-400 text-sm">⚠️ Generation failed</span>
                     <% else %>
