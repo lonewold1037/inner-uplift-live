@@ -80,9 +80,11 @@ class ReflectionsController < ApplicationController
   end
 
   def remix_audio
-    soundscape = Soundscape.find(params.dig(:reflection, :soundscape_id))
+    selected_soundscape_id = params.dig(:reflection, :soundscape_id)
+    soundscape = Soundscape.find(selected_soundscape_id)
+    
     @reflection.update!(soundscape: soundscape, status: 'mixing')
-  
+
     # Broadcast mixing status
     @reflection.broadcast_replace_to(
       @reflection,
@@ -90,14 +92,15 @@ class ReflectionsController < ApplicationController
       partial: "reflections/status_content",
       locals: { reflection: @reflection, soundscapes: Soundscape.all }
     )
-  
-    # Queue the job - MixAudioJob will replace final_audio
-    MixAudioJob.perform_later(@reflection, soundscape.id)
+
+    # Pass category to get random track, exclude current one
+    MixAudioJob.perform_later(@reflection, soundscape.category, exclude_id: @reflection.soundscape_id)
     
     redirect_to @reflection
   rescue ActiveRecord::RecordNotFound
     redirect_to @reflection, alert: "Soundscape not found"
   end
+  
 
   def checkout
     @reflection = Reflection.find(params[:id])

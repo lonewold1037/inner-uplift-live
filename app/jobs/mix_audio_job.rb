@@ -4,8 +4,19 @@ require 'tempfile'
 class MixAudioJob < ApplicationJob
   queue_as :default
 
-  def perform(reflection, soundscape_id)
+  def perform(reflection, soundscape_id_or_category, exclude_id: nil)
     Rails.logger.info "🎛 MixAudioJob: Starting work on Reflection ##{reflection.id}"
+
+    # If it's a number, treat as ID (backward compatibility)
+    # Otherwise, treat as category and pick random
+    if soundscape_id_or_category.is_a?(Integer) || soundscape_id_or_category.to_s =~ /^\d+$/
+      soundscape = Soundscape.find_by(id: soundscape_id_or_category)
+    else
+      # Pick random soundscape from category, excluding the one they just heard
+      query = Soundscape.where(category: soundscape_id_or_category)
+      query = query.where.not(id: exclude_id) if exclude_id
+      soundscape = query.order("RANDOM()").first
+    end
 
     soundscape = Soundscape.find_by(id: soundscape_id)
 

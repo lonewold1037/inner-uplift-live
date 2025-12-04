@@ -62,6 +62,17 @@
           <%# Remix Soundscape Section %>
           <div class="w-full max-w-md pt-6 border-t border-white/20">
             <p class="text-lg font-medium tracking-wider text-white mb-4 text-center">Want a different soundscape?</p>
+
+            <%# Shuffle Button - Same Category, Different Track %>
+            <div class="w-full pb-4">
+              <%= button_to "🔀 Shuffle Track",
+                            remix_audio_reflection_path(reflection, reflection: { soundscape_id: reflection.soundscape_id }),
+                            method: :post,
+                            class: "w-full bg-lime-600 hover:bg-lime-500 text-white font-medium tracking-wider px-6 py-3 rounded-lg text-base transition-all shadow-lg hover:shadow-lime-500/50",
+                            form: { data: { turbo_frame: "_top" } } %>
+              <p class="text-slate-400 text-sm text-center mt-2">Get a different <%= reflection.soundscape.category %> track</p>
+            </div>
+            
             <%= form_with(model: reflection,
                           url: remix_audio_reflection_path(reflection),
                           method: :post,                         
