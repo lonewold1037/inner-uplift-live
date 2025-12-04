@@ -23,7 +23,7 @@ class MixAudioJob < ApplicationJob
     end
 
     unless soundscape&.audio_file&.attached?
-      return handle_failure(reflection, "Soundscape ##{soundscape_id} not found or missing audio.")
+      return handle_failure(reflection, "Soundscape not found or missing audio.")
     end
 
     voice_temp = nil

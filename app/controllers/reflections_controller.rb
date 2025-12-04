@@ -101,7 +101,6 @@ class ReflectionsController < ApplicationController
     redirect_to @reflection, alert: "Soundscape not found"
   end
   
-
   def checkout
     @reflection = Reflection.find(params[:id])
     
@@ -147,8 +146,8 @@ class ReflectionsController < ApplicationController
   end
 
   def set_soundscapes
-    # Get one soundscape per category for the dropdown
-    @soundscapes = Soundscape.select('DISTINCT ON (category) *').order(:category, :name)
+    # Get one representative soundscape per category for the dropdown
+    @soundscapes = Soundscape.all.group_by(&:category).map { |category, soundscapes| soundscapes.first }
   end
 
   def reflection_params_for_create
