@@ -15,7 +15,7 @@
           <source src="<%= url_for(reflection.extended_audio) %>" type="audio/mpeg">
           Your browser does not support audio playback.
         </audio>
-        <%= link_to "Download", url_for(reflection.extended_audio), download: "#{reflection.title || 'memflection'}.mp3", class: "text-purple-400 hover:text-purple-300 font-medium whitespace-nowrap", data: { turbo: false } %>
+        <%= link_to "Download", extended_audio_path(reflection), class: "text-purple-400 hover:text-purple-300 font-medium whitespace-nowrap", data: { turbo: false } %>
       </div>
     <% else %>
       <span class="text-slate-500 text-sm">Processing...</span>
