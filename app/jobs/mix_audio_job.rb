@@ -18,8 +18,6 @@ class MixAudioJob < ApplicationJob
       soundscape = query.order("RANDOM()").first
     end
 
-    soundscape = Soundscape.find_by(id: soundscape_id)
-
     unless reflection.preview_audio.attached?
       return handle_failure(reflection, "Preview audio is missing.")
     end
