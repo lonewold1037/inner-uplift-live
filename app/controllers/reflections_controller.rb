@@ -147,7 +147,8 @@ class ReflectionsController < ApplicationController
   end
 
   def set_soundscapes
-    @soundscapes = Soundscape.order(:name)
+    # Get one soundscape per category for the dropdown
+    @soundscapes = Soundscape.select('DISTINCT ON (category) *').order(:category, :name)
   end
 
   def reflection_params_for_create
