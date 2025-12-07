@@ -20,6 +20,19 @@
     
     <!-- Particle Visualizer Canvas -->
     <canvas id="particleCanvas" class="mb-6 rounded-lg w-full" height="200"></canvas>
+
+    <!-- Progress Bar (Seekable) -->
+    <div class="mb-2">
+      <input 
+        type="range" 
+        id="progressBar" 
+        min="0" 
+        max="100" 
+        value="0" 
+        class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-lime-500"
+        style="background: linear-gradient(to right, #84cc16 0%, #334155 0%);"
+      >
+    </div>
     
     <!-- Time Display -->
     <div id="modalTime" class="text-center text-slate-300 text-xl mb-4">0:00 / 0:00</div>
@@ -222,6 +235,7 @@
       const current = audioElement.currentTime;
       const duration = audioElement.duration || 0;
       document.getElementById('modalTime').textContent = formatTime(current) + ' / ' + formatTime(duration);
+      updateProgressBar();
     });
     
     audioElement.addEventListener('loadedmetadata', () => {
@@ -251,6 +265,24 @@
     const minutes = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return minutes + ':' + (secs < 10 ? '0' : '') + secs;
+  }
+
+  // Progress bar seeking
+  document.getElementById('progressBar').addEventListener('input', function(e) {
+    if (audioElement && audioElement.duration) {
+      const seekTime = (e.target.value / 100) * audioElement.duration;
+      audioElement.currentTime = seekTime;
+    }
+  });
+
+  // Update progress bar as audio plays
+  function updateProgressBar() {
+    if (audioElement && audioElement.duration) {
+      const progress = (audioElement.currentTime / audioElement.duration) * 100;
+      const progressBar = document.getElementById('progressBar');
+      progressBar.value = progress;
+      progressBar.style.background = `linear-gradient(to right, #84cc16 ${progress}%, #334155 ${progress}%)`;
+    }
   }
 
   // Close modal on Escape key
