@@ -29,6 +29,6 @@ class DownloadsController < ApplicationController
     send_data attachment.download,
               filename: filename,
               type: 'audio/mpeg',
-              disposition: 'inline' # 'inline' allows play + download, 'attachment' forces download
+              disposition: 'attachment' # 'inline' allows play + download, 'attachment' forces download
   end
 end
