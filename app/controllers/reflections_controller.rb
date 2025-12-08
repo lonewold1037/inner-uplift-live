@@ -98,8 +98,9 @@ class ReflectionsController < ApplicationController
       locals: { reflection: @reflection, soundscapes: Soundscape.all }
     )
 
-    # Pass category to get random track, exclude current one
-    MixAudioJob.perform_later(@reflection, soundscape.category, exclude_id: @reflection.soundscape_id)
+    # Only exclude current track if staying in same category (shuffle), not when switching categories
+    exclude_id = (soundscape.category == @reflection.soundscape&.category) ? @reflection.soundscape_id : nil
+    MixAudioJob.perform_later(@reflection, soundscape.category, exclude_id: exclude_id)
     
     redirect_to @reflection
   rescue ActiveRecord::RecordNotFound

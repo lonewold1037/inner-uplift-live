@@ -16,6 +16,11 @@ class MixAudioJob < ApplicationJob
       query = Soundscape.where(category: soundscape_id_or_category)
       query = query.where.not(id: exclude_id) if exclude_id
       soundscape = query.order("RANDOM()").first
+
+      # Fallback: if exclusion left zero tracks, pick any from category
+      if soundscape.nil? && exclude_id
+        soundscape = Soundscape.where(category: soundscape_id_or_category).order("RANDOM()").first
+      end
     end
 
     unless reflection.preview_audio.attached?
