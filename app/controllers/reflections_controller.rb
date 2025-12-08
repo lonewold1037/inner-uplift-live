@@ -80,8 +80,13 @@ class ReflectionsController < ApplicationController
   end
 
   def remix_audio
-    selected_soundscape_id = params.dig(:reflection, :soundscape_id)
-    soundscape = Soundscape.find(selected_soundscape_id)
+    # Handle both category (from dropdown) and soundscape_id (from shuffle button)
+    if params.dig(:reflection, :soundscape_category).present?
+      category = params.dig(:reflection, :soundscape_category)
+      soundscape = Soundscape.where(category: category).order("RANDOM()").first
+    else
+      soundscape = Soundscape.find(params.dig(:reflection, :soundscape_id))
+    end
     
     @reflection.update!(soundscape: soundscape, status: 'mixing')
 

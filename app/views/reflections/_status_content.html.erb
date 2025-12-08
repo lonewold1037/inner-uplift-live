@@ -77,12 +77,13 @@
                           url: remix_audio_reflection_path(reflection),
                           method: :post,                         
                           class: "flex flex-col gap-3 items-center") do |form| %>
-              <%= form.collection_select :soundscape_id,
-                                          soundscapes,
-                                          :id,
-                                          :category,
-                                          { selected: reflection.soundscape_id },
-                                          { class: "w-full bg-slate-800/70 text-white border-2 border-white/30 rounded-lg px-4 py-3 text-base focus:outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-400/50", style: "color-scheme: dark;" } %>
+              <%= form.select :soundscape_category,
+                              options_for_select(
+                                soundscapes.map { |s| [s.category, s.category] }.uniq,
+                                selected: reflection.soundscape&.category
+                              ),
+                              {},
+                              { class: "w-full bg-slate-800/70 text-white border-2 border-white/30 rounded-lg px-4 py-3 text-base focus:outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-400/50", style: "color-scheme: dark;" } %>
               <%= form.submit "Remix Audio",
                               class: "w-full bg-purple-600 hover:bg-purple-500 text-white font-medium tracking-wider px-6 py-3 rounded-lg text-base cursor-pointer transition-all shadow-lg hover:shadow-purple-500/50" %>
             <% end %>
