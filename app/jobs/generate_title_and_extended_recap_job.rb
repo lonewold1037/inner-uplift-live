@@ -52,7 +52,7 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
     Act 1 (already recorded) is:
     "#{reflection.recap}"
 
-    Your task: Continue with Acts 2-5 for EXACTLY 650-700 words MAXIMUM (this will be about 4:30-4:45 when spoken at the voice clone speed).
+    Your task: Continue with Acts 2-5 for EXACTLY 620-650 words (NO MORE than 650 words total).
 
     ⚠️ CRITICAL: DO NOT include act numbers, chapter titles, or section headers like "Act 2 - Exploration" in your output. Just write the flowing spoken words as one continuous monologue.
 
@@ -86,11 +86,10 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
     - Style tone: #{reflection.style}
 
     ⚡ CRITICAL ENDING INSTRUCTION - HARD TECHNICAL LIMIT:
-    - MAXIMUM 700 words - beyond this, the audio will be CUT OFF at 5:00
-    - At the voice speed used, 700 words = approximately 4:58
-    - Target 680 words to safely finish by 4:45 with natural pacing
-    - End with a powerful, complete final thought (not mid-sentence)
-    - Better to end gracefully at 4:40 than abruptly cut off at 5:00
+    - ABSOLUTE MAXIMUM: 650 words - the audio system will CUT YOU OFF mid-sentence at 5:00
+    - You MUST finish the complete story arc by 650 words or the ending will be destroyed
+    - Target 620-640 words to finish by 4:30, allowing music to fade gracefully
+    - End with a powerful, complete final thought - count your words as you write
     - Leave the listener feeling uplifted, understood, and complete
 
     Continue Acts 2-5 now (no labels, just flowing speech):
