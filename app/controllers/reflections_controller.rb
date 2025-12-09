@@ -1,6 +1,6 @@
 # app/controllers/reflections_controller.rb
 class ReflectionsController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:new, :create, :show, :record, :receive_audio, :mix_audio, :remix_audio, :checkout]
+  skip_before_action :authenticate_user!, only: [:new, :create, :show, :record, :receive_audio, :mix_audio, :remix_audio, :apply_eq_preset, :checkout]
   skip_before_action :verify_authenticity_token, only: [:checkout]
   before_action :set_reflection, only: [:show, :record, :receive_audio, :mix_audio, :remix_audio]
   before_action :set_soundscapes, only: [:show]

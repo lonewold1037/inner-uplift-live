@@ -52,3 +52,5 @@ gem "aws-sdk-s3", require: false
 
 # Stripe for payments
 gem 'stripe', '~> 12.0'
+
+gem 'rack-attack'

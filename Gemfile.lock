@@ -247,6 +247,8 @@ GEM
     raabro (1.4.0)
     racc (1.8.1)
     rack (3.1.18)
+    rack-attack (6.8.0)
+      rack (>= 1.0, < 4)
     rack-proxy (0.7.7)
       rack
     rack-session (2.1.1)
@@ -422,6 +424,7 @@ DEPENDENCIES
   multipart-post
   pg (~> 1.1)
   puma (>= 5.0)
+  rack-attack
   rails (~> 7.2.2)
   redis
   rubocop-rails-omakase

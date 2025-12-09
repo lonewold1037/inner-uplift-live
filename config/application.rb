@@ -23,5 +23,8 @@ module InnerUpliftV2
     #
     config.time_zone = "Singapore"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # Enable Rack::Attack middleware for rate limiting
+    config.middleware.use Rack::Attack
   end
 end
