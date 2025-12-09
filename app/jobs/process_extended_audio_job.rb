@@ -39,7 +39,7 @@ class ProcessExtendedAudioJob < ApplicationJob
       voice_temp.flush
 
       # Step 3: Mix with looping soundscape (5 minutes)
-      mixed_audio = mix_with_looping_soundscape(voice_temp.path, reflection.soundscape)
+      mixed_audio = mix_with_looping_soundscape(voice_temp.path, reflection.soundscape, reflection)
 
       unless mixed_audio
         return handle_failure(reflection, "Failed to mix extended audio with soundscape")
@@ -95,12 +95,15 @@ class ProcessExtendedAudioJob < ApplicationJob
     response.is_a?(Net::HTTPSuccess) ? response.body : nil
   end
 
-  def mix_with_looping_soundscape(voice_path, soundscape)
+  def mix_with_looping_soundscape(voice_path, soundscape, reflection)
     soundscape_temp = Tempfile.new(["soundscape_", ".mp3"], binmode: true)
     soundscape_temp.write(soundscape.audio_file.download)
     soundscape_temp.flush
 
     mixed_file = Tempfile.new(["extended_mixed_", ".mp3"], binmode: true)
+
+    # Get EQ preset filter
+    eq_filter = get_voice_eq_filter(reflection.eq_preset)
 
     # Enhanced filter: EQ, compression, subtle reverb + fade MUSIC ONLY
     command = [
@@ -111,8 +114,7 @@ class ProcessExtendedAudioJob < ApplicationJob
       "[1:a]volume=0.12,equalizer=f=2000:width_type=h:width=2000:g=-3,afade=t=out:st=290:d=10[bg];" +
       "[0:a]volume=1.8," +
       "highpass=f=80," +
-      "equalizer=f=200:width_type=h:width=100:g=2," +
-      "equalizer=f=3000:width_type=h:width=1000:g=1," +
+      "#{eq_filter}," +
       "acompressor=threshold=-18dB:ratio=3:attack=20:release=200," +
       "aecho=0.8:0.88:60:0.1[v];" +
       "[bg][v]amix=inputs=2:duration=longest:dropout_transition=2[mixed];[mixed]loudnorm=I=-16:LRA=11:TP=-1.5",
@@ -168,5 +170,26 @@ class ProcessExtendedAudioJob < ApplicationJob
       partial: "users/reflection_row",
       locals: { reflection: reflection }
     )
+  end
+
+  def get_voice_eq_filter(preset)
+    case preset
+    when "warm_deep"
+      "equalizer=f=200:width_type=h:width=100:g=4,equalizer=f=3000:width_type=h:width=1000:g=-2"
+    when "ethereal_drift"
+      "equalizer=f=100:width_type=h:width=50:g=-3,equalizer=f=8000:width_type=h:width=2000:g=4,aecho=0.9:0.85:40:0.2"
+    when "crystal_mind"
+      "equalizer=f=4000:width_type=h:width=1500:g=5,equalizer=f=200:width_type=h:width=100:g=-3,highpass=f=100"
+    when "whisper_presence"
+      "acompressor=threshold=-20dB:ratio=6:attack=10:release=100,equalizer=f=2500:width_type=h:width=1000:g=6"
+    when "hypnotic_tunnel"
+      "equalizer=f=500:width_type=h:width=200:g=3,aecho=1.0:0.7:80:0.3,aphaser=speed=0.5"
+    when "studio_calm"
+      "equalizer=f=1000:width_type=h:width=500:g=2,acompressor=threshold=-16dB:ratio=2.5:attack=30:release=250"
+    when "dream_soft"
+      "volume=1.5,equalizer=f=6000:width_type=h:width=2000:g=3,aecho=0.7:0.9:50:0.15,acompressor=threshold=-22dB:ratio=4:attack=15:release=150"
+    else
+      "equalizer=f=200:width_type=h:width=100:g=2,equalizer=f=3000:width_type=h:width=1000:g=1"
+    end
   end
 end

@@ -87,6 +87,21 @@ class ReflectionsController < ApplicationController
     else
       soundscape = Soundscape.find(params.dig(:reflection, :soundscape_id))
     end
+
+  def apply_eq_preset
+    @reflection.update!(eq_preset: params[:eq_preset], status: 'mixing')
+    
+    @reflection.broadcast_replace_to(
+      @reflection,
+      target: "reflection_status_area_#{@reflection.id}",
+      partial: "reflections/status_content",
+      locals: { reflection: @reflection, soundscapes: set_soundscapes }
+    )
+    
+    MixAudioJob.perform_later(@reflection, @reflection.soundscape.category)
+    
+    redirect_to @reflection
+  end
     
     @reflection.update!(soundscape: soundscape, status: 'mixing')
 
