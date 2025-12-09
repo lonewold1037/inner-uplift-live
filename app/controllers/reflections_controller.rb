@@ -2,7 +2,7 @@
 class ReflectionsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:new, :create, :show, :record, :receive_audio, :mix_audio, :remix_audio, :apply_eq_preset, :checkout]
   skip_before_action :verify_authenticity_token, only: [:checkout]
-  before_action :set_reflection, only: [:show, :record, :receive_audio, :mix_audio, :remix_audio]
+  before_action :set_reflection, only: [:show, :record, :receive_audio, :mix_audio, :remix_audio, :apply_eq_preset]
   before_action :set_soundscapes, only: [:show]
 
   def new
@@ -88,21 +88,6 @@ class ReflectionsController < ApplicationController
       soundscape = Soundscape.find(params.dig(:reflection, :soundscape_id))
     end
 
-  def apply_eq_preset
-    @reflection.update!(eq_preset: params[:eq_preset], status: 'mixing')
-    
-    @reflection.broadcast_replace_to(
-      @reflection,
-      target: "reflection_status_area_#{@reflection.id}",
-      partial: "reflections/status_content",
-      locals: { reflection: @reflection, soundscapes: set_soundscapes }
-    )
-    
-    MixAudioJob.perform_later(@reflection, @reflection.soundscape.category)
-    
-    redirect_to @reflection
-  end
-    
     @reflection.update!(soundscape: soundscape, status: 'mixing')
 
     # Broadcast mixing status
@@ -120,6 +105,21 @@ class ReflectionsController < ApplicationController
     redirect_to @reflection
   rescue ActiveRecord::RecordNotFound
     redirect_to @reflection, alert: "Soundscape not found"
+  end
+
+  def apply_eq_preset
+    @reflection.update!(eq_preset: params[:eq_preset], status: 'mixing')
+    
+    @reflection.broadcast_replace_to(
+      @reflection,
+      target: "reflection_status_area_#{@reflection.id}",
+      partial: "reflections/status_content",
+      locals: { reflection: @reflection, soundscapes: set_soundscapes }
+    )
+    
+    MixAudioJob.perform_later(@reflection, @reflection.soundscape.category)
+    
+    head :ok
   end
   
   def checkout
