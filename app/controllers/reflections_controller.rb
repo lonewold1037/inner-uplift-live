@@ -108,6 +108,7 @@ class ReflectionsController < ApplicationController
   end
 
   def apply_eq_preset
+    @reflection.reload  # ✅ Refresh from database to get latest soundscape
     @reflection.update!(eq_preset: params[:eq_preset], status: 'mixing')
     
     @reflection.broadcast_replace_to(
@@ -117,9 +118,10 @@ class ReflectionsController < ApplicationController
       locals: { reflection: @reflection, soundscapes: set_soundscapes }
     )
     
-    MixAudioJob.perform_later(@reflection, @reflection.soundscape.category)
+    # Pass the ID so it uses the exact current track
+    MixAudioJob.perform_later(@reflection, @reflection.soundscape.id)
     
-    redirect_to @reflection  # ✅ Same as remix_audio
+    redirect_to @reflection
   end
   
   def checkout
