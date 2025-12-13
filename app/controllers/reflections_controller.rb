@@ -117,7 +117,7 @@ class ReflectionsController < ApplicationController
       locals: { reflection: @reflection, soundscapes: set_soundscapes }
     )
     
-    MixAudioJob.perform_later(@reflection, @reflection.soundscape.id)
+    MixAudioJob.perform_later(@reflection, @reflection.soundscape.category)
     
     redirect_to @reflection  # ✅ Same as remix_audio
   end
