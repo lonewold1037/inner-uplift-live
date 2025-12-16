@@ -100,18 +100,40 @@ class ProcessExtendedAudioJob < ApplicationJob
     soundscape_temp.write(soundscape.audio_file.download)
     soundscape_temp.flush
 
+    extended_music = Tempfile.new(["extended_music_", ".mp3"], binmode: true)
     mixed_file = Tempfile.new(["extended_mixed_", ".mp3"], binmode: true)
+
+    # STEP 1: Pre-extend the music to 5 minutes with seamless looping
+    # (If track is already 5min, this just adds the fade-out)
+    extend_command = [
+      "ffmpeg", "-y",
+      "-stream_loop", "-1",
+      "-i", soundscape_temp.path,
+      "-af", "afade=t=out:st=290:d=10",
+      "-t", "300",
+      "-c:a", "libmp3lame", "-q:a", "2",
+      extended_music.path
+    ]
+
+    Rails.logger.info "▶️ Pre-extending music to 5 minutes: #{extend_command.join(' ')}"
+    
+    _stdout_ext, stderr_ext, status_ext = Open3.capture3(*extend_command)
+
+    unless status_ext.success?
+      Rails.logger.error "❌ Music extension failed: #{stderr_ext}"
+      return nil
+    end
 
     # Get mix balance settings
     mix = get_mix_balance(reflection.eq_preset)
 
-    # Enhanced filter: EQ, compression, subtle reverb + fade MUSIC ONLY
+    # STEP 2: Mix voice with pre-extended music (no looping during mix)
     command = [
       "ffmpeg", "-y",
       "-i", voice_path,
-      "-stream_loop", "-1", "-i", soundscape_temp.path,
+      "-i", extended_music.path,
       "-filter_complex",
-      "[1:a]volume=#{mix[:music]},equalizer=f=2000:width_type=h:width=2000:g=-3,afade=t=out:st=290:d=10[bg];" +
+      "[1:a]volume=#{mix[:music]},equalizer=f=2000:width_type=h:width=2000:g=-3[bg];" +
       "[0:a]volume=#{mix[:voice]}," +
       "highpass=f=80," +
       "equalizer=f=1000:width_type=h:width=500:g=2,acompressor=threshold=-16dB:ratio=2.5:attack=30:release=250," +
@@ -123,7 +145,7 @@ class ProcessExtendedAudioJob < ApplicationJob
       mixed_file.path
     ]
 
-    Rails.logger.info "▶️ Running FFmpeg (5-min mix with enriched blend): #{command.join(' ')}"
+    Rails.logger.info "▶️ Running FFmpeg (5-min mix with pre-extended music): #{command.join(' ')}"
 
     _stdout, stderr, status = Open3.capture3(*command)
 
@@ -136,6 +158,8 @@ class ProcessExtendedAudioJob < ApplicationJob
   ensure
     soundscape_temp&.close
     soundscape_temp&.unlink
+    extended_music&.close
+    extended_music&.unlink
   end
 
   def handle_failure(reflection, message)
