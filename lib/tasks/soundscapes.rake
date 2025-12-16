@@ -1,67 +1,106 @@
+# lib/tasks/soundscapes.rake
 namespace :soundscapes do
-  desc "Upload Zen Meditation soundscapes from Google Drive"
-  task upload_zen_batch_1: :environment do
+  desc "Batch upload soundscapes from Google Drive with FFmpeg normalization"
+  task :batch_upload, [:category] => :environment do |t, args|
     require 'open-uri'
+    require 'open3'
+    require 'tempfile'
     
-    soundscapes = [
-      { 
-        file_id: "1owFNquleHL4Bv8BJgJ2nhSxVdRGb8kmb",
-        filename: "breath-of-life_5-minutes-320858.mp3",
-        name: "Breath of Life",
-        category: "Zen Meditation"
-      },
-      { 
-        file_id: "15B7COuVP-Z31cXmCxOYn0dHZ-VUbPHfs",
-        filename: "deep-meditation-192828.mp3",
-        name: "Deep Meditation",
-        category: "Zen Meditation"
-      },
-      { 
-        file_id: "1-tuiybrI9adrWjXWCFz4ElS8cc46ZBLY",
-        filename: "path-to-harmony-313385.mp3",
-        name: "Path to Harmony",
-        category: "Zen Meditation"
-      },
-      { 
-        file_id: "1qy7k4SGAuSWun4Hd9_F56TH_Nxc3Nuax",
-        filename: "reflected-light-147979.mp3",
-        name: "Reflected Light",
-        category: "Zen Meditation"
-      }
-    ]
-
-    puts "🎵 Starting upload of #{soundscapes.count} Zen Meditation tracks..."
-
-    soundscapes.each do |data|
+    category = args[:category] || 'Oceania'
+    
+    # Define your soundscapes here with Google Drive file IDs
+    soundscapes = {
+      'Oceania' => [
+        { name: 'Ocean Waves Sunrise', file_id: 'YOUR_FILE_ID_1', filename: 'ocean_waves_sunrise.mp3' },
+        { name: 'Tropical Island Breeze', file_id: 'YOUR_FILE_ID_2', filename: 'tropical_island.mp3' },
+        { name: 'Coral Reef Dreams', file_id: 'YOUR_FILE_ID_3', filename: 'coral_reef.mp3' }
+      ],
+      'Zen Meditation' => [
+        # Your existing zen tracks...
+      ]
+    }
+    
+    tracks = soundscapes[category]
+    
+    unless tracks
+      puts "❌ Category '#{category}' not found. Available: #{soundscapes.keys.join(', ')}"
+      exit
+    end
+    
+    puts "🎵 Starting upload of #{tracks.count} #{category} tracks..."
+    puts "🔧 FFmpeg normalization: loudness -16 LUFS"
+    
+    tracks.each do |data|
       if Soundscape.exists?(name: data[:name])
         puts "⏭️  Skipping '#{data[:name]}' - already exists"
         next
       end
-
-      puts "📥 Downloading: #{data[:name]}..."
       
+      puts "📥 Downloading: #{data[:name]}..."
       download_url = "https://drive.google.com/uc?export=download&id=#{data[:file_id]}"
       
       begin
-        file = URI.open(download_url)
+        # Download original
+        original_file = URI.open(download_url)
+        temp_original = Tempfile.new(['original_', '.mp3'], binmode: true)
+        temp_original.write(original_file.read)
+        temp_original.flush
         
+        # Normalize with FFmpeg
+        puts "🎛️  Normalizing audio..."
+        normalized_file = Tempfile.new(['normalized_', '.mp3'], binmode: true)
+        
+        normalize_cmd = [
+          'ffmpeg', '-y',
+          '-i', temp_original.path,
+          '-af', 'loudnorm=I=-16:LRA=11:TP=-1.5',
+          '-c:a', 'libmp3lame', '-q:a', '2',
+          normalized_file.path
+        ]
+        
+        _stdout, stderr, status = Open3.capture3(*normalize_cmd)
+        
+        unless status.success?
+          puts "⚠️  FFmpeg normalization failed: #{stderr}"
+          puts "📤 Uploading original file instead..."
+          upload_file = temp_original
+        else
+          puts "✅ Normalization complete"
+          upload_file = normalized_file
+        end
+        
+        # Upload to Rails → S3
         soundscape = Soundscape.create!(
           name: data[:name],
-          category: data[:category]
+          category: category
         )
         
         soundscape.audio_file.attach(
-          io: file,
+          io: File.open(upload_file.path),
           filename: data[:filename],
           content_type: "audio/mpeg"
         )
         
         puts "✅ Uploaded: #{data[:name]}"
+        
       rescue => e
         puts "❌ Error uploading #{data[:name]}: #{e.message}"
+      ensure
+        temp_original&.close
+        temp_original&.unlink
+        normalized_file&.close
+        normalized_file&.unlink
       end
     end
-
-    puts "\n🎉 Upload complete! Total Zen Meditation tracks: #{Soundscape.where(category: 'Zen Meditation').count}"
+    
+    puts "\n🎉 Upload complete! Total #{category} tracks: #{Soundscape.where(category: category).count}"
+  end
+  
+  desc "List all soundscapes by category"
+  task :list => :environment do
+    Soundscape.select(:category).distinct.pluck(:category).each do |category|
+      count = Soundscape.where(category: category).count
+      puts "#{category}: #{count} tracks"
+    end
   end
 end
