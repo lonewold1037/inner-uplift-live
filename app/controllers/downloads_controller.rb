@@ -6,7 +6,10 @@ class DownloadsController < ApplicationController
     reflection = Reflection.find(params[:id])
     
     if reflection.final_audio.attached?
-      redirect_to reflection.final_audio.url(disposition: :inline), allow_other_host: true
+      # Clean S3 URL - no Rails parameters
+      blob = reflection.final_audio.blob
+      url = "https://#{ENV['AWS_BUCKET']}.s3.#{ENV['AWS_REGION']}.amazonaws.com/#{blob.key}"
+      redirect_to url, allow_other_host: true
     else
       head :not_found
     end
@@ -16,13 +19,17 @@ class DownloadsController < ApplicationController
     reflection = current_user.reflections.find(params[:id])
     
     if reflection.extended_audio.attached?
-      # For playing in modal - redirect to S3 with inline disposition
+      blob = reflection.extended_audio.blob
+      
       if params[:play]
-        redirect_to reflection.extended_audio.url(disposition: :inline), allow_other_host: true
-      # For downloading - use attachment disposition with nice filename
+        # For playing - clean S3 URL with no disposition parameters
+        url = "https://#{ENV['AWS_BUCKET']}.s3.#{ENV['AWS_REGION']}.amazonaws.com/#{blob.key}"
       else
-        redirect_to reflection.extended_audio.url(disposition: :attachment, filename: "#{reflection.title || 'memflection'}_extended.mp3"), allow_other_host: true
+        # For downloading - use Rails URL with attachment
+        url = reflection.extended_audio.url(disposition: :attachment, filename: "#{reflection.title || 'memflection'}_extended.mp3")
       end
+      
+      redirect_to url, allow_other_host: true
     else
       head :not_found
     end
