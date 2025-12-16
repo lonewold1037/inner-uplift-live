@@ -213,14 +213,6 @@
     // Setup audio
     if (!audioElement) {
       audioElement = new Audio();
-      audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      analyser = audioContext.createAnalyser();
-      analyser.fftSize = 256;
-      dataArray = new Uint8Array(analyser.frequencyBinCount);
-      
-      const source = audioContext.createMediaElementSource(audioElement);
-      source.connect(analyser);
-      analyser.connect(audioContext.destination);
     }
     
     audioElement.src = finalUrl; // Use S3 URL, not redirect URL
