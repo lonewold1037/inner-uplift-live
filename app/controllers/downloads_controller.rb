@@ -6,7 +6,7 @@ class DownloadsController < ApplicationController
     reflection = Reflection.find(params[:id])
     
     if reflection.final_audio.attached?
-      send_audio_file(reflection.final_audio, "memflection_preview_#{reflection.id}.mp3")
+      redirect_to reflection.final_audio.url(disposition: :inline), allow_other_host: true
     else
       head :not_found
     end
@@ -16,19 +16,15 @@ class DownloadsController < ApplicationController
     reflection = current_user.reflections.find(params[:id])
     
     if reflection.extended_audio.attached?
-      send_audio_file(reflection.extended_audio, "#{reflection.title || 'memflection'}_extended.mp3")
+      # For playing in modal - redirect to S3 with inline disposition
+      if params[:play]
+        redirect_to reflection.extended_audio.url(disposition: :inline), allow_other_host: true
+      # For downloading - use attachment disposition with nice filename
+      else
+        redirect_to reflection.extended_audio.url(disposition: :attachment, filename: "#{reflection.title || 'memflection'}_extended.mp3"), allow_other_host: true
+      end
     else
       head :not_found
     end
-  end
-  
-  private
-  
-  def send_audio_file(attachment, filename)
-    # Set proper headers for downloadable audio
-    send_data attachment.download,
-              filename: filename,
-              type: 'audio/mpeg',
-              disposition: 'attachment' # 'inline' allows play + download, 'attachment' forces download
   end
 end
