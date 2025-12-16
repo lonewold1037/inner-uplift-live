@@ -87,7 +87,7 @@
                     <% if reflection.extended_audio.attached? %>
                       <div class="flex flex-col items-center gap-2">
                         <button 
-                          onclick="openAudioModal('<%= reflection.title || 'Untitled' %>', '<%= url_for(reflection.extended_audio) %>', '<%= extended_audio_path(reflection) %>')"
+                          onclick="openAudioModal('<%= reflection.title || 'Untitled' %>', '<%= reflection.extended_audio.url %>', '<%= extended_audio_path(reflection) %>')"
                           class="inline-flex items-center gap-2 bg-lime-500 hover:bg-lime-400 text-white font-medium py-3 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg">
                           <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z"/>
