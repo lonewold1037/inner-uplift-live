@@ -192,7 +192,7 @@
     animationId = requestAnimationFrame(animate);
   }
 
-  function openAudioModal(title, audioUrl, downloadUrl) {
+  async function openAudioModal(title, audioUrl, downloadUrl) {
     document.getElementById('audioModal').classList.remove('hidden');
     document.getElementById('modalTitle').textContent = title;
     document.getElementById('modalDownload').href = downloadUrl;
@@ -205,6 +205,10 @@
     
     // Start animation
     animate();
+    
+    // Fetch the redirect to get the actual S3 URL
+    const response = await fetch(audioUrl);
+    const finalUrl = response.url; // This is the S3 URL after redirect
     
     // Setup audio
     if (!audioElement) {
@@ -219,7 +223,7 @@
       analyser.connect(audioContext.destination);
     }
     
-    audioElement.src = audioUrl;
+    audioElement.src = finalUrl; // Use S3 URL, not redirect URL
     
     // Update play button
     audioElement.addEventListener('play', () => {
@@ -291,4 +295,4 @@
       closeAudioModal();
     }
   });
-</script>
+  </script>
