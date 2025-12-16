@@ -52,52 +52,54 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
     Act 1 (already recorded) is:
     "#{reflection.recap}"
 
-    Your task: Continue with Acts 2-5 for EXACTLY 620-650 words (NO MORE than 650 words total).
+    THE USER'S NAME IS: #{reflection.name_for_recap}
+    USE THIS NAME 3-5 TIMES NATURALLY THROUGHOUT (e.g., "#{reflection.name_for_recap}, you...")
 
-    ⚠️ CRITICAL: DO NOT include act numbers, chapter titles, or section headers like "Act 2 - Exploration" in your output. Just write the flowing spoken words as one continuous monologue.
+    Your task: Continue with Acts 2-5 for EXACTLY 620-640 words (ABSOLUTE MAXIMUM: 640 words).
 
-    🎭 ACTS 2-5 STRUCTURE (for your planning only, don't write these labels):
-    - Act 2: Explore the emotional texture and environment more fully
-    - Act 3: Connect emotion to insight and reflection
-    - Act 4: Reveal the shift, lesson, or clarity
-    - Act 5: Offer gentle closure, integration, and hope
+    🚨 HARD STOP AT 640 WORDS - Audio will cut you off if you exceed this. Count as you write.
+
+    ⚠️ CRITICAL RULES:
+    - DO NOT invent family members, relationships, pets, or people not mentioned
+    - DO NOT add details about jobs, locations, or events not provided
+    - ONLY expand on what the user shared
+    - NO act numbers, chapter titles, or section headers
 
     🔥 CONTINUATION RULES:
-    - Match Act 1's tone, pacing, and syntax EXACTLY
-    - Stay entirely in second person ("you", "your")
-    - DO NOT restart, summarize, or reintroduce
-    - Pick up where Act 1 left off and expand the journey
-    - Keep sensory language grounded in what's believable
-    - If the user used simple language, stay simple and powerful
-    - Avoid inventing specific details not in the original inputs
+    - Match Act 1's tone exactly
+    - Stay in second person ("you", "your")
+    - Use "#{reflection.name_for_recap}" naturally 3-5 times
+    - Pick up where Act 1 left off
 
-    📍 EXPAND DEEPLY ON:
-    - What happened next in their journey
-    - How the transformation unfolded over time
-    - Specific moments of strength, challenge, or growth
-    - Where they are NOW and what lies ahead
-    - The fulfillment of their hope: "#{reflection.lift_up_request}"
-
-    📍 REMEMBER THE USER'S ACTUAL STORY:
+    📍 USER'S ACTUAL STORY (DO NOT ADD TO THIS):
+    - Name: #{reflection.name_for_recap}
     - Memory: #{reflection.remember_when}
     - Feeling: #{reflection.felt_like}
     - Context: #{reflection.because_of}
-    - What they want to hear: #{reflection.lift_up_request}
-    - Style tone: #{reflection.style}
+    - Hope: #{reflection.lift_up_request}
+    - Style: #{reflection.style}
 
-    ⚡ CRITICAL ENDING INSTRUCTION - HARD TECHNICAL LIMIT:
-    - ABSOLUTE MAXIMUM: 650 words - the audio system will CUT YOU OFF mid-sentence at 5:00
-    - You MUST finish the complete story arc by 650 words or the ending will be destroyed
-    - Target 620-640 words to finish by 4:30, allowing music to fade gracefully
-    - End with a powerful, complete final thought - count your words as you write
-    - Leave the listener feeling uplifted, understood, and complete
-
-    Continue Acts 2-5 now (no labels, just flowing speech):
+    Continue Acts 2-5 now (620-640 words max, use #{reflection.name_for_recap} 3-5 times):
     PROMPT
 
-    continuation = call_openai(prompt, max_tokens: 1400)
-    "#{reflection.recap}\n\n#{continuation}"
-  end
+    continuation = call_openai(prompt, max_tokens: 1200)  # Reduced from 1400
+
+    # Hard truncation at 640 words
+    words = continuation.split
+    if words.count > 640
+      Rails.logger.warn "⚠️ GPT generated #{words.count} words, truncating to 640"
+      continuation = words.first(640).join(' ')
+    end
+    
+    # HARD TRUNCATION at 640 words as safety net
+    words = continuation.split
+    if words.count > 640
+      Rails.logger.warn "⚠️ GPT generated #{words.count} words, truncating to 640"
+      continuation = words.first(640).join(' ')
+    end
+  
+  "#{reflection.recap}\n\n#{continuation}"
+end
 
   def call_openai(prompt, max_tokens:)
     uri = URI.parse("https://api.openai.com/v1/chat/completions")
@@ -113,7 +115,7 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
     body = {
       model: "gpt-4-turbo",
       messages: [{ role: "user", content: prompt }],
-      temperature: 0.75,
+      temperature: 0.65,
       max_tokens: max_tokens
     }.to_json
 
