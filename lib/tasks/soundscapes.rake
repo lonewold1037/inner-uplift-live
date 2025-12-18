@@ -6,14 +6,15 @@ namespace :soundscapes do
     require 'open3'
     require 'tempfile'
     
-    category = args[:category] || 'Oceania'
+    category = args[:category] || 'Epic Motivational'
     
     # Define your soundscapes here with Google Drive file IDs
     soundscapes = {
-      'Oceania' => [
-        { name: 'Ocean Waves Sunrise', file_id: 'YOUR_FILE_ID_1', filename: 'ocean_waves_sunrise.mp3' },
-        { name: 'Tropical Island Breeze', file_id: 'YOUR_FILE_ID_2', filename: 'tropical_island.mp3' },
-        { name: 'Coral Reef Dreams', file_id: 'YOUR_FILE_ID_3', filename: 'coral_reef.mp3' }
+      'Epic Motivational' => [
+        { name: 'Ascension Protocol wo Driving Beat', file_id: '1iDD0M5n4AA4shnyHGEsuN3FwXwMev-7L', filename: 'Ascension_Protocol.mp3' },
+        { name: 'Unbreakable', file_id: '1x6VTPPPwIr7vDwPz2Jg552lpildjdABa', filename: 'Unbreakable_epic_mot.mp3' },
+        { name: 'The Comeback', file_id: '1Wc8bLkvW9_PvQe3oHSKGdlLfFqcW-4I2', filename: 'The_Comeback.mp3' },
+        { name: 'The Gold Medal Favorite', file_id: '1XiCFQE9Vq4SE451Hx5SrnMVHsdgAtG1M', filename: 'The_Gold_Medal.mp3' }
       ],
       'Zen Meditation' => [
         # Your existing zen tracks...
