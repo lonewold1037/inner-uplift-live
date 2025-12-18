@@ -6,7 +6,7 @@ namespace :soundscapes do
     require 'open3'
     require 'tempfile'
     
-    category = args[:category] || 'Epic Motivational'
+    category = args[:category] || 'Oceania'
     
     # Define your soundscapes here with Google Drive file IDs
     soundscapes = {
@@ -15,6 +15,30 @@ namespace :soundscapes do
         { name: 'Unbreakable', file_id: '1x6VTPPPwIr7vDwPz2Jg552lpildjdABa', filename: 'Unbreakable_epic_mot.mp3' },
         { name: 'The Comeback', file_id: '1Wc8bLkvW9_PvQe3oHSKGdlLfFqcW-4I2', filename: 'The_Comeback.mp3' },
         { name: 'The Gold Medal Favorite', file_id: '1XiCFQE9Vq4SE451Hx5SrnMVHsdgAtG1M', filename: 'The_Gold_Medal.mp3' }
+      ],
+      'Oceania' => [
+        { name: 'Oceania Favorite', file_id: '1TMb777D3i_0Dx_RYnWNpqR-nwsXwVsHC', filename: 'oceania_1.mp3' },
+        { name: 'Oceanic Choir Meditation', file_id: '1Uq5axpIXMLEomCRqqretY_2QhQ8Aho8O', filename: 'oceania_2.mp3' },
+        { name: 'Timeless Expanse', file_id: '1Be3bd3FVmab8tdmwM1-FWTMiIxwL3tVl', filename: 'oceania_3.mp3' }
+      ],
+      'Lo-Fi Chill' => [
+        { name: 'Soft Confidence', file_id: '1ZWZTAitvv9ysHoDSYRz0E6pNUP8JDBlv', filename: 'lofi_1.mp3' },
+        { name: 'Gentle Rise', file_id: '1HfHDYydY2gFHDBEY7SXEIeRaqxKYnJ7L', filename: 'lofi_2.mp3' },
+        { name: 'Golden Blick Groove', file_id: '14Id_Q44bnyjA4h-SBTT6tMi035_f8CTc', filename: 'lofi_3.mp3' }
+      ],
+      'Cinematic Piano' => [
+        { name: 'A Door Opens Inside You', file_id: '1WaTI7ofNKD7Joy0fXWjQG0vCssP8R92g', filename: 'piano_1.mp3' },
+        { name: 'The Quiet Hero', file_id: '1THsr_hjo-yy9F_wXdxbCsWtEDodKbFOy', filename: 'piano_2.mp3' },
+        { name: 'Echoes of Resolve', file_id: '1FUUefL9-ZsOkG0kbZTR_14X8F5sOI2Q4', filename: 'piano_3.mp3' }
+      ],
+      'Cosmic Dream' => [
+        { name: 'Nebula Heartbeat', file_id: '1pt8hjT2abB91VaFI0jIiqBDJ9EayL4Fg', filename: 'cosmic_1.mp3' },
+        { name: 'Starborne Drift', file_id: '1foE13OuBUesccp-kM91zA1edjUuaFGU6', filename: 'cosmic_2.mp3' }
+      ],
+      'Uplifting Choir' => [
+        { name: 'Choir On The Fly', file_id: '1YKTLM3l5-P4l4wHIFg-Br5r5JdEaoNKW', filename: 'choir_1.mp3' },
+        { name: 'Choir Deep Ascension Boring', file_id: '1CT41RGzt1HZAz0U3ji0wNfkPRABFyhNa', filename: 'choir_2.mp3' },
+        { name: 'Celesial Uprising', file_id: '1WXhEXWsr7iHRwnLzThz_aeLywC06G3Ix', filename: 'choir_3.mp3' }
       ],
       'Zen Meditation' => [
         # Your existing zen tracks...
