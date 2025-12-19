@@ -158,10 +158,15 @@ class ReflectionsController < ApplicationController
     @reflection = if user_signed_in?
                     current_user.reflections.find(reflection_id)
                   else
-                    if reflection_id == session[:anonymous_reflection_id].to_s
-                      Reflection.find(reflection_id)
-                    else
+                    # For guests: allow access to unpurchased reflections even if session is lost
+                    reflection = Reflection.find(reflection_id)
+                    # Only block access to purchased reflections (those require ownership)
+                    if reflection.purchased? && reflection.user_id != current_user&.id
                       raise ActiveRecord::RecordNotFound
+                    else
+                      # Store in session for continuity
+                      session[:anonymous_reflection_id] = reflection.id
+                      reflection
                     end
                   end
   rescue ActiveRecord::RecordNotFound
