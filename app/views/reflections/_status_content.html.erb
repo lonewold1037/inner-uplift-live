@@ -139,21 +139,43 @@
             </div>
           </div>
           
-          <%# Action Buttons - Stack on mobile, side by side on desktop %>
-          <div class="flex flex-col md:flex-row justify-center items-stretch md:items-center gap-4 pt-6 w-full max-w-md">
-            <%= button_to "Purchase My 5-Min Version! ($2.49 USD)",
-                checkout_reflection_path(reflection),
-                method: :post,
-                data: { turbo: false },
-                class: "bg-green-600 hover:bg-green-500 text-white font-medium tracking-wider py-3 px-6 rounded-lg shadow-lg text-center" %>
-            <%= link_to "Start Over", new_reflection_path, 
-                class: "bg-slate-600 hover:bg-slate-500 text-white font-medium tracking-wider py-3 px-6 rounded-lg shadow text-center" %>
+          <%# Email Capture + Action Buttons %>
+          <div class="w-full max-w-md pt-6">
+            <% if reflection.email.blank? %>
+              <%# Show email form if not collected yet %>
+              <div class="bg-gradient-to-br from-sky-900/30 to-blue-900/30 backdrop-blur-sm border border-sky-500/30 rounded-xl p-6 mb-4">
+                <p class="text-white text-lg font-medium tracking-wider mb-3 text-center">
+                  Ready to unlock your 5-minute version?
+                </p>
+                <p class="text-slate-200 text-sm mb-4 text-center">
+                  Enter your email to continue to checkout:
+                </p>
+                
+                <%= form_with(model: reflection, 
+                              url: reflection_path(reflection),
+                              method: :patch,
+                              class: "space-y-3") do |form| %>
+                  <%= form.email_field :email,
+                                      placeholder: "your@email.com",
+                                      required: true,
+                                      class: "w-full bg-slate-800/70 text-white border-2 border-white/30 rounded-lg px-4 py-3 text-base focus:outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-400/50" %>
+                  <%= form.submit "Continue to Payment ($2.49)",
+                                class: "w-full bg-green-600 hover:bg-green-500 text-white font-medium tracking-wider py-3 px-6 rounded-lg shadow-lg cursor-pointer transition-all" %>
+                <% end %>
+              </div>
+            <% else %>
+              <%# Show purchase button if email already collected %>
+              <div class="flex flex-col md:flex-row justify-center items-stretch md:items-center gap-4">
+                <%= button_to "Purchase My 5-Min Version! ($2.49 USD)",
+                    checkout_reflection_path(reflection),
+                    method: :post,
+                    data: { turbo: false },
+                    class: "bg-green-600 hover:bg-green-500 text-white font-medium tracking-wider py-3 px-6 rounded-lg shadow-lg text-center" %>
+                <%= link_to "Start Over", new_reflection_path, 
+                    class: "bg-slate-600 hover:bg-slate-500 text-white font-medium tracking-wider py-3 px-6 rounded-lg shadow text-center" %>
+              </div>
+            <% end %>
           </div>
-        </div>
-      <% else %>
-        <p class="text-center text-red-400">⚠️ Error: Final audio not found.</p>
-      <% end %>
-    </div>
 
   <% when 'failed' %>
     <%# ----- STATE: FAILED ----- %>
