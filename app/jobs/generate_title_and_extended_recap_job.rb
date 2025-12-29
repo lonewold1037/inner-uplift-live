@@ -82,24 +82,21 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
     Continue Acts 2-5 now (620-640 words max, use #{reflection.name_for_recap} 3-5 times):
     PROMPT
 
-    continuation = call_openai(prompt, max_tokens: 1200)  # Reduced from 1400
-
-    # Hard truncation at 640 words
+    continuation = call_openai(prompt, max_tokens: 1000)  # Reduced to ensure we stay under
+    
+    # HARD TRUNCATION at 580 words (leaves room for recap to total ~740 words = ~4:45 of audio)
     words = continuation.split
-    if words.count > 640
-      Rails.logger.warn "⚠️ GPT generated #{words.count} words, truncating to 640"
-      continuation = words.first(640).join(' ')
+    if words.count > 580
+      Rails.logger.warn "⚠️ GPT generated #{words.count} words, truncating to 580"
+      continuation = words.first(580).join(' ')
+      # Ensure we end on a complete sentence
+      continuation = continuation.sub(/[^.!?]*\z/, '').strip
     end
     
-    # HARD TRUNCATION at 640 words as safety net
-    words = continuation.split
-    if words.count > 640
-      Rails.logger.warn "⚠️ GPT generated #{words.count} words, truncating to 640"
-      continuation = words.first(640).join(' ')
-    end
+    Rails.logger.info "✅ Continuation: #{words.count} words (after truncation: #{continuation.split.count} words)"
   
-  "#{reflection.recap}\n\n#{continuation}"
-end
+    "#{reflection.recap}\n\n#{continuation}"
+  end
 
   def call_openai(prompt, max_tokens:)
     uri = URI.parse("https://api.openai.com/v1/chat/completions")
