@@ -89,6 +89,7 @@
             <% end %>
           </div>
 
+        <% if Features::EQ_PRESETS_ENABLED %> 
           <%# Mix Balance Section %>
           <div class="w-full max-w-md pt-6 border-t border-white/20">
             <p class="text-lg font-medium tracking-wider text-white mb-4 text-center">Adjust Mix Balance</p>
@@ -108,6 +109,7 @@
                               class: "w-full bg-sky-600 hover:bg-sky-500 text-white font-medium tracking-wider px-6 py-3 rounded-lg text-base cursor-pointer transition-all shadow-lg hover:shadow-sky-500/50" %>
             <% end %>
           </div>
+        <% end %>
 
           <%# NEW: Upgrade Pitch Section %>
           <div class="w-full max-w-md pt-8 pb-4">
