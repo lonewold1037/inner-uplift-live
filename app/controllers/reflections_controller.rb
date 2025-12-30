@@ -15,14 +15,10 @@ class ReflectionsController < ApplicationController
     if @reflection.save
       session[:anonymous_reflection_id] = @reflection.id unless user_signed_in?
 
-      # ✅ THE FIX: Set the initial status here, before the redirect.
-      # This guarantees the user sees the loading screen immediately.
       @reflection.update(status: 'generating_recap')
       
-      # ✅ IMPROVEMENT: Instead of waiting for the API, start a job and redirect immediately.
       GenerateRecapJob.perform_later(@reflection)
       
-      # The user is sent to the 'show' page right away. The recap will appear when the job is done.
       redirect_to @reflection
     else
       render :new, status: :unprocessable_entity
@@ -30,11 +26,9 @@ class ReflectionsController < ApplicationController
   end
 
   def show
-    # The before_actions handle finding @reflection and @soundscapes.
   end
 
   def record
-    # Renders the recording page.
   end
 
   def receive_audio
@@ -47,7 +41,6 @@ class ReflectionsController < ApplicationController
     if @reflection.save
       Rails.logger.info "🎤 Voice recording attached. Kicking off ProcessAudioJob for Reflection ##{@reflection.id}"
       
-      # Set status immediately so user sees "Processing..." on the show page
       @reflection.update!(status: 'processing_audio')
 
       ProcessAudioJob.perform_later(@reflection)
@@ -62,7 +55,6 @@ class ReflectionsController < ApplicationController
     soundscape = Soundscape.find(params.dig(:reflection, :soundscape_id))
     @reflection.update!(soundscape: soundscape, status: 'mixing')
     
-    # Immediately broadcast the mixing status
     @reflection.broadcast_replace_to(
       @reflection,
       target: "reflection_status_area_#{@reflection.id}",
@@ -70,17 +62,14 @@ class ReflectionsController < ApplicationController
       locals: { reflection: @reflection, soundscapes: Soundscape.all }
     )
     
-    # Queue the job
     MixAudioJob.perform_later(@reflection, soundscape.id)
     
-    # Redirect to show page - same pattern as create and receive_audio
     redirect_to @reflection
   rescue ActiveRecord::RecordNotFound
     redirect_to @reflection, alert: "Soundscape not found"
   end
 
   def remix_audio
-    # Handle both category (from dropdown) and soundscape_id (from shuffle button)
     if params.dig(:reflection, :soundscape_category).present?
       category = params.dig(:reflection, :soundscape_category)
       soundscape = Soundscape.where(category: category).order("RANDOM()").first
@@ -90,7 +79,6 @@ class ReflectionsController < ApplicationController
 
     @reflection.update!(soundscape: soundscape, status: 'mixing')
 
-    # Broadcast mixing status
     @reflection.broadcast_replace_to(
       @reflection,
       target: "reflection_status_area_#{@reflection.id}",
@@ -98,7 +86,6 @@ class ReflectionsController < ApplicationController
       locals: { reflection: @reflection, soundscapes: Soundscape.all }
     )
 
-    # Only exclude current track if staying in same category (shuffle), not when switching categories
     exclude_id = (soundscape.category == @reflection.soundscape&.category) ? @reflection.soundscape_id : nil
     MixAudioJob.perform_later(@reflection, soundscape.category, exclude_id: exclude_id)
     
@@ -108,7 +95,7 @@ class ReflectionsController < ApplicationController
   end
 
   def apply_eq_preset
-    @reflection.reload  # ✅ Refresh from database to get latest soundscape
+    @reflection.reload
     @reflection.update!(eq_preset: params[:eq_preset], status: 'mixing')
     
     @reflection.broadcast_replace_to(
@@ -118,7 +105,6 @@ class ReflectionsController < ApplicationController
       locals: { reflection: @reflection, soundscapes: set_soundscapes }
     )
     
-    # Pass the ID so it uses the exact current track
     MixAudioJob.perform_later(@reflection, @reflection.soundscape.id)
     
     redirect_to @reflection
@@ -128,12 +114,11 @@ class ReflectionsController < ApplicationController
     @reflection = Reflection.find(params[:id])
     customer_email = params[:customer_email]
     
-    # Save email to reflection immediately (before Stripe redirect)
     @reflection.update!(email: customer_email) if customer_email.present?
     
     session = Stripe::Checkout::Session.create(
       payment_method_types: ['card'],
-      customer_email: customer_email,  # Pre-fills email in Stripe checkout
+      customer_email: customer_email,
       line_items: [{
         price_data: {
           currency: 'usd',
@@ -141,7 +126,7 @@ class ReflectionsController < ApplicationController
             name: 'Extended Memflection (5 minutes)',
             description: 'Full-length personalized audio reflection'
           },
-          unit_amount: 249  # $2.49 in cents
+          unit_amount: 249
         },
         quantity: 1
       }],
@@ -156,18 +141,6 @@ class ReflectionsController < ApplicationController
     redirect_to session.url, allow_other_host: true
   end
 
-**What this does:**
-1. Captures `customer_email` from the form we added
-2. Saves it to the reflection immediately (so we have it even if Stripe fails)
-3. Pre-fills the email in Stripe checkout (smoother UX - they don't type it twice)
-4. Fixes price to $2.49 (249 cents)
-
----
-
-Now let's make sure the migration has been run. SSH into Render and run:
-```
-rails db:migrate
-
   private
 
   def set_reflection
@@ -175,13 +148,10 @@ rails db:migrate
     @reflection = if user_signed_in?
                     current_user.reflections.find(reflection_id)
                   else
-                    # For guests: allow access to unpurchased reflections even if session is lost
                     reflection = Reflection.find(reflection_id)
-                    # Only block access to purchased reflections (those require ownership)
                     if reflection.purchased? && reflection.user_id != current_user&.id
                       raise ActiveRecord::RecordNotFound
                     else
-                      # Store in session for continuity
                       session[:anonymous_reflection_id] = reflection.id
                       reflection
                     end
@@ -191,7 +161,6 @@ rails db:migrate
   end
 
   def set_soundscapes
-    # Get one representative soundscape per category for the dropdown
     @soundscapes = Soundscape.all.group_by(&:category).map { |category, soundscapes| soundscapes.first }
   end
 
