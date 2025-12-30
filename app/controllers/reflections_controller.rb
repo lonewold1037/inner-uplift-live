@@ -126,9 +126,14 @@ class ReflectionsController < ApplicationController
   
   def checkout
     @reflection = Reflection.find(params[:id])
+    customer_email = params[:customer_email]
+    
+    # Save email to reflection immediately (before Stripe redirect)
+    @reflection.update!(email: customer_email) if customer_email.present?
     
     session = Stripe::Checkout::Session.create(
       payment_method_types: ['card'],
+      customer_email: customer_email,  # Pre-fills email in Stripe checkout
       line_items: [{
         price_data: {
           currency: 'usd',
@@ -136,7 +141,7 @@ class ReflectionsController < ApplicationController
             name: 'Extended Memflection (5 minutes)',
             description: 'Full-length personalized audio reflection'
           },
-          unit_amount: 199 # $1.99 in cents
+          unit_amount: 249  # $2.49 in cents
         },
         quantity: 1
       }],
@@ -150,6 +155,18 @@ class ReflectionsController < ApplicationController
     
     redirect_to session.url, allow_other_host: true
   end
+
+**What this does:**
+1. Captures `customer_email` from the form we added
+2. Saves it to the reflection immediately (so we have it even if Stripe fails)
+3. Pre-fills the email in Stripe checkout (smoother UX - they don't type it twice)
+4. Fixes price to $2.49 (249 cents)
+
+---
+
+Now let's make sure the migration has been run. SSH into Render and run:
+```
+rails db:migrate
 
   private
 

@@ -54,3 +54,4 @@ gem "aws-sdk-s3", require: false
 gem 'stripe', '~> 12.0'
 
 gem 'rack-attack'
+gem 'postmark-rails'

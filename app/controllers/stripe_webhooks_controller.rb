@@ -48,13 +48,15 @@ class StripeWebhooksController < ApplicationController
     # Link reflection to user and mark as purchased
     reflection.update!(
       user: user,
-      purchased: true
+      purchased: true,
+      email: customer_email
     )
     
     # Update checkout session metadata with login token for success URL
     # Note: We can't update the session after creation, so we'll pass it via our own redirect
     
     # Generate GPT title and trigger extended recap job
+    PurchaseMailer.purchase_confirmation(reflection).deliver_later
     GenerateTitleAndExtendedRecapJob.perform_later(reflection)
     
     Rails.logger.info "✅ User created with token: #{user.login_token}. Extended recap job queued."
