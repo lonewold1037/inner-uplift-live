@@ -160,6 +160,11 @@
             <%= link_to "Start Over", new_reflection_path, 
                 class: "bg-slate-600 hover:bg-slate-500 text-white font-medium tracking-wider py-3 px-6 rounded-lg shadow text-center w-full" %>
           </div>
+        </div>
+      <% else %>
+        <p class="text-center text-red-400">⚠️ Error: Final audio not found.</p>
+      <% end %>
+    </div>
 
   <% when 'failed' %>
     <%# ----- STATE: FAILED ----- %>
