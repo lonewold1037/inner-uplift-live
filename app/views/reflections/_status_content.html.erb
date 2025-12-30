@@ -141,21 +141,25 @@
             </div>
           </div>
           
-          <%# Action Buttons - Stack on mobile, side by side on desktop %>
-          <div class="flex flex-col md:flex-row justify-center items-stretch md:items-center gap-4 pt-1 w-full max-w-md">
-            <%= button_to "Purchase My 5-Min Version! ($2.49 USD)",
-                checkout_reflection_path(reflection),
-                method: :post,
-                data: { turbo: false },
-                class: "bg-green-600 hover:bg-green-500 text-white font-medium tracking-wider py-3 px-6 rounded-lg shadow-lg text-center" %>
+          <%# Email Capture + Action Buttons %>
+          <div class="flex flex-col justify-center items-center gap-4 pt-1 w-full max-w-md">
+            <%= form_with url: checkout_reflection_path(reflection), method: :post, data: { turbo: false }, class: "w-full flex flex-col gap-4" do |f| %>
+              <div class="w-full">
+                <label for="customer_email" class="block text-slate-300 text-sm mb-2">Email for your receipt & dashboard access:</label>
+                <input type="email" 
+                       name="customer_email" 
+                       id="customer_email" 
+                       required 
+                       placeholder="you@example.com"
+                       class="w-full bg-slate-800/70 text-white border-2 border-white/30 rounded-lg px-4 py-3 text-base focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-400/50"
+                       style="color-scheme: dark;">
+              </div>
+              <%= f.submit "Purchase My 5-Min Version! ($2.49 USD)",
+                  class: "w-full bg-green-600 hover:bg-green-500 text-white font-medium tracking-wider py-3 px-6 rounded-lg shadow-lg text-center cursor-pointer" %>
+            <% end %>
             <%= link_to "Start Over", new_reflection_path, 
-                class: "bg-slate-600 hover:bg-slate-500 text-white font-medium tracking-wider py-3 px-6 rounded-lg shadow text-center" %>
+                class: "bg-slate-600 hover:bg-slate-500 text-white font-medium tracking-wider py-3 px-6 rounded-lg shadow text-center w-full" %>
           </div>
-        </div>
-      <% else %>
-        <p class="text-center text-red-400">⚠️ Error: Final audio not found.</p>
-      <% end %>
-    </div>
 
   <% when 'failed' %>
     <%# ----- STATE: FAILED ----- %>
