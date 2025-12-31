@@ -133,7 +133,7 @@ class ProcessExtendedAudioJob < ApplicationJob
       "-i", voice_path,
       "-i", extended_music.path,
       "-filter_complex",
-      "[1:a]volume=#{mix[:music]},equalizer=f=2000:width_type=h:width=2000:g=-3[bg];" +
+      "[1:a]volume=#{mix[:music]},equalizer=f=2000:width_type=h:width=2000:g=-3,equalizer=f=100:width_type=h:width=100:g=3[bg];" +
       "[0:a]volume=#{mix[:voice]}," +
       "highpass=f=80," +
       "equalizer=f=1000:width_type=h:width=500:g=2," +
@@ -204,7 +204,7 @@ class ProcessExtendedAudioJob < ApplicationJob
     when "ambient_blend"
       { voice: 1.0, music: 0.25 }
     else # "balanced" or nil
-      { voice: 1.8, music: 0.12 }
+      { voice: 2.0, music: 0.25 }
     end
   end
 end
