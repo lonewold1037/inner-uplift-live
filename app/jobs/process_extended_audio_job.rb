@@ -136,10 +136,9 @@ class ProcessExtendedAudioJob < ApplicationJob
       "[1:a]volume=#{mix[:music]},equalizer=f=2000:width_type=h:width=2000:g=-3[bg];" +
       "[0:a]volume=#{mix[:voice]}," +
       "highpass=f=80," +
-      "equalizer=f=1000:width_type=h:width=500:g=2,acompressor=threshold=-16dB:ratio=2.5:attack=30:release=250," +
-      "acompressor=threshold=-18dB:ratio=3:attack=20:release=200," +
-      "aecho=0.8:0.88:60:0.1[v];" +
-      "[bg][v]amix=inputs=2:duration=longest:dropout_transition=2[mixed];[mixed]loudnorm=I=-16:LRA=11:TP=-1.5",
+      "equalizer=f=1000:width_type=h:width=500:g=2," +
+      "acompressor=threshold=-20dB:ratio=2:attack=50:release=300[v];" +
+      "[bg][v]amix=inputs=2:duration=longest:dropout_transition=2[mixed];[mixed]dynaudnorm=p=0.9:s=5",
       "-t", "300",
       "-c:a", "libmp3lame", "-q:a", "2",
       mixed_file.path
