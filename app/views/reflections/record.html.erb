@@ -82,9 +82,12 @@
               mediaStream.getTracks().forEach(track => track.stop());
             }
 
-            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            // iOS Safari uses mp4, others use webm
+            const mimeType = MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/mp4';
+            const extension = mimeType === 'audio/webm' ? 'webm' : 'mp4';
+            const audioBlob = new Blob(audioChunks, { type: mimeType });
             const formData = new FormData();
-            formData.append('audio', audioBlob, 'recording.webm');
+            formData.append('audio', audioBlob, `recording.${extension}`);
 
             newButton.textContent = 'Uploading & Processing...';
             newButton.disabled = true;
