@@ -49,6 +49,7 @@ Rails.application.routes.draw do
 
       # Stripe checkout for extended version
       post "checkout"
+      post "redeem_promo"
     end
   end
 

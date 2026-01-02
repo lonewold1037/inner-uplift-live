@@ -1,6 +1,6 @@
 # app/controllers/reflections_controller.rb
 class ReflectionsController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:new, :create, :show, :record, :receive_audio, :mix_audio, :remix_audio, :apply_eq_preset, :checkout]
+  skip_before_action :authenticate_user!, only: [:new, :create, :show, :record, :receive_audio, :mix_audio, :remix_audio, :apply_eq_preset, :checkout, :redeem_promo]
   skip_before_action :verify_authenticity_token, only: [:checkout]
   before_action :set_reflection, only: [:show, :record, :receive_audio, :mix_audio, :remix_audio, :apply_eq_preset]
   before_action :set_soundscapes, only: [:show]
@@ -139,6 +139,43 @@ class ReflectionsController < ApplicationController
     )
     
     redirect_to session.url, allow_other_host: true
+  end
+
+  def redeem_promo
+    @reflection = Reflection.find(params[:id])
+    customer_email = params[:customer_email]
+    promo_code = params[:promo_code]&.upcase&.strip
+
+    valid_codes = ENV.fetch("PROMO_CODES", "").split(",").map(&:strip).map(&:upcase)
+
+    unless valid_codes.include?(promo_code)
+      return redirect_to @reflection, alert: "Invalid gift code. Please try again."
+    end
+
+    @reflection.update!(email: customer_email) if customer_email.present?
+
+    user = User.find_or_create_by(email: customer_email) do |u|
+      u.password = SecureRandom.hex(16)
+      u.login_token = SecureRandom.urlsafe_base64(32)
+    end
+
+    if user.login_token.blank?
+      user.update!(login_token: SecureRandom.urlsafe_base64(32))
+    end
+
+    @reflection.update!(
+      user: user,
+      purchased: true,
+      free_unlock: true,
+      promo_code: promo_code,
+      email: customer_email
+    )
+
+    PurchaseMailer.purchase_confirmation(@reflection).deliver_later
+
+    GenerateTitleAndExtendedRecapJob.perform_later(@reflection)
+
+    redirect_to dashboard_url(token: user.login_token, reflection_id: @reflection.id)
   end
 
   private
