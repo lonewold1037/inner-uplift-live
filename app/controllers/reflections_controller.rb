@@ -33,12 +33,15 @@ class ReflectionsController < ApplicationController
 
   def receive_audio
     unless params[:audio].present?
+      Rails.logger.error "❌ No audio file received for Reflection ##{@reflection.id}"
       return redirect_to record_reflection_path(@reflection), alert: "No audio file was received."
     end
 
+    Rails.logger.info "📥 Received audio: #{params[:audio].original_filename}, #{params[:audio].content_type}, #{params[:audio].size} bytes"
+
     @reflection.voice_recording.attach(params[:audio])
 
-    if @reflection.save
+    if @reflection.voice_recording.attached? && @reflection.save
       Rails.logger.info "🎤 Voice recording attached. Kicking off ProcessAudioJob for Reflection ##{@reflection.id}"
       
       @reflection.update!(status: 'processing_audio')
@@ -47,6 +50,7 @@ class ReflectionsController < ApplicationController
 
       redirect_to reflection_path(@reflection)
     else
+      Rails.logger.error "❌ Failed to save reflection ##{@reflection.id}: #{@reflection.errors.full_messages}"
       redirect_to record_reflection_path(@reflection), alert: "Could not save the audio recording."
     end
   end
