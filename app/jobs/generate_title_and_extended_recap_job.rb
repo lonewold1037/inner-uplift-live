@@ -55,13 +55,14 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
     THE USER'S NAME IS: #{reflection.name_for_recap}
     USE THIS NAME 3-5 TIMES NATURALLY THROUGHOUT (e.g., "#{reflection.name_for_recap}, you...")
 
-    Your task: Continue with Acts 2-5 for EXACTLY 500-520 words (ABSOLUTE MAXIMUM: 640 words).
+    Your task: Continue with Acts 2-5 for EXACTLY 500-520 words (ABSOLUTE MAXIMUM: 620 words).
 
     🚨 HARD STOP AT 520 WORDS - Audio will cut you off if you exceed this. Count as you write.
 
     ⚠️ CRITICAL RULES:
     - DO NOT invent family members, relationships, pets, or people not mentioned
     - DO NOT add details about jobs, locations, or events not provided
+    - DO NOT assume geographical places mentioned are where the person still lives/resides
     - ONLY expand on what the user shared
     - NO act numbers, chapter titles, or section headers
 
@@ -79,16 +80,16 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
     - Hope: #{reflection.lift_up_request}
     - Style: #{reflection.style}
 
-    Continue Acts 2-5 now (500-520 words max, use #{reflection.name_for_recap} 3-5 times):
+    Continue Acts 2-5 now (520-540 words max, use #{reflection.name_for_recap} 1-3 times max):
     PROMPT
 
     continuation = call_openai(prompt, max_tokens: 1000)  # Reduced to ensure we stay under
     
-    # HARD TRUNCATION at 580 words (leaves room for recap to total ~740 words = ~4:45 of audio)
+    # HARD TRUNCATION at 600 words (leaves room for recap to total ~740 words = ~4:45 of audio)
     words = continuation.split
-    if words.count > 520
-      Rails.logger.warn "⚠️ GPT generated #{words.count} words, truncating to 580"
-      continuation = words.first(520).join(' ')
+    if words.count > 540
+      Rails.logger.warn "⚠️ GPT generated #{words.count} words, truncating to 600"
+      continuation = words.first(540).join(' ')
       # Ensure we end on a complete sentence
       continuation = continuation.sub(/[^.!?]*\z/, '').strip
     end
