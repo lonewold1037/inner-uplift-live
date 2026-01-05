@@ -59,7 +59,9 @@ class ProcessAudioJob < ApplicationJob
 
   def broadcast_status_update(reflection)
     # ✅ FIX: Get one representative per category instead of all 42 soundscapes
-    soundscapes = Soundscape.all.group_by(&:category).map { |category, soundscapes| soundscapes.first }
+    soundscapes = Soundscape.where(category: Soundscape::ENABLED_CATEGORIES)
+                            .group_by(&:category)
+                            .map { |category, soundscapes| soundscapes.first }
     
     reflection.broadcast_replace_to(
       reflection,

@@ -202,7 +202,9 @@ class ReflectionsController < ApplicationController
   end
 
   def set_soundscapes
-    @soundscapes = Soundscape.all.group_by(&:category).map { |category, soundscapes| soundscapes.first }
+    @soundscapes = Soundscape.where(category: Soundscape::ENABLED_CATEGORIES)
+                             .group_by(&:category)
+                             .map { |category, soundscapes| soundscapes.first }
   end
 
   def reflection_params_for_create

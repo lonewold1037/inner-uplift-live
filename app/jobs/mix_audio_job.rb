@@ -106,11 +106,14 @@ class MixAudioJob < ApplicationJob
   end
 
   def broadcast_status_update(reflection)
+    soundscapes = Soundscape.where(category: Soundscape::ENABLED_CATEGORIES)
+                            .group_by(&:category)
+                            .map { |category, soundscapes| soundscapes.first }
     reflection.broadcast_replace_to(
       reflection, 
       target: "reflection_status_area_#{reflection.id}", 
       partial: "reflections/status_content",
-      locals: { reflection: reflection, soundscapes: Soundscape.all }
+      locals: { reflection: reflection, soundscapes: soundscapes }
     )
   end
 
