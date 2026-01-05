@@ -27,7 +27,7 @@ class GenerateRecapJob < ApplicationJob
     ⚠️ CRITICAL: DO NOT include "Act 1" or any labels in your output. Just write the spoken words.
 
     📝 STRUCTURE:
-    1. Begin **exactly** with "#{reflection.name_for_recap}, you remember..."
+    1. Begin **exactly** with "#{reflection.name_for_recap}, you remember..." but only speak #{reflection.name_for_recap} once in Act 1
     2. Speak entirely in **second person** ("you", "your") — never "I" or "me".
     3. Length ≈ 120–140 words (about 35 seconds spoken).
     4. Flow like a story with natural rhythm — not choppy fragments.

@@ -69,7 +69,7 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
     🔥 CONTINUATION RULES:
     - #{style_instructions(reflection.style)}
     - Stay in second person ("you", "your")
-    - Use "#{reflection.name_for_recap}" naturally 1-3 times max
+    - Use "#{reflection.name_for_recap}" naturally 1 time at the tail end of Act 5
     - Pick up where Act 1 left off
 
     📍 USER'S ACTUAL STORY (DO NOT ADD TO THIS):

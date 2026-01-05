@@ -21,6 +21,6 @@ body {
 }
 
 /* Keep form inputs normal case for better UX */
-input, textarea, select {
+input, textarea {
   text-transform: none;
 }
