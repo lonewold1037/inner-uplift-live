@@ -14,15 +14,24 @@ class UsersController < ApplicationController
 
   def auto_login_from_purchase
     return if user_signed_in?
-    return unless params[:reflection_id].present?
-
-    reflection = Reflection.find_by(id: params[:reflection_id])
-    return unless reflection&.user&.login_token.present?
-
-    # Auto-login the user and consume the token
-    sign_in(reflection.user)
-    reflection.user.update!(login_token: nil) # One-time use token
     
-    Rails.logger.info "✅ Auto-logged in user #{reflection.user.email}"
+    # Try token-based login first
+    if params[:token].present?
+      user = User.find_by(login_token: params[:token])
+      if user
+        sign_in(user)
+        Rails.logger.info "✅ Auto-logged in user #{user.email} via token"
+        return
+      end
+    end
+    
+    # Fallback to reflection_id based login
+    if params[:reflection_id].present?
+      reflection = Reflection.find_by(id: params[:reflection_id])
+      if reflection&.user && !reflection.user.login_token.nil?
+        sign_in(reflection.user)
+        Rails.logger.info "✅ Auto-logged in user #{reflection.user.email} via reflection"
+      end
+    end
   end
 end
