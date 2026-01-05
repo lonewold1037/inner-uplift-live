@@ -55,9 +55,9 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
     THE USER'S NAME IS: #{reflection.name_for_recap}
     USE THIS NAME 3-5 TIMES NATURALLY THROUGHOUT (e.g., "#{reflection.name_for_recap}, you...")
 
-    Your task: Continue with Acts 2-5 for EXACTLY 500-520 words (ABSOLUTE MAXIMUM: 620 words).
+    Your task: Continue with Acts 2-5 for EXACTLY 510-530 words (ABSOLUTE MAXIMUM: 620 words).
 
-    🚨 HARD STOP AT 520 WORDS - Audio will cut you off if you exceed this. Count as you write.
+    🚨 HARD STOP AT 530 WORDS - Audio will cut you off if you exceed this. Count as you write.
 
     ⚠️ CRITICAL RULES:
     - DO NOT invent family members, relationships, pets, or people not mentioned
@@ -67,9 +67,9 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
     - NO act numbers, chapter titles, or section headers
 
     🔥 CONTINUATION RULES:
-    - Match Act 1's tone exactly
+    - #{style_instructions(reflection.style)}
     - Stay in second person ("you", "your")
-    - Use "#{reflection.name_for_recap}" naturally 3-5 times
+    - Use "#{reflection.name_for_recap}" naturally 1-3 times max
     - Pick up where Act 1 left off
 
     📍 USER'S ACTUAL STORY (DO NOT ADD TO THIS):
@@ -78,9 +78,8 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
     - Feeling: #{reflection.felt_like}
     - Context: #{reflection.because_of}
     - Hope: #{reflection.lift_up_request}
-    - Style: #{reflection.style}
 
-    Continue Acts 2-5 now (520-540 words max, use #{reflection.name_for_recap} 1-3 times max):
+    Continue Acts 2-5 now (510-530 words max):
     PROMPT
 
     continuation = call_openai(prompt, max_tokens: 1000)  # Reduced to ensure we stay under
@@ -125,6 +124,27 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
     else
       error_message = response_body.dig("error", "message") || "Unknown API error"
       raise "OpenAI API Error: #{error_message}"
+    end
+  end
+
+  def style_instructions(style)
+    case style&.upcase
+    when "REFLECTIVE"
+      "Tone: thoughtful and introspective. Like journaling out loud to yourself. Gentle pauses for processing. Contemplative but not heavy. Ask quiet questions. Let realizations dawn slowly."
+    when "MOTIVATIONAL"
+      "Tone: energizing and empowering. Build momentum throughout. Use strong, active verbs. Make them feel capable and ready to act. Coach energy - firm but believing in them. End with fire."
+    when "HEARTFELT"
+      "Tone: warm and emotionally rich. Tender without being sappy. Let vulnerability shine through naturally. Like a letter you'd write to yourself on a hard day. Acknowledge the weight, honor the feeling."
+    when "HUMOROUS"
+      "Tone: witty and warm. Find the funny side without mocking the memory. Self-aware humor, gentle irony. Make them smile or chuckle. Light touch - don't force jokes. Playful observations about life."
+    when "PEACEFUL"
+      "Tone: serene and grounding. Slow, spacious rhythm. Like a calm lake at dawn. Breathe between thoughts. No rush. Soft landings on each sentence. Meditative, almost hypnotic flow."
+    when "EPIC"
+      "Tone: cinematic and dramatic. They are the hero of this story. Big sweeping moments. Build to crescendos. Use vivid imagery. Movie trailer energy - make their life feel legendary."
+    when "GRATEFUL"
+      "Tone: appreciative and warm. Count the blessings hidden in the memory. Notice the small gifts. Gratitude without toxic positivity - acknowledge the real while finding the gold. Gentle celebration."
+    else
+      "Tone: reflective, calm, intimate"
     end
   end
 end

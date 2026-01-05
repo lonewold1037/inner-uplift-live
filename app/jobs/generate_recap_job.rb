@@ -33,7 +33,7 @@ class GenerateRecapJob < ApplicationJob
     4. Flow like a story with natural rhythm — not choppy fragments.
 
     🎨 STYLE RULES:
-    - Tone: reflective, calm, intimate (like a trusted friend guiding gentle self-discovery)
+    - #{style_instructions(reflection.style)}
     - Use natural rhythm and pauses — light use of ellipses (...) when they feel organic
     - Avoid stage directions, brackets, or excessive punctuation
     - Write in modern, elegant prose — poetic but grounded
@@ -52,7 +52,6 @@ class GenerateRecapJob < ApplicationJob
     - Feeling: #{reflection.felt_like}
     - Context: #{reflection.because_of}
     - What they want to hear: #{reflection.lift_up_request}
-    - Style tone: #{reflection.style}
 
     Write Act 1 now (no labels, just the spoken words) — graceful, emotionally intelligent, and true to their story.
     PROMPT
@@ -98,13 +97,6 @@ class GenerateRecapJob < ApplicationJob
 
   private
 
-  # app/jobs/generate_recap_job.rb
-
-# ... (the perform method and your AI prompt are all perfect) ...
-
-private
-
-# ✅ THE FIX: This method is now simpler and more focused.
   def broadcast_status_update(reflection)
     reflection.broadcast_replace_to(
       reflection,
@@ -112,5 +104,26 @@ private
       partial: "reflections/status_content",
       locals: { reflection: reflection, soundscapes: Soundscape.all }
     )
+  end
+
+  def style_instructions(style)
+    case style&.upcase
+    when "REFLECTIVE"
+      "Tone: thoughtful and introspective. Like journaling out loud to yourself. Gentle pauses for processing. Contemplative but not heavy. Ask quiet questions. Let realizations dawn slowly."
+    when "MOTIVATIONAL"
+      "Tone: energizing and empowering. Build momentum throughout. Use strong, active verbs. Make them feel capable and ready to act. Coach energy - firm but believing in them. End with fire."
+    when "HEARTFELT"
+      "Tone: warm and emotionally rich. Tender without being sappy. Let vulnerability shine through naturally. Like a letter you'd write to yourself on a hard day. Acknowledge the weight, honor the feeling."
+    when "HUMOROUS"
+      "Tone: witty and warm. Find the funny side without mocking the memory. Self-aware humor, gentle irony. Make them smile or chuckle. Light touch - don't force jokes. Playful observations about life."
+    when "PEACEFUL"
+      "Tone: serene and grounding. Slow, spacious rhythm. Like a calm lake at dawn. Breathe between thoughts. No rush. Soft landings on each sentence. Meditative, almost hypnotic flow."
+    when "EPIC"
+      "Tone: cinematic and dramatic. They are the hero of this story. Big sweeping moments. Build to crescendos. Use vivid imagery. Movie trailer energy - make their life feel legendary."
+    when "GRATEFUL"
+      "Tone: appreciative and warm. Count the blessings hidden in the memory. Notice the small gifts. Gratitude without toxic positivity - acknowledge the real while finding the gold. Gentle celebration."
+    else
+      "Tone: reflective, calm, intimate"
+    end
   end  
 end

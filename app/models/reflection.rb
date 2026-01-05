@@ -3,12 +3,13 @@ class Reflection < ApplicationRecord
 
   # Master list for the AI's writing tone
   STYLES = [
-    "Calm",
-    "Hard-hitting",
-    "Funny",
-    "Out of this world",
-    "Exciting",
-    "Meditative"
+    "REFLECTIVE",
+    "MOTIVATIONAL",
+    "HEARTFELT",
+    "HUMOROUS",
+    "PEACEFUL",
+    "EPIC",
+    "GRATEFUL"
   ].freeze
 
   belongs_to :user, optional: true
