@@ -4,7 +4,7 @@ class PurchaseMailer < ApplicationMailer
   def purchase_confirmation(reflection)
     @reflection = reflection
     @user = reflection.user
-    @dashboard_url = "https://memflect.com/users/dashboard?token=#{@user.login_token}"
+    @dashboard_url = "https://memflect.com/dashboard?token=#{@user.login_token}"
     
     mail(
       to: reflection.email,
