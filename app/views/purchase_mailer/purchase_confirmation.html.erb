@@ -3,134 +3,77 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body { 
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
-      line-height: 1.7; 
-      color: #374151; 
-      max-width: 600px; 
-      margin: 0 auto; 
-      padding: 20px;
-      background-color: #f3f4f6;
-    }
-    .wrapper {
-      background: white;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    }
-    .header { 
-      text-align: center; 
-      padding: 40px 20px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-    .logo { 
-      font-size: 42px; 
-      font-weight: 700; 
-      color: white;
-      letter-spacing: -1px;
-      margin: 0;
-    }
-    .content { 
-      padding: 40px 30px; 
-      text-align: center;
-    }
-    .content h2 {
-      color: #1f2937;
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-    .content p {
-      color: #4b5563;
-      font-size: 16px;
-      margin-bottom: 16px;
-    }
-    .button { 
-      display: inline-block; 
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white !important; 
-      padding: 16px 40px; 
-      border-radius: 50px; 
-      text-decoration: none; 
-      font-weight: 600; 
-      font-size: 18px;
-      margin: 25px 0;
-      box-shadow: 0 4px 14px rgba(102, 126, 234, 0.4);
-    }
-    .steps {
-      background: #f9fafb;
-      border-radius: 12px;
-      padding: 25px;
-      margin: 30px 0 10px 0;
-      text-align: left;
-    }
-    .steps h3 {
-      color: #1f2937;
-      font-size: 16px;
-      margin: 0 0 15px 0;
-      text-align: center;
-    }
-    .steps ul {
-      margin: 0;
-      padding-left: 0;
-      list-style: none;
-    }
-    .steps li {
-      padding: 8px 0;
-      padding-left: 28px;
-      position: relative;
-      color: #4b5563;
-      font-size: 15px;
-    }
-    .steps li:before {
-      content: "✓";
-      position: absolute;
-      left: 0;
-      color: #10b981;
-      font-weight: bold;
-    }
-    .footer { 
-      text-align: center; 
-      color: #9ca3af; 
-      font-size: 14px; 
-      padding: 25px;
-      border-top: 1px solid #e5e7eb;
-    }
-    .footer p {
-      margin: 5px 0;
-    }
-  </style>
 </head>
-<body>
-  <div class="wrapper">
-    <div class="header">
-      <h1 class="logo">Memflect</h1>
-    </div>
-    
-    <div class="content">
-      <h2>Thank you for your purchase! 🎉</h2>
-      
-      <p>Your personalized 5-minute Memflection is being crafted now. This usually takes 2-3 minutes.</p>
-      
-      <p>We're weaving your voice and your memory into something uniquely yours.</p>
-      
-      <a href="<%= @dashboard_url %>" class="button">View Your Memflection →</a>
-      
-      <div class="steps">
-        <h3>What's happening now:</h3>
-        <ul>
-          <li>Your personalized script is being written</li>
-          <li>Your voice is narrating the reflection</li>
-          <li>Your chosen soundscape is being blended in</li>
-          <li>You'll have access to download and replay anytime</li>
-        </ul>
-      </div>
-    </div>
-    
-    <div class="footer">
-      <p>Questions? Just reply to this email.</p>
-      <p>© <%= Date.current.year %> Memflect</p>
-    </div>
-  </div>
+<body style="margin: 0; padding: 0; background-color: #1a1a2e; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #1a1a2e; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="max-width: 600px; background: linear-gradient(180deg, #2d2d44 0%, #1a1a2e 100%); border-radius: 24px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+          
+          <!-- Header -->
+          <tr>
+            <td style="padding: 50px 40px 30px 40px; text-align: center;">
+              <h1 style="margin: 0; font-size: 48px; font-weight: 700; background: linear-gradient(135deg, #a78bfa 0%, #f472b6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Memflect</h1>
+            </td>
+          </tr>
+          
+          <!-- Main Content -->
+          <tr>
+            <td style="padding: 20px 40px 40px 40px; text-align: center;">
+              <p style="color: #e2e8f0; font-size: 28px; font-weight: 600; margin: 0 0 20px 0;">Hey there! 🎉</p>
+              
+              <p style="color: #cbd5e1; font-size: 18px; line-height: 1.7; margin: 0 0 15px 0;">Your Memflection is in the works – give it about 2-3 minutes.</p>
+              
+              <p style="color: #94a3b8; font-size: 16px; line-height: 1.7; margin: 0 0 35px 0;">We're taking your voice, your memory, and your chosen soundscape and weaving them into something that's completely yours.</p>
+              
+              <!-- Button -->
+              <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
+                <tr>
+                  <td style="background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); border-radius: 50px; box-shadow: 0 8px 30px rgba(139, 92, 246, 0.4);">
+                    <a href="<%= @dashboard_url %>" style="display: inline-block; padding: 18px 45px; color: #ffffff; font-size: 18px; font-weight: 600; text-decoration: none;">View Your Memflection ✨</a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- What's Happening Section -->
+          <tr>
+            <td style="padding: 0 40px 40px 40px;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="background: rgba(255,255,255,0.05); border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);">
+                <tr>
+                  <td style="padding: 25px 30px;">
+                    <p style="color: #e2e8f0; font-size: 16px; font-weight: 600; margin: 0 0 15px 0; text-align: center;">What's happening right now:</p>
+                    <p style="color: #94a3b8; font-size: 15px; line-height: 2; margin: 0;">
+                      → Your personalized script is being crafted<br>
+                      → Your own voice is narrating the reflection<br>
+                      → Everything's getting mixed with your soundscape<br>
+                      → Soon you'll be able to download and replay anytime
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Personal Sign-off -->
+          <tr>
+            <td style="padding: 0 40px 40px 40px; text-align: center;">
+              <p style="color: #94a3b8; font-size: 15px; line-height: 1.7; margin: 0;">Hit reply if you have any questions – I actually read these!</p>
+              <p style="color: #cbd5e1; font-size: 16px; margin: 20px 0 0 0;">Cheers,<br><strong style="color: #a78bfa;">Ryan</strong> @ Memflect</p>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 25px 40px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
+              <p style="color: #64748b; font-size: 13px; margin: 0;">© <%= Date.current.year %> Memflect</p>
+            </td>
+          </tr>
+          
+        </table>
+      </td>
+    </tr>
+  </table>
 </body>
 </html>
