@@ -58,7 +58,7 @@ class MixAudioJob < ApplicationJob
         "[1:a]volume=#{mix[:music]},equalizer=f=2000:width_type=h:width=2000:g=-3,equalizer=f=100:width_type=h:width=100:g=3[bg];" +
         "[0:a]volume=#{mix[:voice]}," +
         "highpass=f=80," +
-        "equalizer=f=1000:width_type=h:width=500:g=2," +
+        "equalizer=f=3500:width_type=h:width=1500:g=-3," +
         "acompressor=threshold=-20dB:ratio=2:attack=50:release=300[v];" +
         "[bg][v]amix=inputs=2:duration=longest:dropout_transition=2[mixed];[mixed]dynaudnorm=p=0.9:s=5",
         "-t", "30", "-c:a", "libmp3lame", "-q:a", "2",
