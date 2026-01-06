@@ -36,6 +36,14 @@ namespace :soundscapes do
         { name: 'Inspiring Synth 2', file_id: '14EXG_la0qI09tzms9MGUav7CjQHvEYpg', filename: 'inspiring_synth_2.mp3' },
         { name: 'Inspiring Synth 3', file_id: '15Stq_ql7PVfOQIu7CBBjJy_0uMleTl7X', filename: 'inspiring_synth_3.mp3' }
       ],
+      '80s Love Songs' => [
+        { name: '80s Love Songs 1', file_id: '1hhYmQmlRgLB5YNDFeQR8xvVqc8RB9txZ', filename: '80s_love_songs_1.mp3' },
+        { name: '80s Love Songs 2', file_id: '1-XPgjl6uM3Q0CBRvcNWGVaPuL5_EnriZ', filename: '80s_love_songs_2.mp3' }
+      ],
+      '90s Hip Hop' => [
+        { name: '90s Hip Hop 1', file_id: '141ok2ph5rr-h8vPOupOrOO5feSPO0abL', filename: '90s_hip_hop_1.mp3' },
+        { name: '90s Hip Hop 2', file_id: '1bGs1oMlejEHw1DAYLGQNltEDvvPgkgwR', filename: '90s_hip_hop_2.mp3' }
+      ],
       'Cosmic Dream' => [
         { name: 'Nebula Heartbeat', file_id: '1pt8hjT2abB91VaFI0jIiqBDJ9EayL4Fg', filename: 'cosmic_1.mp3' },
         { name: 'Starborne Drift', file_id: '1foE13OuBUesccp-kM91zA1edjUuaFGU6', filename: 'cosmic_2.mp3' }
