@@ -31,6 +31,11 @@ namespace :soundscapes do
         { name: 'The Quiet Hero', file_id: '1THsr_hjo-yy9F_wXdxbCsWtEDodKbFOy', filename: 'piano_2.mp3' },
         { name: 'Echoes of Resolve', file_id: '1FUUefL9-ZsOkG0kbZTR_14X8F5sOI2Q4', filename: 'piano_3.mp3' }
       ],
+      'Inspiring Synth' => [
+        { name: 'Inspiring Synth 1', file_id: '1YHxEvfaRaK1VvDufke4xaFpx3TbHhbLi', filename: 'inspiring_synth_1.mp3' },
+        { name: 'Inspiring Synth 2', file_id: '14EXG_la0qI09tzms9MGUav7CjQHvEYpg', filename: 'inspiring_synth_2.mp3' },
+        { name: 'Inspiring Synth 3', file_id: '15Stq_ql7PVfOQIu7CBBjJy_0uMleTl7X', filename: 'inspiring_synth_3.mp3' }
+      ],
       'Cosmic Dream' => [
         { name: 'Nebula Heartbeat', file_id: '1pt8hjT2abB91VaFI0jIiqBDJ9EayL4Fg', filename: 'cosmic_1.mp3' },
         { name: 'Starborne Drift', file_id: '1foE13OuBUesccp-kM91zA1edjUuaFGU6', filename: 'cosmic_2.mp3' }
