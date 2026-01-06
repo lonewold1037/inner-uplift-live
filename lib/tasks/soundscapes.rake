@@ -40,7 +40,7 @@ namespace :soundscapes do
         { name: '80s Love Songs 1', file_id: '1hhYmQmlRgLB5YNDFeQR8xvVqc8RB9txZ', filename: '80s_love_songs_1.mp3' },
         { name: '80s Love Songs 2', file_id: '1-XPgjl6uM3Q0CBRvcNWGVaPuL5_EnriZ', filename: '80s_love_songs_2.mp3' }
       ],
-      '90s Hip Hop' => [
+      '90s Hip-Hop' => [
         { name: '90s Hip-Hop 1', file_id: '141ok2ph5rr-h8vPOupOrOO5feSPO0abL', filename: '90s_hip_hop_1.mp3' },
         { name: '90s Hip-Hop 2', file_id: '1bGs1oMlejEHw1DAYLGQNltEDvvPgkgwR', filename: '90s_hip_hop_2.mp3' }
       ],
