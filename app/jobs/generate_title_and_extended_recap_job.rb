@@ -55,9 +55,9 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
     THE USER'S NAME IS: #{reflection.name_for_recap}
     USE THIS NAME 3-5 TIMES NATURALLY THROUGHOUT (e.g., "#{reflection.name_for_recap}, you...")
 
-    Your task: Continue with Acts 2-5 for EXACTLY 510-530 words (ABSOLUTE MAXIMUM: 620 words).
+    Your task: Continue with Acts 2-5 for EXACTLY 520-540 words (ABSOLUTE MAXIMUM: 620 words).
 
-    🚨 HARD STOP AT 530 WORDS - Audio will cut you off if you exceed this. Count as you write.
+    🚨 HARD STOP AT 540 WORDS - Audio will cut you off if you exceed this. Count as you write.
 
     ⚠️ CRITICAL RULES:
     - DO NOT invent family members, relationships, pets, or people not mentioned
@@ -79,7 +79,7 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
     - Context: #{reflection.because_of}
     - Hope: #{reflection.lift_up_request}
 
-    Continue Acts 2-5 now (510-530 words max):
+    Continue Acts 2-5 now (520-540 words max):
     PROMPT
 
     continuation = call_openai(prompt, max_tokens: 1000)  # Reduced to ensure we stay under

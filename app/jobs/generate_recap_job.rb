@@ -42,7 +42,7 @@ class GenerateRecapJob < ApplicationJob
 
     🔥 ACT 1 THEMES TO INTRODUCE (not resolve):
     - The memory itself (use their actual words/tone where possible)
-    - The emotion that rose within (use THEIR language: "like superman" = feel invincible, powerful)
+    - The emotion that rose within (use THEIR language but enrich it with the users chosen #{style_instructions(reflection.style)})
     - A brief glimmer of meaning or realization
     - A seed of hope or strength
     - End with forward momentum — leave space for Acts 2-5 to expand the journey
