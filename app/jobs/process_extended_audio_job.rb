@@ -204,7 +204,7 @@ class ProcessExtendedAudioJob < ApplicationJob
     when "ambient_blend"
       { voice: 1.0, music: 0.25 }
     else # "balanced" or nil
-      { voice: 2.0, music: 0.25 }
+      { voice: 1.8, music: 0.18 }
     end
   end
 end
