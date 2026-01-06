@@ -8,7 +8,7 @@ class PurchaseMailer < ApplicationMailer
     
     mail(
       to: reflection.email,
-      subject: "Your Memflection is being created! ✨"
+      subject: "Your Memflection is being created! ✨",
       reply_to: "ryan@memflect.com"
     )
   end
