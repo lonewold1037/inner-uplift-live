@@ -87,7 +87,7 @@ class ProcessExtendedAudioJob < ApplicationJob
     request["xi-api-key"] = ENV["ELEVEN_LABS_API_KEY"]
     request.body = {
       text: poetic_script,
-      model_id: "eleven_flash_v2_5",
+      model_id: "eleven_multilingual_v2",
       output_format: "mp3_44100_128",
       voice_settings: {
         stability: 0.80,
