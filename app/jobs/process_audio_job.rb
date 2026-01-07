@@ -144,7 +144,7 @@ class ProcessAudioJob < ApplicationJob
     headers = { "Accept" => "audio/mpeg", "Content-Type" => "application/json", "xi-api-key" => ENV["ELEVEN_LABS_API_KEY"] }
     body = {
       text: poetic_script,
-      model_id: "eleven_multilingual_v2",
+      model_id: "eleven_flash_v2_5",
       output_format: "mp3_44100_128"
     }.to_json
     response = Net::HTTP.post(uri, body, headers)
