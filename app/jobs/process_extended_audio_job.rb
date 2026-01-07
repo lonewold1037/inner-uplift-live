@@ -88,7 +88,13 @@ class ProcessExtendedAudioJob < ApplicationJob
     request.body = {
       text: poetic_script,
       model_id: "eleven_multilingual_v2",
-      output_format: "mp3_44100_128"
+      output_format: "mp3_44100_128",
+      voice_settings: {
+        stability: 0.80,
+        similarity_boost: 0.95,
+        speed: 0.91,
+        use_speaker_boost: true
+      }
     }.to_json
 
     response = http.request(request)  # ✅ Uses your configured http object
