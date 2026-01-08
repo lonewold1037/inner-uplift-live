@@ -176,14 +176,14 @@ class ProcessExtendedAudioJob < ApplicationJob
     return "" unless text.present?
 
     text
-      # turn normal clause endings into gentle pauses
-      .gsub(/([a-z])([,;:])\s/i, '\1...\2 ')
-      # soften sentence breaks a bit
-      .gsub(/([^.])\.\s+([A-Z])/, '\1... \2')
-      # slight hesitation before connectors
-      .gsub(/\b(but|and|so|yet)\b/i, '...\1')
-      # clean up accidental triple dots
-      .gsub(/\.{4,}/, '...')
+      # Add SSML breaks after sentences for natural pacing
+      .gsub(/\.\s+/, '.<break time="0.8s"/> ')
+      # Shorter pause after commas
+      .gsub(/,\s+/, ',<break time="0.3s"/> ')
+      # Pause before emotional connectors
+      .gsub(/\b(but|and|so|yet|because)\b/i, '<break time="0.2s"/>\1')
+      # Paragraph breaks get longer pauses
+      .gsub(/\n\n/, '<break time="1.2s"/>')
       .strip
   end
 
