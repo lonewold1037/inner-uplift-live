@@ -37,7 +37,9 @@
 
       <div>
         <%= form.label :felt_like, "It made me feel...", class: "block text-white font-medium tracking-wide text-lg mb-2" %>
-        <% if defined?(SPEECH_TO_TEXT_ENABLED) && SPEECH_TO_TEXT_ENABLED %>
+        
+        <%# --- TEST FIX: Added "Features::" namespace here --- %>
+        <% if defined?(Features::SPEECH_TO_TEXT_ENABLED) && Features::SPEECH_TO_TEXT_ENABLED %>
           <div data-controller="speech-to-text" class="relative">
             <%= form.text_area :felt_like, rows: 4, data: { speech_to_text_target: "input" }, class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 pr-10 focus:outline-none focus:border-sky-400" %>
             <button type="button" data-speech-to-text-target="button" data-action="click->speech-to-text#toggle" class="absolute right-3 top-3 text-white/50 hover:text-white transition-colors">

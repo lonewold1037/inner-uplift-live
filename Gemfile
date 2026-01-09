@@ -55,3 +55,4 @@ gem 'stripe', '~> 12.0'
 
 gem 'rack-attack'
 gem 'postmark-rails'
+gem "ruby-openai"
