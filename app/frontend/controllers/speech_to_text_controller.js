@@ -4,7 +4,6 @@ export default class extends Controller {
   static targets = ["input", "button"]
 
   connect() {
-    // Check if browser supports speech recognition
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
     
     if (!SpeechRecognition) {
