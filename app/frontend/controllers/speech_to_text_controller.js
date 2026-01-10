@@ -12,21 +12,37 @@ export default class extends Controller {
     }
 
     this.recognition = new SpeechRecognition()
-    this.recognition.continuous = false
-    this.recognition.interimResults = true
+    
+    // THE MAGIC SAUCE:
+    // true = keep listening even if I pause/breathe (fixes the 20-word limit)
+    this.recognition.continuous = true 
+    
+    // true = show words as I speak them (feels faster)
+    this.recognition.interimResults = true 
+    
     this.recognition.lang = 'en-US'
     this.isListening = false
 
     this.recognition.onresult = (event) => {
-      const transcript = Array.from(event.results)
+      // Get the text just from this current speaking session
+      const currentTranscript = Array.from(event.results)
         .map(result => result[0].transcript)
         .join('')
       
-      this.inputTarget.value = transcript
+      // LOGIC UPGRADE: 
+      // Instead of replacing the whole value, we append the new speech 
+      // to whatever was in the box when we started.
+      // This allows you to type a bit, click mic, talk, click stop, type more, click mic...
+      const spacing = (this.originalText && this.originalText.length > 0) ? " " : ""
+      this.inputTarget.value = this.originalText + spacing + currentTranscript
+      
       this.inputTarget.dispatchEvent(new Event('input', { bubbles: true }))
     }
 
     this.recognition.onend = () => {
+      // If the browser stopped it (silence timeout) but we didn't want it to stop,
+      // you could technically force a restart here. 
+      // But for now, we'll just update the UI so the user knows it stopped.
       this.isListening = false
       this.buttonTarget.classList.remove('text-red-400')
       this.buttonTarget.classList.add('text-white/50')
@@ -43,7 +59,12 @@ export default class extends Controller {
   toggle() {
     if (this.isListening) {
       this.recognition.stop()
+      // UI updates happen in onend()
     } else {
+      // SNAPSHOT: Remember what is currently in the box before we start listening
+      // This prevents the new speech from overwriting your old notes.
+      this.originalText = this.inputTarget.value
+      
       this.recognition.start()
       this.isListening = true
       this.buttonTarget.classList.remove('text-white/50')
