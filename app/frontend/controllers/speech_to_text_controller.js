@@ -50,10 +50,11 @@ export default class extends Controller {
         this.confirmedText = (this.confirmedText ? this.confirmedText + " " : "") + newFinal
       }
 
+      // Always show what we have so far
       const base = [this.originalText.trim(), this.confirmedText.trim()].filter(Boolean).join(" ")
-      const display = [base, interim].filter(Boolean).join(" ")
+      const display = interim ? [base, interim].filter(Boolean).join(" ") : base
 
-      this.inputTarget.value = display
+      this.inputTarget.value = display || this.originalText
 
       // ⚠️ Important: avoid firing extra input events unless you truly need it.
       // If you need it (for a character counter etc), throttle it.
