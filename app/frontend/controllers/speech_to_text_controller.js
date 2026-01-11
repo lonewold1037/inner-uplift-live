@@ -24,17 +24,31 @@ export default class extends Controller {
     this.isListening = false
 
     this.recognition.onresult = (event) => {
-      // Get the text just from this current speaking session
-      const currentTranscript = Array.from(event.results)
-        .map(result => result[0].transcript)
-        .join('')
+      let finalTranscript = ''
+      let interimTranscript = ''
       
-      // LOGIC UPGRADE: 
-      // Instead of replacing the whole value, we append the new speech 
-      // to whatever was in the box when we started.
-      // This allows you to type a bit, click mic, talk, click stop, type more, click mic...
+      // Separate final results from interim results
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript
+        if (event.results[i].isFinal) {
+          finalTranscript += transcript
+        } else {
+          interimTranscript = transcript
+        }
+      }
+      
+      // Build the display: original text + confirmed finals + current interim
       const spacing = (this.originalText && this.originalText.length > 0) ? " " : ""
-      this.inputTarget.value = this.originalText + spacing + currentTranscript
+      
+      // Accumulate final results
+      if (finalTranscript) {
+        this.confirmedText = (this.confirmedText || this.originalText) + spacing + finalTranscript
+      }
+      
+      // Show confirmed + interim (interim will be replaced as you speak)
+      const base = this.confirmedText || this.originalText || ''
+      const interimSpacing = (base.length > 0 && interimTranscript) ? " " : ""
+      this.inputTarget.value = base + interimSpacing + interimTranscript
       
       this.inputTarget.dispatchEvent(new Event('input', { bubbles: true }))
     }
@@ -64,6 +78,7 @@ export default class extends Controller {
       // SNAPSHOT: Remember what is currently in the box before we start listening
       // This prevents the new speech from overwriting your old notes.
       this.originalText = this.inputTarget.value
+      this.confirmedText = null  // Reset confirmed text for new session
       
       this.recognition.start()
       this.isListening = true
