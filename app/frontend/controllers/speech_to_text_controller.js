@@ -5,85 +5,126 @@ export default class extends Controller {
 
   connect() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
-    
+
     if (!SpeechRecognition) {
-      this.buttonTarget.style.display = 'none'
+      if (this.hasButtonTarget) this.buttonTarget.style.display = "none"
       return
     }
 
+    // If Turbo reconnects, ensure we don't leave old recognizers alive
+    this._teardown()
+
     this.recognition = new SpeechRecognition()
-    
-    // THE MAGIC SAUCE:
-    // true = keep listening even if I pause/breathe (fixes the 20-word limit)
-    this.recognition.continuous = true 
-    
-    // true = show words as I speak them (feels faster)
-    this.recognition.interimResults = true 
-    
-    this.recognition.lang = 'en-US'
+    this.recognition.continuous = true
+    this.recognition.interimResults = true
+    this.recognition.lang = "en-US"
+
     this.isListening = false
 
+    // Buffers
+    this.originalText = this.inputTarget.value || ""
+    this.confirmedText = ""
+    this.lastFinalChunk = ""
+
     this.recognition.onresult = (event) => {
-      let finalTranscript = ''
-      let interimTranscript = ''
-      
-      // Separate final results from interim results
+      let newFinal = ""
+      let interim = ""
+
       for (let i = event.resultIndex; i < event.results.length; i++) {
-        const transcript = event.results[i][0].transcript
-        if (event.results[i].isFinal) {
-          finalTranscript += transcript
+        const res = event.results[i]
+        const transcript = (res[0]?.transcript || "").trim()
+        if (!transcript) continue
+
+        if (res.isFinal) {
+          // De-dupe repeated final emissions
+          if (transcript !== this.lastFinalChunk) {
+            newFinal += (newFinal ? " " : "") + transcript
+            this.lastFinalChunk = transcript
+          }
         } else {
-          interimTranscript = transcript
+          interim = transcript
         }
       }
-      
-      // Build the display: original text + confirmed finals + current interim
-      const spacing = (this.originalText && this.originalText.length > 0) ? " " : ""
-      
-      // Accumulate final results
-      if (finalTranscript) {
-        this.confirmedText = (this.confirmedText || this.originalText) + spacing + finalTranscript
+
+      if (newFinal) {
+        this.confirmedText = (this.confirmedText ? this.confirmedText + " " : "") + newFinal
       }
-      
-      // Show confirmed + interim (interim will be replaced as you speak)
-      const base = this.confirmedText || this.originalText || ''
-      const interimSpacing = (base.length > 0 && interimTranscript) ? " " : ""
-      this.inputTarget.value = base + interimSpacing + interimTranscript
-      
-      this.inputTarget.dispatchEvent(new Event('input', { bubbles: true }))
+
+      const base = [this.originalText.trim(), this.confirmedText.trim()].filter(Boolean).join(" ")
+      const display = [base, interim].filter(Boolean).join(" ")
+
+      this.inputTarget.value = display
+
+      // ⚠️ Important: avoid firing extra input events unless you truly need it.
+      // If you need it (for a character counter etc), throttle it.
+      // this.inputTarget.dispatchEvent(new Event("input", { bubbles: true }))
     }
 
     this.recognition.onend = () => {
-      // If the browser stopped it (silence timeout) but we didn't want it to stop,
-      // you could technically force a restart here. 
-      // But for now, we'll just update the UI so the user knows it stopped.
       this.isListening = false
-      this.buttonTarget.classList.remove('text-red-400')
-      this.buttonTarget.classList.add('text-white/50')
+      this._setIdle()
     }
 
     this.recognition.onerror = (event) => {
-      console.error('Speech recognition error:', event.error)
+      console.error("Speech recognition error:", event.error)
       this.isListening = false
-      this.buttonTarget.classList.remove('text-red-400')
-      this.buttonTarget.classList.add('text-white/50')
+      this._setIdle()
     }
+
+    this._setIdle()
+  }
+
+  disconnect() {
+    // CRITICAL: prevent zombie recognizers when Turbo swaps DOM
+    this._teardown()
   }
 
   toggle() {
+    if (!this.recognition) return
+
     if (this.isListening) {
       this.recognition.stop()
-      // UI updates happen in onend()
-    } else {
-      // SNAPSHOT: Remember what is currently in the box before we start listening
-      // This prevents the new speech from overwriting your old notes.
-      this.originalText = this.inputTarget.value
-      this.confirmedText = null  // Reset confirmed text for new session
-      
+      return
+    }
+
+    // Snapshot what exists before listening starts
+    this.originalText = (this.inputTarget.value || "").trim()
+    this.confirmedText = ""
+    this.lastFinalChunk = ""
+
+    try {
       this.recognition.start()
       this.isListening = true
-      this.buttonTarget.classList.remove('text-white/50')
-      this.buttonTarget.classList.add('text-red-400')
+      this._setListening()
+    } catch (e) {
+      console.warn("recognition.start() failed (double start?)", e)
     }
+  }
+
+  _teardown() {
+    if (!this.recognition) return
+    try {
+      this.recognition.onresult = null
+      this.recognition.onend = null
+      this.recognition.onerror = null
+      this.recognition.stop()
+    } catch (_) {
+      // ignore
+    } finally {
+      this.recognition = null
+      this.isListening = false
+    }
+  }
+
+  _setListening() {
+    if (!this.hasButtonTarget) return
+    this.buttonTarget.classList.remove("text-white/50")
+    this.buttonTarget.classList.add("text-red-400")
+  }
+
+  _setIdle() {
+    if (!this.hasButtonTarget) return
+    this.buttonTarget.classList.remove("text-red-400")
+    this.buttonTarget.classList.add("text-white/50")
   }
 }
