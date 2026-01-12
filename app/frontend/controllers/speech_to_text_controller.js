@@ -50,16 +50,14 @@ export default class extends Controller {
         this.confirmedText = (this.confirmedText ? this.confirmedText + " " : "") + newFinal
       }
 
-      // Always show what we have so far
+      // Always show accumulated confirmed text + current interim
       const base = [this.originalText.trim(), this.confirmedText.trim()].filter(Boolean).join(" ")
-      const display = interim ? [base, interim].filter(Boolean).join(" ") : base
+      const display = base + (interim ? " " + interim : "")
 
-      this.inputTarget.value = display || this.originalText
-
-      // ⚠️ Important: avoid firing extra input events unless you truly need it.
-      // If you need it (for a character counter etc), throttle it.
-      // this.inputTarget.dispatchEvent(new Event("input", { bubbles: true }))
-    }
+      // Only update if different to avoid cursor jumping
+      if (this.inputTarget.value !== display) {
+        this.inputTarget.value = display
+      }
 
     this.recognition.onend = () => {
       this.isListening = false
