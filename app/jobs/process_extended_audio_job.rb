@@ -90,9 +90,9 @@ class ProcessExtendedAudioJob < ApplicationJob
       model_id: "eleven_multilingual_v2",
       output_format: "mp3_44100_128",
       voice_settings: {
-        stability: 0.80,
+        stability: 0.85,
         similarity_boost: 0.95,
-        speed: 0.91,
+        speed: 0.90,
         use_speaker_boost: true
       }
     }.to_json
@@ -210,7 +210,7 @@ class ProcessExtendedAudioJob < ApplicationJob
     when "ambient_blend"
       { voice: 1.0, music: 0.25 }
     else # "balanced" or nil
-      { voice: 1.8, music: 0.16 }
+      { voice: 2.0, music: 0.13 }
     end
   end
 end

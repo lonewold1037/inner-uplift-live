@@ -124,7 +124,7 @@ class MixAudioJob < ApplicationJob
     when "ambient_blend"
       { voice: 1.0, music: 0.25 }
     else # "balanced" or nil
-      { voice: 1.8, music: 0.16 }
+      { voice: 2.0, music: 0.13 }
     end
   end
 end
