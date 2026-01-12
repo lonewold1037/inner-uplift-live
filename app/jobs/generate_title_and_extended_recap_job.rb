@@ -65,6 +65,7 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
     - NO act numbers, chapter titles, or section headers
 
     🔥 CONTINUATION RULES:
+     - Write EXACTLY 550-580 words (critical for audio timing)
     - #{style_instructions(reflection.style)}
     - Stay in second person ("you", "your")
     - Use "#{reflection.name_for_recap}" naturally 1 time at the tail end of Act 5
@@ -80,7 +81,7 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
     Continue Acts 2-5 now:
     PROMPT
 
-    continuation = call_openai(prompt, max_tokens: 1000)  # Reduced to ensure we stay under
+    continuation = call_openai(prompt, max_tokens: 900)  # Reduced to ensure we stay under
     
     words = continuation.split
     if words.count > 600
