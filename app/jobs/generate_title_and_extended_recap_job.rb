@@ -55,9 +55,7 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
     THE USER'S NAME IS: #{reflection.name_for_recap}
     USE THIS NAME 3-5 TIMES NATURALLY THROUGHOUT (e.g., "#{reflection.name_for_recap}, you...")
 
-    Your task: Continue with Acts 2-5 for EXACTLY 500-520 words (ABSOLUTE MAXIMUM: 480 words).
-
-    🚨 HARD STOP AT 450 WORDS - Audio will cut you off if you exceed this. Count as you write.
+    Your task: Continue with Acts 2-5 for EXACTLY 550-580 words to fill 4:45 of audio.
 
     ⚠️ CRITICAL RULES:
     - DO NOT invent family members, relationships, pets, or people not mentioned
@@ -79,16 +77,15 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
     - Context: #{reflection.because_of}
     - Hope: #{reflection.lift_up_request}
 
-    Continue Acts 2-5 now (500-520 words max):
+    Continue Acts 2-5 now:
     PROMPT
 
-    continuation = call_openai(prompt, max_tokens: 750)  # Reduced to ensure we stay under
+    continuation = call_openai(prompt, max_tokens: 1000)  # Reduced to ensure we stay under
     
-    # HARD TRUNCATION at 600 words (leaves room for recap to total ~740 words = ~4:45 of audio)
     words = continuation.split
-    if words.count > 520
+    if words.count > 600
       Rails.logger.warn "⚠️ GPT generated #{words.count} words, truncating to 600"
-      continuation = words.first(500).join(' ')
+      continuation = words.first(600).join(' ')
       # Ensure we end on a complete sentence
       continuation = continuation.sub(/[^.!?]*\z/, '').strip
     end
