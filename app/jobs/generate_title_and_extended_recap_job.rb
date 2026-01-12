@@ -55,7 +55,7 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
     THE USER'S NAME IS: #{reflection.name_for_recap}
     USE THIS NAME 3-5 TIMES NATURALLY THROUGHOUT (e.g., "#{reflection.name_for_recap}, you...")
 
-    Your task: Continue with Acts 2-5 for EXACTLY 550-580 words to fill 4:45 of audio.
+    Your task: Continue with Acts 2-5 for EXACTLY 490-520 words to fill 4:45 of audio.
 
     ⚠️ CRITICAL RULES:
     - DO NOT invent family members, relationships, pets, or people not mentioned
@@ -65,7 +65,7 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
     - NO act numbers, chapter titles, or section headers
 
     🔥 CONTINUATION RULES:
-     - Write EXACTLY 550-580 words (critical for audio timing)
+     - Write EXACTLY 490-520 words (critical for audio timing)
     - #{style_instructions(reflection.style)}
     - Stay in second person ("you", "your")
     - Use "#{reflection.name_for_recap}" naturally 1 time at the tail end of Act 5
@@ -84,9 +84,9 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
     continuation = call_openai(prompt, max_tokens: 900)  # Reduced to ensure we stay under
     
     words = continuation.split
-    if words.count > 600
+    if words.count > 550
       Rails.logger.warn "⚠️ GPT generated #{words.count} words, truncating to 600"
-      continuation = words.first(600).join(' ')
+      continuation = words.first(550).join(' ')
       # Ensure we end on a complete sentence
       continuation = continuation.sub(/[^.!?]*\z/, '').strip
     end
