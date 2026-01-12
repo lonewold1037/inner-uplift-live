@@ -58,6 +58,7 @@ export default class extends Controller {
       if (this.inputTarget.value !== display) {
         this.inputTarget.value = display
       }
+    }
 
     this.recognition.onend = () => {
       this.isListening = false
