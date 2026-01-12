@@ -3,15 +3,15 @@
     
     <!-- STEP 1 Header -->
     <div>
-      <h1 class="text-center text-3xl font-semibold tracking-wider text-white">
+      <h1 class="text-center text-4xl font-semibold tracking-wider text-white">
         Step 1: Get Your Device Ready
       </h1>
     </div>
     
     <!-- Audio Quality Warning Banner - DARK CRIMSON -->
-    <div class="bg-red-950/40 border-2 border-red-700/60 text-white px-6 py-6 rounded-xl max-w-fit mx-auto">
-      <p class="font-semibold tracking-wide text-xl mb-4 text-center">🎤 For Best Audio Quality:</p>
-      <ul class="text-sm space-y-2 text-left mx-auto" style="max-width: 28rem;">
+    <div class="bg-red-950/40 border-2 border-red-700/60 text-white px-8 py-8 rounded-xl max-w-2xl mx-auto">
+      <p class="font-semibold tracking-wide text-2xl mb-6 text-center">🎤 For Best Audio Quality:</p>
+      <ul class="text-lg space-y-3 text-left mx-auto" style="max-width: 36rem;">
         <li class="flex items-start">
           <span class="mr-2 flex-shrink-0 mt-0.5">•</span>
           <span><strong>Turn OFF Bluetooth</strong> (earbuds, headphones, speakers)</span>
@@ -29,16 +29,16 @@
 
     <!-- STEP 2 Header -->
     <div class="pt-4">
-      <h1 class="text-center text-3xl font-semibold tracking-wider text-white">
-        Step 2: Speak the Memflect Mantra
+      <h1 class="text-center text-4xl font-semibold tracking-wider text-white">
+        Step 2: Click Start Recording and Speak the Memflect Mantra
       </h1>
-      <p class="text-center text-slate-300 text-sm mt-2 italic">(slow and clearly)</p>
+      <p class="text-center text-slate-300 text-lg mt-2 italic">(slow and clearly)</p>
     </div>
 
     <!-- Recording Section -->
     <div class="bg-black/50 backdrop-blur-xl p-8 rounded-2xl shadow-lg border border-white/20 text-center">
       <p class="mb-6 text-lg text-white font-medium tracking-wide leading-relaxed">
-        "I, <%= @reflection.name_for_recap %>, am excited to begin using Memflect to transform my memories into personalized audio reflections. I understand how powerful it can be to truly listen to my own experiences, spoken in my own voice, and I'm ready to use this as a meaningful tool for self-understanding and growth in my daily life."
+        "I, <%= @reflection.name_for_recap %>, am exploring Memflect to see how it transforms my memories into personalized audio reflections. I'm curious about what it might feel like to truly listen to my own experiences, spoken in my own voice—whether in the car, on a walk, before bed, or starting my day. I'm open to discovering how this could become a meaningful tool for self-understanding and growth."
       </p>
       <button id="recordButton" class="inline-block bg-green-600 hover:bg-green-500 text-white font-medium tracking-wider py-5 px-10 rounded-full focus:outline-none focus:shadow-outline text-lg shadow-lg hover:shadow-green-500/50 transition-all">
         Start Recording
