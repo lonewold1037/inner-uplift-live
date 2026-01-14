@@ -1,3 +1,22 @@
+<script>
+  // Detect Brave browser and warn user
+  if (navigator.brave && navigator.brave.isBrave()) {
+    window.addEventListener('DOMContentLoaded', () => {
+      const warning = document.createElement('div');
+      warning.className = 'bg-yellow-500/20 border-2 border-yellow-500 text-white px-6 py-4 rounded-xl mb-6 max-w-2xl mx-auto mt-20';
+      warning.innerHTML = `
+        <p class="font-semibold text-lg mb-2">⚠️ Brave Browser Detected</p>
+        <p class="text-sm">Brave's privacy settings may block microphone access. If recording doesn't work, please:</p>
+        <ul class="text-sm mt-2 ml-4 list-disc">
+          <li>Allow microphone access in Brave Settings → Site Settings → Microphone, or</li>
+          <li>Try Safari or Chrome instead</li>
+        </ul>
+      `;
+      document.body.insertBefore(warning, document.body.firstChild);
+    });
+  }
+</script>
+
 <div class="min-h-screen flex items-center justify-center py-8 px-4 pt-16">
   <div class="max-w-2xl w-full space-y-6">
     
