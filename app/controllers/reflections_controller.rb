@@ -130,7 +130,7 @@ class ReflectionsController < ApplicationController
             name: 'Extended Memflection (5 minutes)',
             description: 'Full-length personalized audio reflection'
           },
-          unit_amount: 299
+          unit_amount: 399
         },
         quantity: 1
       }],
