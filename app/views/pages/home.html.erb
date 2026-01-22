@@ -45,20 +45,59 @@
       <% end %>
     </div>
 
+    <!-- Who It's For - Rotating Text (Stripe Style) -->
+    <div class="mt-12 mb-8 text-center">
+      <p class="text-slate-400 text-lg md:text-xl font-light tracking-wide">
+        <span id="rotating-text" class="text-sky-400 font-medium transition-opacity duration-700">Built for real life</span>
+      </p>
+    </div>
+
+    <script>
+      const phrases = [
+        "Built for real life",
+        "Made for everyday thinking",
+        "For people who think things through",
+        "A place to collect your thoughts",
+        "For moments that stick with you",
+        "For memories worth keeping",
+        "For busy people",
+        "For long days and quiet nights",
+        "For people who don't journal",
+        "Just talk — we'll handle the rest",
+        "Your voice, your pace",
+        "For things you don't want to forget",
+        "For moments that mattered",
+        "For figuring things out as you go",
+        "Simple by design",
+        "Private by default"
+      ];
+      
+      let currentIndex = 0;
+      const rotatingText = document.getElementById('rotating-text');
+      
+      function rotateText() {
+        // Fade out
+        rotatingText.style.opacity = '0';
+        
+        setTimeout(() => {
+          // Change text
+          currentIndex = (currentIndex + 1) % phrases.length;
+          rotatingText.textContent = phrases[currentIndex];
+          
+          // Fade in
+          rotatingText.style.opacity = '1';
+        }, 700);
+      }
+      
+      setInterval(rotateText, 4000);
+    </script>
+
     <!-- Science Behind It Banner -->
     <div class="mt-16 max-w-2xl mx-auto">
       <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8 relative">
         
-        <!-- Science Sources Button -->
-        <button onclick="document.getElementById('science-modal').classList.remove('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-sm flex items-center gap-1 transition-colors">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-          Sources
-        </button>
-
         <!-- Header -->
-        <h2 class="text-xl md:text-2xl font-semibold text-white text-center mb-8 tracking-wide">The Science Behind Memflect</h2>
+        <h2 class="text-xl md:text-2xl font-semibold text-white text-center mb-8 tracking-wide">What Does Memflect Help With?</h2>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-slate-300">
           
@@ -80,9 +119,20 @@
             <p class="text-sm leading-relaxed">Structured reflection on difficult & positive experiences has been shown to increase resilience, meaning-making, and personal growth.</p>
           </div>
           
-        </div>
-      </div>
-    </div>
+        </div> <!-- closes grid -->
+
+        <!-- Science Sources Button - Bottom Center -->
+        <div class="mt-8 text-center">
+          <button onclick="document.getElementById('science-modal').classList.remove('hidden')" class="text-slate-400 hover:text-white text-sm flex items-center gap-1 transition-colors mx-auto">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            View Sources
+          </button>
+        </div> <!-- closes button wrapper -->
+        
+      </div> <!-- closes glass card -->
+    </div> <!-- closes outer container -->
 
     <!-- Secondary CTA -->
     <div class="mt-8">
