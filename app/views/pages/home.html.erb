@@ -49,38 +49,45 @@
     <div class="mt-16 max-w-2xl mx-auto">
       <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8 relative">
         
-        <!-- Science Sources Button -->
-        <button onclick="document.getElementById('science-modal').classList.remove('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-sm flex items-center gap-1 transition-colors">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-          Sources
-        </button>
+        <!-- Science Behind It Banner -->
+        <div class="mt-16 max-w-2xl mx-auto">
+          <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8 relative">
+            
+            <!-- Science Sources Button -->
+            <button onclick="document.getElementById('science-modal').classList.remove('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-sm flex items-center gap-1 transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              Sources
+            </button>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-slate-300">
-          
-          <div class="text-center">
-            <div class="text-3xl mb-3">🧠</div>
-            <p class="text-sm leading-relaxed">Your voice activates deeper neural pathways for memory consolidation</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-slate-300">
+              
+              <div class="text-center">
+                <div class="text-4xl mb-4">🧠</div>
+                <h3 class="text-white font-semibold tracking-wider mb-3 uppercase">Neural Pathways</h3>
+                <p class="text-sm leading-relaxed">Self-referential processing (hearing yourself) activates the medial prefrontal cortex, which is crucial for autobiographical memory and self-awareness.</p>
+              </div>
+              
+              <div class="text-center">
+                <div class="text-4xl mb-4">💭</div>
+                <h3 class="text-white font-semibold tracking-wider mb-3 uppercase">Emotional Regulation</h3>
+                <p class="text-sm leading-relaxed">Ambient music engages the limbic system (amygdala, hippocampus), reducing stress hormones while enhancing memory consolidation.</p>
+              </div>
+              
+              <div class="text-center">
+                <div class="text-4xl mb-4">🌱</div>
+                <h3 class="text-white font-semibold tracking-wider mb-3 uppercase">Reflective Growth</h3>
+                <p class="text-sm leading-relaxed">Structured reflection on difficult & positive experiences has been shown to increase resilience, meaning-making, and personal growth.</p>
+              </div>
+              
+            </div>
           </div>
-          
-          <div class="text-center">
-            <div class="text-3xl mb-3">🎵</div>
-            <p class="text-sm leading-relaxed">Ambient soundscapes enhance emotional processing and retention</p>
-          </div>
-          
-          <div class="text-center">
-            <div class="text-3xl mb-3">💭</div>
-            <p class="text-sm leading-relaxed">Reflection transforms experiences into lasting wisdom and growth</p>
-          </div>
-          
         </div>
-      </div>
-    </div>
 
     <!-- Secondary CTA -->
     <div class="mt-8">
-      <%= link_to "Let Me Try 30 Seconds", new_reflection_path, class: "inline-block text-sky-400 hover:text-sky-300 font-medium tracking-wide text-lg underline decoration-2 underline-offset-4 transition-colors" %>
+      <%= link_to "Let Me Try 30 Seconds for Free!", new_reflection_path, class: "inline-block text-sky-400 hover:text-sky-300 font-medium tracking-wide text-lg underline decoration-2 underline-offset-4 transition-colors" %>
     </div>
 
   </div>
@@ -88,28 +95,31 @@
 
 <!-- Science Sources Modal -->
 <div id="science-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-  <div class="bg-slate-900 rounded-2xl max-w-2xl w-full p-8 relative border border-white/10">
+  <div class="bg-slate-900 rounded-2xl max-w-2xl w-full p-8 relative border border-white/10 max-h-[80vh] overflow-y-auto">
     <button onclick="document.getElementById('science-modal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-2xl">✕</button>
     
     <h2 class="text-2xl font-bold text-white mb-6">Scientific Evidence</h2>
     
     <div class="space-y-6 text-slate-300 text-sm">
       <div>
-        <h3 class="font-semibold text-white mb-2">🧠 Voice & Memory</h3>
-        <p class="mb-2">Self-referential processing activates the medial prefrontal cortex, enhancing memory encoding and retrieval.</p>
-        <a href="https://www.nature.com/articles/nrn2317" target="_blank" class="text-sky-400 hover:text-sky-300 underline">Northoff et al., 2006 - Nature Reviews Neuroscience</a>
+        <h3 class="font-semibold text-white mb-2 uppercase">🧠 Neural Pathways</h3>
+        <p class="mb-2">Self-referential processing activates the medial prefrontal cortex, enhancing autobiographical memory encoding and self-awareness.</p>
+        <a href="https://pubmed.ncbi.nlm.nih.gov/16439281/" target="_blank" class="text-sky-400 hover:text-sky-300 underline block mb-1">Northoff & Bermpohl (2004) - Cortical Midline Structures and the Self</a>
+        <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2605405/" target="_blank" class="text-sky-400 hover:text-sky-300 underline block">Kelley et al. (2002) - Finding the Self? An Event-Related fMRI Study</a>
       </div>
       
       <div>
-        <h3 class="font-semibold text-white mb-2">🎵 Music & Emotion</h3>
-        <p class="mb-2">Ambient music reduces cortisol levels and enhances emotional regulation during cognitive tasks.</p>
-        <a href="https://www.frontiersin.org/articles/10.3389/fpsyg.2013.00863/full" target="_blank" class="text-sky-400 hover:text-sky-300 underline">Thoma et al., 2013 - Frontiers in Psychology</a>
+        <h3 class="font-semibold text-white mb-2 uppercase">💭 Emotional Regulation</h3>
+        <p class="mb-2">Music activates limbic and paralimbic brain areas, reducing cortisol levels and enhancing emotional processing during reflection.</p>
+        <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3741536/" target="_blank" class="text-sky-400 hover:text-sky-300 underline block mb-1">Chanda & Levitin (2013) - The Neurochemistry of Music</a>
+        <a href="https://pubmed.ncbi.nlm.nih.gov/21147893/" target="_blank" class="text-sky-400 hover:text-sky-300 underline block">Blood & Zatorre (2001) - Intensely Pleasurable Responses to Music</a>
       </div>
       
       <div>
-        <h3 class="font-semibold text-white mb-2">💭 Reflection & Growth</h3>
-        <p class="mb-2">Structured reflection on personal experiences promotes post-traumatic growth and resilience.</p>
-        <a href="https://psycnet.apa.org/record/2006-10592-002" target="_blank" class="text-sky-400 hover:text-sky-300 underline">Tedeschi & Calhoun, 2004 - Psychological Inquiry</a>
+        <h3 class="font-semibold text-white mb-2 uppercase">🌱 Reflective Growth</h3>
+        <p class="mb-2">Structured reflection on meaningful experiences promotes post-traumatic growth, resilience, and psychological well-being.</p>
+        <a href="https://psycnet.apa.org/record/2004-16727-002" target="_blank" class="text-sky-400 hover:text-sky-300 underline block mb-1">Tedeschi & Calhoun (2004) - Post-Traumatic Growth: Conceptual Foundations</a>
+        <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3951958/" target="_blank" class="text-sky-400 hover:text-sky-300 underline block">Pennebaker & Chung (2011) - Expressive Writing and Health</a>
       </div>
     </div>
   </div>
