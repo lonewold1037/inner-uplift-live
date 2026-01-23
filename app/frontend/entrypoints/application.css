@@ -31,3 +31,8 @@ input, textarea {
 #science-banner .text-sm {
   text-transform: none !important;
 }
+
+/* Override uppercase for rotating text banner */
+#rotating-text {
+  text-transform: none !important;
+}
