@@ -24,3 +24,14 @@ body {
 input, textarea {
   text-transform: none;
 }
+
+/* Override uppercase for science banner headers and text */
+#science-banner h3,
+#science-banner p {
+  text-transform: none;
+}
+
+/* Override uppercase for rotating text banner */
+#rotating-text {
+  text-transform: none;
+}
