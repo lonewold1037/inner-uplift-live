@@ -27,12 +27,9 @@ Rails.application.routes.draw do
   get 'reflections/:id/extended_audio', to: 'downloads#extended_audio', as: 'extended_audio'
 
   # --- AUTHENTICATION ---
+  # This single line handles everything.
+  # It automatically creates 'user_magic_link_path'.
   devise_for :users
-  
-  # FORCE the magic link route since devise_for isn't picking it up automatically
-  devise_scope :user do
-    post "/users/magic_link", to: "devise/passwordless/magic_links#send_magic_link", as: :user_magic_link
-  end
   # ----------------------
 
   # Reflection feature routes
