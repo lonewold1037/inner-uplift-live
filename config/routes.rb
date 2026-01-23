@@ -1,4 +1,3 @@
-# config/routes.rb
 Rails.application.routes.draw do
   # Health check for uptime monitoring
   get "up" => "rails/health#show", as: :rails_health_check
@@ -27,14 +26,10 @@ Rails.application.routes.draw do
   get 'reflections/:id/preview_audio', to: 'downloads#preview_audio', as: 'preview_audio'
   get 'reflections/:id/extended_audio', to: 'downloads#extended_audio', as: 'extended_audio'
 
-  # REMOVED: controllers: { sessions: "users/sessions" }
-  # We just use standard devise_for, but keep the magic link scope below it.
-  
+  # --- AUTHENTICATION ---
+  # This single line handles everything: Login, Sign Up, and Magic Links.
   devise_for :users
-  
-  devise_scope :user do
-    post "/users/magic_link", to: "devise/passwordless/magic_links#send_magic_link", as: :send_magic_link
-  end
+  # ----------------------
 
   # Reflection feature routes
   resources :reflections, only: [:new, :create, :show] do
