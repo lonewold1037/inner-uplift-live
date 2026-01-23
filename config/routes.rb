@@ -29,8 +29,13 @@ Rails.application.routes.draw do
   # --- AUTHENTICATION ---
   # This single line handles everything.
   # It automatically creates 'user_magic_link_path'.
-  devise_for :users
-  # ----------------------
+  devise_for :users, controllers: {
+    magic_links: 'users/magic_links'
+  }
+
+  devise_scope :user do
+    post 'users/magic_link', to: 'users/magic_links#create', as: :user_magic_link
+  end
 
   # Reflection feature routes
   resources :reflections, only: [:new, :create, :show] do
