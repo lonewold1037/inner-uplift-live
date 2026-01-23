@@ -14,6 +14,7 @@ gem "stimulus-rails"
 gem "jbuilder"
 gem "bootsnap", require: false
 gem "devise"
+gem "devise-passwordless"
 gem "multipart-post"
 
 # Background jobs

@@ -1,29 +1,31 @@
-<h2>Sign up</h2>
+<div class="min-h-screen flex items-center justify-center px-4 py-12">
+  <div class="max-w-md w-full space-y-8 bg-black/50 backdrop-blur-xl p-8 rounded-2xl shadow-lg border border-white/20">
+    
+    <div class="text-center">
+      <h2 class="text-3xl font-bold tracking-tight text-white">Create Account</h2>
+      <p class="mt-2 text-sm text-slate-400">Join Memflect to start your journey.</p>
+    </div>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "mt-8 space-y-6" }) do |f| %>
+      <%= render "devise/shared/error_messages", resource: resource %>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+      <div>
+        <%= f.label :email, class: "sr-only" %>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "you@example.com", 
+            class: "appearance-none relative block w-full px-3 py-3 border border-white/20 bg-white/5 placeholder-slate-500 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 focus:z-10 sm:text-sm" %>
+      </div>
+
+      <div>
+        <%= f.submit "Sign Up", 
+            class: "cursor-pointer group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-lg text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 transition-colors" %>
+      </div>
+    <% end %>
+
+    <div class="text-center mt-6">
+      <p class="text-sm text-slate-400">
+        Already have an account? <%= link_to "Log in", new_session_path(resource_name), class: "text-sky-400 hover:text-sky-300 font-medium" %>
+      </p>
+    </div>
+
   </div>
-
-  <div class="field">
-    <%= f.label :password %>
-    <% if @minimum_password_length %>
-    <em>(<%= @minimum_password_length %> characters minimum)</em>
-    <% end %><br />
-    <%= f.password_field :password, autocomplete: "new-password" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Sign up" %>
-  </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</div>

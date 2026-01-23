@@ -28,8 +28,12 @@ Rails.application.routes.draw do
   get 'reflections/:id/extended_audio', to: 'downloads#extended_audio', as: 'extended_audio'
 
   # Devise routes for authentication
-  devise_for :users
-
+  devise_for :users, controllers: { sessions: "users/sessions" }
+  
+  devise_scope :user do
+    post "/users/magic_link", to: "devise/passwordless/magic_links#send_magic_link", as: :send_magic_link
+  end
+  
   # Reflection feature routes
   resources :reflections, only: [:new, :create, :show] do
     member do
