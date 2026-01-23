@@ -2,7 +2,7 @@ Here is your magic login link ✨
 
 Use the link below to sign in to Memflect:
 
-<%= @token_url %>
+<%= user_magic_link_url(user: {email: @resource.email, token: @token}) %>
 
 (This link expires in 20 minutes)
 
