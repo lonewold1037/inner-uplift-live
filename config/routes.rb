@@ -33,12 +33,6 @@ Rails.application.routes.draw do
     sessions: 'devise/passwordless/sessions'
   }
 
-  # Magic link callback route
-  devise_scope :user do
-    get '/users/magic_link', to: 'devise/passwordless/magic_links#show', as: 'user_magic_link'
-  end
-  # ----------------------
-
   # Reflection feature routes
   resources :reflections, only: [:new, :create, :show] do
     member do
