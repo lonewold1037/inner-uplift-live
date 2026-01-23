@@ -4,7 +4,10 @@ class PurchaseMailer < ApplicationMailer
   def purchase_confirmation(reflection)
     @reflection = reflection
     @user = reflection.user
-    @dashboard_url = "https://memflect.com/dashboard?token=#{@user.login_token}"
+    
+    # UPDATED: No more tokens. Just point to the dashboard.
+    # If they aren't logged in, the app will redirect them to the Magic Link page.
+    @dashboard_url = "https://memflect.com/dashboard"
     
     mail(
       to: reflection.email,
