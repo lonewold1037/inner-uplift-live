@@ -33,10 +33,6 @@ Rails.application.routes.draw do
     magic_links: 'users/magic_links'
   }
 
-  devise_scope :user do
-    post 'users/magic_link', to: 'users/magic_links#create', as: :user_magic_link
-  end
-
   # Reflection feature routes
   resources :reflections, only: [:new, :create, :show] do
     member do
