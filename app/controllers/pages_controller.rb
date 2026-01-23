@@ -1,14 +1,8 @@
 class PagesController < ApplicationController
-  # We skip the login requirement for the homepage
+  # Allow anyone to see home, privacy, terms without logging in
   skip_before_action :authenticate_user!, only: [:home, :privacy, :terms]
 
   def home
-  end
-
-  def about
-  end
-
-  def contact
   end
 
   def privacy
