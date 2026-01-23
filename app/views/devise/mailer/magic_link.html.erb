@@ -27,7 +27,7 @@
               <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                 <tr>
                   <td style="background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); border-radius: 50px; box-shadow: 0 8px 30px rgba(139, 92, 246, 0.4); border: 2px solid rgba(255,255,255,0.3);">
-                    <%= link_to "Log In to Memflect", @token_url, style: "display: inline-block; padding: 16px 40px; color: #ffffff; font-size: 16px; font-weight: 700; text-decoration: none;" %>
+                    <%= link_to "Log In to Memflect", user_magic_link_url(user: {email: @resource.email, token: @token}), style: "display: inline-block; padding: 16px 40px; color: #ffffff; font-size: 16px; font-weight: 700; text-decoration: none;" %>
                   </td>
                 </tr>
               </table>
