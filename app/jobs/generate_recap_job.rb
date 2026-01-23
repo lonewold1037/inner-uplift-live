@@ -38,7 +38,7 @@ class GenerateRecapJob < ApplicationJob
     - Avoid stage directions, brackets, or excessive punctuation
     - Write in modern, elegant prose — poetic but grounded
     - If the user used simple direct language, keep it simple and powerful
-    - Don't invent specific details (times, places, sensory scenes) unless they're strongly implied
+    - 🚫 IMPORTANT: Do NOT introduce any physical or environmental details (location, room, furniture, weather, mist, droplets, light, time of day, or scene imagery). Only use details explicitly stated by the user. If a detail is not provided, keep it neutral and unspecified.
 
     🔥 ACT 1 THEMES TO INTRODUCE (not resolve):
     - The memory itself (use their actual words/tone where possible)
