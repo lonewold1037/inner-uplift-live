@@ -6,7 +6,7 @@
       <p class="mt-2 text-sm text-slate-400">Enter your email to sign in.</p>
     </div>
 
-    <%= form_with(scope: resource_name, url: user_magic_link_path, local: true, class: "mt-8 space-y-6") do |f| %>
+    <%= form_with(scope: resource_name, url: session_path(resource_name), local: true, class: "mt-8 space-y-6") do |f| %>
       
       <div>
         <%= f.label :email, class: "sr-only" %>

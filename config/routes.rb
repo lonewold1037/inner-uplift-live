@@ -30,7 +30,7 @@ Rails.application.routes.draw do
   # This single line handles everything.
   # It automatically creates 'user_magic_link_path'.
   devise_for :users, controllers: {
-    magic_links: 'users/magic_links'
+    sessions: 'devise/passwordless/sessions'
   }
 
   # Reflection feature routes
