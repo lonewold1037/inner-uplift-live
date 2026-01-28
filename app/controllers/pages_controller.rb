@@ -10,9 +10,4 @@ class PagesController < ApplicationController
 
   def terms
   end
-
-  def accept_cookies
-    cookies[:cookie_consent] = { value: "accepted", expires: 1.year.from_now }
-    redirect_back(fallback_location: root_path)
-  end
 end

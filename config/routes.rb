@@ -53,8 +53,6 @@ Rails.application.routes.draw do
       # Stripe checkout for extended version
       post "checkout"
       post "redeem_promo"
-
-      post "accept_cookies", to: "pages#accept_cookies"
     end
   end
 

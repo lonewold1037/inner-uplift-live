@@ -100,18 +100,5 @@
       animation-delay: 4s;
     }
   </style>
-
-  <% unless cookies[:cookie_consent] %>
-    <div id="cookie-banner" style="position: fixed; bottom: 0; left: 0; right: 0; background: rgba(26, 26, 46, 0.98); backdrop-filter: blur(10px); color: white; padding: 20px; text-align: center; z-index: 9999; border-top: 2px solid rgba(139, 92, 246, 0.5); box-shadow: 0 -4px 20px rgba(0,0,0,0.3);">
-      <div style="max-width: 800px; margin: 0 auto;">
-        <p style="margin: 0 0 15px 0; font-size: 14px; color: #cbd5e1;">
-          We use essential cookies to make Memflect work. By continuing, you accept our 
-          <%= link_to "Privacy Policy", privacy_path, style: "color: #38bdf8; text-decoration: underline; font-weight: 600;" %>.
-        </p>
-        <%= button_to "Accept & Continue", accept_cookies_path, method: :post, style: "background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); color: white; border: none; padding: 12px 40px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 14px; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); transition: transform 0.2s;" %>
-      </div>
-    </div>
-  <% end %>
-  
 </body>
 </html>
