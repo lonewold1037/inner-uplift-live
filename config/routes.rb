@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   # Public pages
   get "privacy", to: "pages#privacy"
   get "terms", to: "pages#terms"
+  post "accept_cookies", to: "pages#accept_cookies"
 
   # User dashboard
   get "dashboard", to: "users#dashboard"
