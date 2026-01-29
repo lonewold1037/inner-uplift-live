@@ -12,6 +12,22 @@ class UsersController < ApplicationController
     end
   end
 
+  
+  def destroy
+    # Delete all user's reflections and associated audio files
+    current_user.reflections.each do |reflection|
+      reflection.preview_audio.purge if reflection.preview_audio.attached?
+      reflection.extended_audio.purge if reflection.extended_audio.attached?
+      reflection.destroy
+    end
+    
+    # Sign out and delete the user
+    sign_out current_user
+    current_user.destroy
+    
+    redirect_to root_path, notice: "Your account and all data have been permanently deleted."
+  end
+
   private
 
   def authenticate_via_token_or_devise

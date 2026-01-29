@@ -23,6 +23,9 @@ Rails.application.routes.draw do
   # User dashboard
   get "dashboard", to: "users#dashboard"
 
+  # In routes.rb, under dashboard route:
+  delete "account", to: "users#destroy", as: :delete_account
+
   # Audio download routes
   get 'reflections/:id/preview_audio', to: 'downloads#preview_audio', as: 'preview_audio'
   get 'reflections/:id/extended_audio', to: 'downloads#extended_audio', as: 'extended_audio'

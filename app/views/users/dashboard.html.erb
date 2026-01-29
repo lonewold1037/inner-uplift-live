@@ -289,3 +289,19 @@
     }
   });
   </script>
+
+  <!-- Account Deletion Section -->
+  <div class="container mx-auto max-w-6xl mt-16 pt-8 border-t border-white/10">
+    <div class="text-center">
+      <p class="text-slate-500 text-sm mb-3">Need to delete your account?</p>
+      <%= button_to "Delete My Account & All Data", 
+          delete_account_path, 
+          method: :delete,
+          data: { 
+            turbo_confirm: "⚠️ Are you sure? This will permanently delete all your reflections and cannot be undone." 
+          },
+          class: "text-red-400 hover:text-red-300 text-sm underline cursor-pointer" %>
+    </div>
+  </div>
+
+</div>
