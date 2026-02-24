@@ -91,6 +91,58 @@
       setInterval(rotateText, 4000);
     </script>
 
+    <!-- Hear a Memflection Section -->
+    <div class="mt-12 max-w-2xl mx-auto">
+      <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8 relative">
+        
+        <!-- Photo + Intro -->
+        <div class="flex flex-col items-center mb-6">
+          <%= image_tag "ryan-headshot.png", class: "w-24 h-24 rounded-full border-2 border-sky-400 shadow-lg mb-4", alt: "Ryan McLeod, creator of Memflect" %>
+          <p class="text-slate-300 text-center text-lg leading-relaxed" style="font-family: sans-serif !important; text-transform: none !important;">
+            Hi, I'm Ryan — I built Memflect because I needed it.<br>
+            <span class="text-white font-medium">Here's an example of what you can create:</span>
+          </p>
+        </div>
+
+        <!-- Audio Player -->
+        <div class="bg-black/30 rounded-xl p-4">
+          <p class="text-sky-400 text-sm font-medium tracking-wide mb-3 text-center" style="font-family: sans-serif !important; text-transform: none !important;">
+            🎧 Sample Memflection — "First Code Dawn"
+          </p>
+          <audio controls preload="metadata" class="w-full" style="border-radius: 8px;">
+            <source src="/audio/homepage-sample.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+          </audio>
+          <p class="text-slate-500 text-xs text-center mt-2" style="font-family: sans-serif !important; text-transform: none !important;">
+            This was generated in under 5 minutes — your voice, your memory, your music choice.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- How It Works Video Section -->
+    <div class="mt-8 max-w-2xl mx-auto">
+      <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8 relative">
+        <h2 class="text-xl md:text-2xl font-semibold text-white text-center mb-6 tracking-wide" style="font-family: sans-serif !important; text-transform: none !important;">
+          Want to see how it works?
+        </h2>
+        <div class="relative w-full" style="padding-bottom: 56.25%;">
+          <iframe 
+            class="absolute top-0 left-0 w-full h-full rounded-xl"
+            src="https://www.youtube.com/embed/PHPOoJCdiII"
+            title="What is Memflect?" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+          </iframe>
+        </div>
+        <p class="text-slate-500 text-xs text-center mt-4" style="font-family: sans-serif !important; text-transform: none !important;">
+          5-minute overview — the science, the process, and why it works.
+        </p>
+      </div>
+    </div>
+
     <!-- Science Behind It Banner -->
     <div class="mt-8 max-w-2xl mx-auto">
       <div id="science-banner" class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8 relative">
