@@ -12,32 +12,62 @@
       </div>
     <% end %>
 
+    <!-- Gift Mode Toggle -->
+    <div class="mb-4">
+      <label class="flex items-center cursor-pointer gap-3">
+        <input type="checkbox" id="gift-mode-toggle" name="reflection[mode]" value="gift"
+               class="w-5 h-5 rounded border-white/20 bg-slate-800/50 text-sky-500 focus:ring-sky-400"
+               onchange="toggleGiftMode(this.checked)">
+        <span class="text-white font-medium tracking-wide text-lg">🎁 This is for someone else</span>
+      </label>
+      <!-- Hidden field ensures "self" is sent when unchecked -->
+      <input type="hidden" name="reflection[mode]" value="self" id="gift-mode-hidden">
+    </div>
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
       <div class="col-span-1 md:col-span-2">
-        <%= form.label :name_for_recap, "How do you call yourself?", class: "block text-white font-medium tracking-wide text-lg mb-2" %>
+        <label id="name-label" class="block text-white font-medium tracking-wide text-lg mb-2">
+          How do you call yourself?
+        </label>
         <%= form.text_field :name_for_recap, placeholder: "e.g. \"Ryan\" or \"Mom\" or \"Coach K\"", class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 focus:outline-none focus:border-sky-400" %>
       </div>
 
-      <div>
-        <%= form.label :remember_when, "I remember...", class: "block text-white font-medium tracking-wide text-lg mb-2" %>
-        <%= form.text_area :remember_when, rows: 4, placeholder: "e.g. \"I finally got over that major hurdle that had been weighing on me for months\"", class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 focus:outline-none focus:border-sky-400" %>
+      <!-- Recipient Name (hidden by default, shown in gift mode) -->
+      <div class="col-span-1 md:col-span-2 hidden" id="recipient-name-field">
+        <label class="block text-white font-medium tracking-wide text-lg mb-2">
+          🎁 Who is this memflection for?
+        </label>
+        <%= form.text_field :recipient_name, placeholder: "e.g. \"Sarah\" or \"Dad\" or \"My Best Friend\"", class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 focus:outline-none focus:border-sky-400" %>
       </div>
 
       <div>
-        <%= form.label :felt_like, "It made me feel...", class: "block text-white font-medium tracking-wide text-lg mb-2" %>
-        <%= form.text_area :felt_like, rows: 4, placeholder: "e.g. \"Like I could take on anything — lighter, proud, and genuinely surprised at my own strength\"", class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 focus:outline-none focus:border-sky-400" %>
+        <label id="remember-label" class="block text-white font-medium tracking-wide text-lg mb-2">
+          I remember...
+        </label>
+        <%= form.text_area :remember_when, rows: 4, id: "remember-field", placeholder: "e.g. \"I finally got over that major hurdle that had been weighing on me for months\"", class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 focus:outline-none focus:border-sky-400" %>
       </div>
 
       <div>
-        <%= form.label :because_of, "But/And because...", class: "block text-white font-medium tracking-wide text-lg mb-2" %>
-        <%= form.text_area :because_of, rows: 4, placeholder: "e.g. \"I almost gave up so many times, but something kept pulling me forward\"", class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 focus:outline-none focus:border-sky-400" %>
+        <label id="felt-label" class="block text-white font-medium tracking-wide text-lg mb-2">
+          It made me feel...
+        </label>
+        <%= form.text_area :felt_like, rows: 4, id: "felt-field", placeholder: "e.g. \"Like I could take on anything — lighter, proud, and genuinely surprised at my own strength\"", class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 focus:outline-none focus:border-sky-400" %>
       </div>
 
       <div>
-        <%= form.label :lift_up_request, "I want to be reminded that...", class: "block text-white font-medium tracking-wide text-lg mb-2" %>
-        <%= form.text_area :lift_up_request, rows: 4, placeholder: "e.g. \"I am capable of hard things, and the struggle is what makes the victory real\"", class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 focus:outline-none focus:border-sky-400" %>
+        <label id="because-label" class="block text-white font-medium tracking-wide text-lg mb-2">
+          But/And because...
+        </label>
+        <%= form.text_area :because_of, rows: 4, id: "because-field", placeholder: "e.g. \"I almost gave up so many times, but something kept pulling me forward\"", class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 focus:outline-none focus:border-sky-400" %>
       </div>
-      
+
+      <div>
+        <label id="remind-label" class="block text-white font-medium tracking-wide text-lg mb-2">
+          I want to be reminded that...
+        </label>
+        <%= form.text_area :lift_up_request, rows: 4, id: "remind-field", placeholder: "e.g. \"I am capable of hard things, and the struggle is what makes the victory real\"", class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 focus:outline-none focus:border-sky-400" %>
+      </div>
+
       <div class="col-span-1 md:col-span-2 mt-4">
         <%= form.label :style, "Choose a Style for your Memflection:", class: "block text-white font-medium tracking-wide text-lg mb-2" %>
         <%= form.select :style,
@@ -47,13 +77,55 @@
       </div>
     </div>
 
-    <div class="flex items-center justify-center mt-8">
-      <%= form.submit "Generate My Preview ✨",
-                      id: "generate-recap",
-                      class: "w-full bg-sky-600 hover:bg-sky-500 text-white font-medium tracking-wide py-4 px-4 rounded-lg text-lg focus:outline-none focus:shadow-outline cursor-pointer transition-colors" %>
-    </div>
-  <% end %>
-</div>
+    <script>
+      function toggleGiftMode(isGift) {
+        const recipientField = document.getElementById('recipient-name-field');
+        const hiddenMode = document.getElementById('gift-mode-hidden');
+        
+        // Labels
+        const nameLabel = document.getElementById('name-label');
+        const rememberLabel = document.getElementById('remember-label');
+        const feltLabel = document.getElementById('felt-label');
+        const becauseLabel = document.getElementById('because-label');
+        const remindLabel = document.getElementById('remind-label');
+        
+        // Placeholder fields
+        const rememberField = document.getElementById('remember-field');
+        const feltField = document.getElementById('felt-field');
+        const becauseField = document.getElementById('because-field');
+        const remindField = document.getElementById('remind-field');
+
+        if (isGift) {
+          hiddenMode.disabled = true;
+          recipientField.classList.remove('hidden');
+          
+          nameLabel.textContent = 'Your name';
+          rememberLabel.textContent = 'I remember when you...';
+          feltLabel.textContent = 'It made me feel...';
+          becauseLabel.textContent = 'But/And because...';
+          remindLabel.textContent = 'I want you to know that...';
+          
+          rememberField.placeholder = 'e.g. "you helped me through the hardest year of my life"';
+          feltField.placeholder = 'e.g. "like I finally had someone in my corner who truly understood"';
+          becauseField.placeholder = 'e.g. "I never told you how much that meant to me at the time"';
+          remindField.placeholder = 'e.g. "you are one of the most important people in my world"';
+        } else {
+          hiddenMode.disabled = false;
+          recipientField.classList.add('hidden');
+          
+          nameLabel.textContent = 'How do you call yourself?';
+          rememberLabel.textContent = 'I remember...';
+          feltLabel.textContent = 'It made me feel...';
+          becauseLabel.textContent = 'But/And because...';
+          remindLabel.textContent = 'I want to be reminded that...';
+          
+          rememberField.placeholder = 'e.g. "I finally got over that major hurdle that had been weighing on me for months"';
+          feltField.placeholder = 'e.g. "Like I could take on anything — lighter, proud, and genuinely surprised at my own strength"';
+          becauseField.placeholder = 'e.g. "I almost gave up so many times, but something kept pulling me forward"';
+          remindField.placeholder = 'e.g. "I am capable of hard things, and the struggle is what makes the victory real"';
+        }
+      }
+    </script>
 
 <script>
   const recapButton = document.getElementById("generate-recap");

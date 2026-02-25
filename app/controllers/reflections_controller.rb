@@ -208,6 +208,6 @@ class ReflectionsController < ApplicationController
   end
 
   def reflection_params_for_create
-    params.require(:reflection).permit(:remember_when, :felt_like, :because_of, :lift_up_request, :name_for_recap, :style, :vibe, :setting)
+    params.require(:reflection).permit(:remember_when, :felt_like, :because_of, :lift_up_request, :name_for_recap, :style, :vibe, :setting, :mode, :recipient_name)
   end
 end

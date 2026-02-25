@@ -46,40 +46,78 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
   end
 
   def generate_extended_recap(reflection)
-    prompt = <<-PROMPT
-    You are continuing a 5-act spoken-word monologue that has already begun.
+    prompt = if reflection.mode == "gift"
+      <<-PROMPT
+      You are continuing a 5-act spoken-word monologue that has already begun.
+      This is a heartfelt personal message FROM #{reflection.name_for_recap} TO #{reflection.recipient_name}.
 
-    Act 1 (already recorded) is:
-    "#{reflection.recap}"
+      Act 1 (already recorded) is:
+      "#{reflection.recap}"
 
-    THE USER'S NAME IS: #{reflection.name_for_recap}
-    USE THIS NAME 3-5 TIMES NATURALLY THROUGHOUT (e.g., "#{reflection.name_for_recap}, you...")
+      Your task: Continue with Acts 2-5 for EXACTLY 480-500 words. YOU MUST WRITE AT LEAST 480 WORDS.
 
-    Your task: Continue with Acts 2-5 for EXACTLY 480-500 words. YOU MUST WRITE AT LEAST 480 WORDS.
+      ⚠️ CRITICAL RULES:
+      - DO NOT invent family members, relationships, pets, or people not mentioned
+      - DO NOT add details about jobs, locations, or events not provided
+      - ONLY expand on what the sender shared
+      - NO act numbers, chapter titles, or section headers
+      - Write in FIRST PERSON from #{reflection.name_for_recap}'s perspective
+      - Address #{reflection.recipient_name} as "you"
 
-    ⚠️ CRITICAL RULES:
-    - DO NOT invent family members, relationships, pets, or people not mentioned
-    - DO NOT add details about jobs, locations, or events not provided
-    - DO NOT assume geographical places mentioned are where the person still lives/resides
-    - ONLY expand on what the user shared
-    - NO act numbers, chapter titles, or section headers
+      🔥 CONTINUATION RULES:
+      - Write EXACTLY 480-500 words
+      - #{style_instructions(reflection.style)}
+      - Use "#{reflection.recipient_name}" naturally 2-3 times throughout
+      - Use "#{reflection.name_for_recap}" once near the end (e.g., signing off)
+      - Pick up where Act 1 left off
+      - Build toward a powerful emotional conclusion — this is a gift, land it with love
 
-    🔥 CONTINUATION RULES:
-    - Write EXACTLY 480-500 words
-    - #{style_instructions(reflection.style)}
-    - Stay in second person ("you", "your")
-    - Use "#{reflection.name_for_recap}" naturally 1 time at the tail end of Act 5
-    - Pick up where Act 1 left off
+      📍 THE SENDER'S ACTUAL WORDS (DO NOT ADD TO THIS):
+      - Sender: #{reflection.name_for_recap}
+      - Recipient: #{reflection.recipient_name}
+      - Memory: #{reflection.remember_when}
+      - Feeling: #{reflection.felt_like}
+      - Context: #{reflection.because_of}
+      - What they want #{reflection.recipient_name} to know: #{reflection.lift_up_request}
 
-    📍 USER'S ACTUAL STORY (DO NOT ADD TO THIS):
-    - Name: #{reflection.name_for_recap}
-    - Memory: #{reflection.remember_when}
-    - Feeling: #{reflection.felt_like}
-    - Context: #{reflection.because_of}
-    - Hope: #{reflection.lift_up_request}
+      Continue Acts 2-5 now:
+      PROMPT
+    else
+      <<-PROMPT
+      You are continuing a 5-act spoken-word monologue that has already begun.
 
-    Continue Acts 2-5 now:
-    PROMPT
+      Act 1 (already recorded) is:
+      "#{reflection.recap}"
+
+      THE USER'S NAME IS: #{reflection.name_for_recap}
+      USE THIS NAME 3-5 TIMES NATURALLY THROUGHOUT (e.g., "#{reflection.name_for_recap}, you...")
+
+      Your task: Continue with Acts 2-5 for EXACTLY 480-500 words. YOU MUST WRITE AT LEAST 480 WORDS.
+
+      ⚠️ CRITICAL RULES:
+      - DO NOT invent family members, relationships, pets, or people not mentioned
+      - DO NOT add details about jobs, locations, or events not provided
+      - DO NOT assume geographical places mentioned are where the person still lives/resides
+      - ONLY expand on what the user shared
+      - NO act numbers, chapter titles, or section headers
+
+      🔥 CONTINUATION RULES:
+      - Write EXACTLY 480-500 words
+      - #{style_instructions(reflection.style)}
+      - Stay in second person ("you", "your")
+      - Use "#{reflection.name_for_recap}" naturally 1 time at the tail end of Act 5
+      - Pick up where Act 1 left off
+
+      📍 USER'S ACTUAL STORY (DO NOT ADD TO THIS):
+      - Name: #{reflection.name_for_recap}
+      - Memory: #{reflection.remember_when}
+      - Feeling: #{reflection.felt_like}
+      - Context: #{reflection.because_of}
+      - Hope: #{reflection.lift_up_request}
+
+      Continue Acts 2-5 now:
+      PROMPT
+    end
 
     continuation = call_openai(prompt, max_tokens: 950)  # Reduced to ensure we stay under
     
