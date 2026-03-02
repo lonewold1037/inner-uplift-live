@@ -129,18 +129,22 @@ class ProcessAudioJob < ApplicationJob
     uri = URI.parse("https://api.elevenlabs.io/v1/voices/#{voice_id}/settings/edit")
     headers = { "Content-Type" => "application/json", "xi-api-key" => ENV["ELEVEN_LABS_API_KEY"] }
     body = {
-      stability: 0.30
+      stability: 0.83,
+      similarity_boost: 0.95,
+      use_speaker_boost: true,
+      speed: 0.91
     }.to_json
     Net::HTTP.post(uri, body, headers)
   end
 
   def synthesize_audio(script, voice_id)
     return nil unless script.present?
+    poetic_script = add_poetic_pauses(script)
     uri = URI.parse("https://api.elevenlabs.io/v1/text-to-speech/#{voice_id}")
     headers = { "Accept" => "audio/mpeg", "Content-Type" => "application/json", "xi-api-key" => ENV["ELEVEN_LABS_API_KEY"] }
     body = {
-      text: script,
-      model_id: "eleven_v3",
+      text: poetic_script,
+      model_id: "eleven_multilingual_v2",
       output_format: "mp3_44100_128"
     }.to_json
     response = Net::HTTP.post(uri, body, headers)
@@ -159,9 +163,13 @@ class ProcessAudioJob < ApplicationJob
     return "" unless text.present?
 
     text
+      # turn normal clause endings into gentle pauses
       .gsub(/([a-z])([,;:])\s/i, '\1...\2 ')
+      # soften sentence breaks a bit
       .gsub(/([^.])\.\s+([A-Z])/, '\1... \2')
+      # slight hesitation before connectors
       .gsub(/\b(but|and|so|yet)\b/i, '...\1')
+      # clean up accidental triple dots
       .gsub(/\.{4,}/, '...')
       .strip
   end
