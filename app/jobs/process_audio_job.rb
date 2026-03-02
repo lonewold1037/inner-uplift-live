@@ -129,8 +129,8 @@ class ProcessAudioJob < ApplicationJob
     uri = URI.parse("https://api.elevenlabs.io/v1/voices/#{voice_id}/settings/edit")
     headers = { "Content-Type" => "application/json", "xi-api-key" => ENV["ELEVEN_LABS_API_KEY"] }
     body = {
-      stability: 0.82,
-      similarity_boost: 0.95,
+      stability: 0.75,
+      similarity_boost: 0.75,
       use_speaker_boost: true,
       speed: 0.92
     }.to_json
