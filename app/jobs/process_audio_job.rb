@@ -130,9 +130,9 @@ class ProcessAudioJob < ApplicationJob
     headers = { "Content-Type" => "application/json", "xi-api-key" => ENV["ELEVEN_LABS_API_KEY"] }
     body = {
       stability: 0.81,
-      similarity_boost: 0.91,
+      similarity_boost: 0.92,
       use_speaker_boost: true,
-      speed: 0.92
+      speed: 0.93
     }.to_json
     Net::HTTP.post(uri, body, headers)
   end
