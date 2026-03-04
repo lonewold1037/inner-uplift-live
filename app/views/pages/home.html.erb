@@ -129,7 +129,7 @@
           What People Are Saying 💬
         </h2>
         <p class="text-slate-400 text-sm text-center mb-6" style="font-family: sans-serif !important; text-transform: none !important;">
-          🗣️ = unfiltered reactions. 
+          🗣️ Unfiltered reactions..
         </p>
 
         <!-- Slides -->
@@ -170,7 +170,7 @@
 
 <script>
   let currentSlide = 0;
-  const totalSlides = 3;
+  const totalSlides = 4;
 
   function goToSlide(n) {
     currentSlide = n;
@@ -186,14 +186,14 @@
   function prevSlide() { goToSlide((currentSlide - 1 + totalSlides) % totalSlides); }
 
   // Auto-advance every 5 seconds
-  setInterval(nextSlide, 5000);
+  setInterval(nextSlide, 8000);
 </script>
 
     <!-- How It Works Video Section -->
     <div class="mt-8 max-w-2xl mx-auto">
       <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8 relative">
         <h2 class="text-xl md:text-2xl font-semibold text-white text-center mb-6 tracking-wide" style="font-family: sans-serif !important; text-transform: none !important;">
-          Want to see how it works?
+          Still not sure? Watch this.
         </h2>
         <div class="relative w-full" style="padding-bottom: 56.25%;">
           <iframe 
@@ -359,8 +359,8 @@
     </style>
 
         <!-- Secondary CTA -->
-        <div class="mt-8">
-          <%= link_to "Try a 30-Second Demo", new_reflection_path, class: "inline-block text-sky-400 hover:text-sky-300 font-medium tracking-wide text-lg underline decoration-2 underline-offset-4 transition-colors" %>
+        <div class="mt-8 text-center">
+          <%= link_to "Try a 30-Second Demo →", new_reflection_path, class: "inline-block bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/40 text-white font-medium tracking-wide text-lg py-4 px-10 rounded-xl transition-all duration-300" %>
         </div>
 
       </div>
