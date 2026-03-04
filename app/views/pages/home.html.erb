@@ -106,20 +106,75 @@
 
         <!-- Audio Player -->
         <div class="bg-black/30 rounded-xl p-4">
-          <p class="text-sky-400 text-sm font-medium tracking-wide mb-3 text-center" style="font-family: sans-serif !important; text-transform: none !important;">
-            🎧 Sample Memflection — "First Code Dawn"
-          </p>
-          <audio controls preload="metadata" class="w-full" style="border-radius: 8px;">
-            <source src="/audio/homepage-sample.mp3" type="audio/mpeg">
+
+          <!-- Tab Buttons -->
+          <div class="flex gap-2 mb-4 flex-wrap justify-center">
+            <button onclick="switchSample(0)" id="sample-tab-0" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-sky-600 text-white">
+              💪 Hurdle Conquered
+            </button>
+            <button onclick="switchSample(1)" id="sample-tab-1" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-white/10 text-slate-300 hover:bg-white/20">
+              🌼 Dandelion Whispers
+            </button>
+            <button onclick="switchSample(2)" id="sample-tab-2" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-white/10 text-slate-300 hover:bg-white/20">
+              🌙 Shadows of Stillness
+            </button>
+            <button onclick="switchSample(3)" id="sample-tab-3" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-white/10 text-slate-300 hover:bg-white/20">
+              🧠 First Code Dawn
+            </button>
+          </div>
+
+          <!-- Player -->
+          <audio id="sample-player" controls preload="metadata" class="w-full" style="border-radius: 8px;">
+            <source id="sample-source" src="/audio/homepage-sample-1.mp3" type="audio/mpeg">
             Your browser does not support the audio element.
           </audio>
-          <p class="text-slate-500 text-xs text-center mt-2" style="font-family: sans-serif !important; text-transform: none !important;">
-            This was generated in just a few minutes — your voice, your memory, your music choice.
+
+          <!-- Caption -->
+          <p id="sample-caption" class="text-slate-500 text-xs text-center mt-2">
+            Hurdle Conquered — Resilience · For when you made it through something hard
           </p>
+
         </div>
 
-      </div>
-    </div>
+        <script>
+          const samples = [
+            {
+              src: "/audio/homepage-sample-1.mp3",
+              caption: "Hurdle Conquered — Resilience · For when you made it through something hard"
+            },
+            {
+              src: "/audio/homepage-sample-2.mp3",
+              caption: "Dandelion Whispers — Love · A son's memory, now a father's lesson"
+            },
+            {
+              src: "/audio/homepage-sample-3.mp3",
+              caption: "Shadows of Stillness — Gift Mode · Sent to someone who needed to hear they're not alone"
+            },
+            {
+              src: "/audio/homepage-sample-4.mp3",
+              caption: "First Code Dawn — Gratitude · The moment coding finally clicked"
+            }
+          ];
+
+          function switchSample(index) {
+            const player = document.getElementById('sample-player');
+            const source = document.getElementById('sample-source');
+            const caption = document.getElementById('sample-caption');
+
+            player.pause();
+            source.src = samples[index].src;
+            player.load();
+
+            caption.textContent = samples[index].caption;
+
+            samples.forEach((_, i) => {
+              const tab = document.getElementById(`sample-tab-${i}`);
+              tab.className = i === index
+                ? 'px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-sky-600 text-white'
+                : 'px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-white/10 text-slate-300 hover:bg-white/20';
+            });
+          }
+        </script>
 
     <!-- Testimonials Carousel -->
     <div class="mt-8 max-w-2xl mx-auto">
