@@ -96,6 +96,9 @@
                           Play
                         </button>
                         <%= link_to "Download", extended_audio_path(reflection), class: "text-purple-400 hover:text-purple-300 font-medium text-sm" %>
+                        <button onclick="shareReflection('<%= extended_audio_url(reflection) %>', '<%= j(reflection.title || 'Untitled') %>')" class="text-sky-400 hover:text-sky-300 font-medium text-sm transition-colors">
+                          🔗 Share
+                        </button>
                       </div>
                     <% elsif reflection.status == 'failed' %>
                       <span class="text-red-400 text-sm">⚠️ Generation failed</span>
@@ -279,6 +282,28 @@
       const progressBar = document.getElementById('progressBar');
       progressBar.value = progress;
       progressBar.style.background = `linear-gradient(to right, #84cc16 ${progress}%, #334155 ${progress}%)`;
+    }
+  }
+
+  async function shareReflection(audioUrl, title) {
+    try {
+      const response = await fetch(audioUrl);
+      const finalUrl = response.url;
+      const blob = await response.blob();
+      const file = new File([blob], `${title}.mp3`, { type: 'audio/mpeg' });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: title,
+          text: `🎧 "${title}" — a cinematic audio reflection I created at memflect.app`
+        });
+      } else {
+        await navigator.clipboard.writeText(`🎧 "${title}" — a cinematic audio reflection I created at memflect.app`);
+        alert('Copied to clipboard! Paste into WhatsApp or email.');
+      }
+    } catch (err) {
+      console.error('Share failed:', err);
     }
   }
 
