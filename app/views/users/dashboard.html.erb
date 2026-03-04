@@ -86,19 +86,21 @@
                   <td class="px-6 py-4 text-center">
                     <% if reflection.extended_audio.attached? %>
                       <div class="flex flex-col items-center gap-2">
-                        <button 
-                          <button 
-                            onclick="openAudioModal('<%= j(reflection.title || 'Untitled') %>', '<%= extended_audio_url(reflection, play: true) %>', '<%= extended_audio_url(reflection) %>')"
-                            class="inline-flex items-center gap-2 bg-lime-500 hover:bg-lime-400 text-white font-medium py-3 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg">
+                        <button
+                          onclick="openAudioModal('<%= j(reflection.title || 'Untitled') %>', '<%= extended_audio_url(reflection, play: true) %>', '<%= extended_audio_url(reflection) %>')"
+                          class="inline-flex items-center gap-2 bg-lime-500 hover:bg-lime-400 text-white font-medium py-3 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg">
                           <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z"/>
                           </svg>
                           Play
                         </button>
-                        <%= link_to "Download", extended_audio_path(reflection), class: "text-purple-400 hover:text-purple-300 font-medium text-sm" %>
-                        <button onclick="shareReflection('<%= extended_audio_url(reflection) %>', '<%= j(reflection.title || 'Untitled') %>')" class="text-sky-400 hover:text-sky-300 font-medium text-sm transition-colors">
-                          🔗 Share
-                        </button>
+                        <div class="flex items-center gap-3">
+                          <%= link_to "Download", extended_audio_path(reflection), class: "text-purple-400 hover:text-purple-300 font-medium text-sm" %>
+                          <span class="text-white/20">|</span>
+                          <button onclick="shareReflection('<%= extended_audio_url(reflection) %>', '<%= j(reflection.title || 'Untitled') %>')" class="text-sky-400 hover:text-sky-300 font-medium text-sm transition-colors">
+                            🔗 Share
+                          </button>
+                        </div>
                       </div>
                     <% elsif reflection.status == 'failed' %>
                       <span class="text-red-400 text-sm">⚠️ Generation failed</span>
@@ -290,7 +292,7 @@
       const response = await fetch(audioUrl);
       const finalUrl = response.url;
       const blob = await response.blob();
-      const file = new File([blob], `${title}.mp3`, { type: 'audio/mpeg' });
+      const file = new File([blob], `${title} - memflect.app.mp3`, { type: 'audio/mpeg' });
 
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
