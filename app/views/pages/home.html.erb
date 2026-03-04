@@ -121,6 +121,69 @@
       </div>
     </div>
 
+    <!-- Testimonials Carousel -->
+    <div class="mt-8 max-w-2xl mx-auto">
+      <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8">
+        
+        <h2 class="text-xl md:text-2xl font-semibold text-white text-center mb-2 tracking-wide" style="font-family: sans-serif !important; text-transform: none !important;">
+          What People Are Saying 💬
+        </h2>
+        <p class="text-slate-400 text-sm text-center mb-6" style="font-family: sans-serif !important; text-transform: none !important;">
+          Real reactions from real people
+        </p>
+
+        <!-- Slides -->
+        <div class="relative overflow-hidden rounded-xl">
+          <div id="testimonial-track" class="flex transition-transform duration-500 ease-in-out">
+            <div class="min-w-full flex justify-center px-2">
+              <img src="/images/testimonials/t1.png" class="rounded-xl max-h-96 object-contain shadow-lg" alt="Customer reaction">
+            </div>
+            <div class="min-w-full flex justify-center px-2">
+              <img src="/images/testimonials/t2.png" class="rounded-xl max-h-96 object-contain shadow-lg" alt="Customer reaction">
+            </div>
+            <div class="min-w-full flex justify-center px-2">
+              <img src="/images/testimonials/t3.png" class="rounded-xl max-h-96 object-contain shadow-lg" alt="Customer reaction">
+            </div>
+          </div>
+        </div>
+
+        <!-- Dots -->
+        <div class="flex justify-center gap-2 mt-4">
+          <button onclick="goToSlide(0)" id="dot-0" class="w-2 h-2 rounded-full bg-sky-400 transition-all"></button>
+          <button onclick="goToSlide(1)" id="dot-1" class="w-2 h-2 rounded-full bg-white/30 transition-all"></button>
+          <button onclick="goToSlide(2)" id="dot-2" class="w-2 h-2 rounded-full bg-white/30 transition-all"></button>
+        </div>
+
+        <!-- Prev/Next -->
+        <div class="flex justify-center gap-4 mt-4">
+          <button onclick="prevSlide()" class="text-slate-400 hover:text-white transition-colors text-2xl">‹</button>
+          <button onclick="nextSlide()" class="text-slate-400 hover:text-white transition-colors text-2xl">›</button>
+        </div>
+
+      </div>
+    </div>
+
+<script>
+  let currentSlide = 0;
+  const totalSlides = 3;
+
+  function goToSlide(n) {
+    currentSlide = n;
+    document.getElementById('testimonial-track').style.transform = `translateX(-${currentSlide * 100}%)`;
+    document.querySelectorAll('[id^="dot-"]').forEach((dot, i) => {
+      dot.className = i === currentSlide
+        ? 'w-2 h-2 rounded-full bg-sky-400 transition-all'
+        : 'w-2 h-2 rounded-full bg-white/30 transition-all';
+    });
+  }
+
+  function nextSlide() { goToSlide((currentSlide + 1) % totalSlides); }
+  function prevSlide() { goToSlide((currentSlide - 1 + totalSlides) % totalSlides); }
+
+  // Auto-advance every 5 seconds
+  setInterval(nextSlide, 5000);
+</script>
+
     <!-- How It Works Video Section -->
     <div class="mt-8 max-w-2xl mx-auto">
       <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8 relative">
