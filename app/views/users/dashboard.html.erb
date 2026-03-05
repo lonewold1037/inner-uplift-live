@@ -5,7 +5,14 @@
   <div class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 rounded-2xl shadow-2xl max-w-4xl w-full p-8 border border-white/20 relative">
     <!-- Close Button -->
     <button onclick="closeAudioModal()" class="absolute top-4 right-4 text-white/60 hover:text-white text-3xl">&times;</button>
-    
+
+    <!-- Cover Image (above title, hidden if no image) -->
+    <div id="modalImageWrap" class="hidden flex justify-center mb-6">
+      <img id="modalCoverImage" src="" alt=""
+           class="rounded-2xl shadow-2xl object-cover max-h-64 w-auto border border-white/10"
+           style="filter: sepia(30%) contrast(110%) brightness(95%) saturate(85%);">
+    </div>
+
     <!-- Reflection Title -->
     <h2 id="modalTitle" class="text-3xl font-bold tracking-wider text-white text-center mb-8">Loading...</h2>
     
@@ -66,6 +73,7 @@
           <table class="w-full">
             <thead>
               <tr class="bg-white/5 border-b border-white/10">
+                <th class="px-3 py-4 hidden sm:table-cell w-20"></th>
                 <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Name</th>
                 <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider hidden md:table-cell">Style</th>
                 <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider hidden sm:table-cell">Date</th>
@@ -75,6 +83,23 @@
             <tbody class="divide-y divide-white/10">
               <% @reflections.where(purchased: true).each do |reflection| %>
                 <tr class="hover:bg-white/5 transition-colors" id="reflection_row_<%= reflection.id %>">
+
+                  <!-- Cover Image -->
+                  <td class="px-3 py-3 w-20 hidden sm:table-cell">
+                    <% if reflection.cover_image.attached? %>
+                      <img src="<%= url_for(reflection.cover_image) %>"
+                           alt="<%= reflection.title %>"
+                           class="w-16 h-16 rounded-xl object-cover shadow-lg"
+                           style="filter: sepia(30%) contrast(110%) brightness(95%) saturate(85%);">
+                    <% else %>
+                      <div class="w-16 h-16 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                      </div>
+                    <% end %>
+                  </td>
+
                   <td class="px-6 py-4">
                     <p class="text-white font-medium"><%= reflection.title || "Untitled" %></p>
                     <% unless reflection.extended_audio.attached? %>
@@ -87,7 +112,7 @@
                     <% if reflection.extended_audio.attached? %>
                       <div class="flex flex-col items-center gap-2">
                         <button
-                          onclick="openAudioModal('<%= j(reflection.title || 'Untitled') %>', '<%= extended_audio_url(reflection, play: true) %>', '<%= extended_audio_url(reflection) %>')"
+                          onclick="openAudioModal('<%= j(reflection.title || 'Untitled') %>', '<%= extended_audio_url(reflection, play: true) %>', '<%= extended_audio_url(reflection) %>', '<%= reflection.cover_image.attached? ? url_for(reflection.cover_image) : '' %>')"
                           class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg" style="box-shadow: 0 0 20px rgba(99,102,241,0.3);">
                           <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z"/>
@@ -147,7 +172,6 @@
     const H = canvas.height;
     ctx.clearRect(0, 0, W, H);
 
-    // Background
     ctx.fillStyle = 'rgba(10, 10, 30, 0.95)';
     ctx.fillRect(0, 0, W, H);
 
@@ -163,7 +187,6 @@
       if (analyser && audioElement && !audioElement.paused) {
         value = dataArray[Math.floor(i * dataArray.length / BAR_COUNT)] / 255;
       } else {
-        // Idle breathing animation
         value = 0.05 + 0.04 * Math.sin(Date.now() / 800 + i * 0.4);
       }
 
@@ -174,7 +197,6 @@
       const x = i * (barWidth + gap) + gap / 2;
       const y = H - barH;
 
-      // Gradient per bar: indigo → violet → purple
       const grad = ctx.createLinearGradient(x, y, x, H);
       grad.addColorStop(0, `hsla(${240 + i * 1.5}, 80%, 75%, 0.9)`);
       grad.addColorStop(0.5, `hsla(${260 + i * 1.2}, 70%, 60%, 0.8)`);
@@ -185,7 +207,6 @@
       ctx.roundRect(x, y, barWidth, barH, [3, 3, 0, 0]);
       ctx.fill();
 
-      // Glow on tall bars
       if (barHeights[i] > 0.5) {
         ctx.shadowColor = `hsla(${250 + i}, 80%, 70%, 0.6)`;
         ctx.shadowBlur = 8;
@@ -197,39 +218,52 @@
     animationId = requestAnimationFrame(animate);
   }
 
-  async function openAudioModal(title, audioUrl, downloadUrl) {
+  async function openAudioModal(title, audioUrl, downloadUrl, imageUrl) {
     document.getElementById('audioModal').classList.remove('hidden');
     document.getElementById('modalTitle').textContent = title;
     document.getElementById('modalDownload').href = downloadUrl;
-    
+
+    // Handle cover image
+    const imageWrap = document.getElementById('modalImageWrap');
+    const coverImage = document.getElementById('modalCoverImage');
+    if (imageUrl && imageUrl.trim() !== '') {
+      coverImage.src = imageUrl;
+      imageWrap.classList.remove('hidden');
+      imageWrap.classList.add('flex');
+    } else {
+      imageWrap.classList.add('hidden');
+      imageWrap.classList.remove('flex');
+      coverImage.src = '';
+    }
+
     canvas.width = canvas.offsetWidth;
     initParticles();
     animate();
-    
+
     const response = await fetch(audioUrl);
     const finalUrl = response.url;
-    
+
     if (!audioElement) {
       audioElement = new Audio();
     }
-    
+
     audioElement.src = finalUrl;
-    
+
     audioElement.addEventListener('play', () => {
       document.getElementById('modalPlayBtn').innerHTML = '<svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/></svg>';
     });
-    
+
     audioElement.addEventListener('pause', () => {
       document.getElementById('modalPlayBtn').innerHTML = '<svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
     });
-    
+
     audioElement.addEventListener('timeupdate', () => {
       const current = audioElement.currentTime;
       const duration = audioElement.duration || 0;
       document.getElementById('modalTime').textContent = formatTime(current) + ' / ' + formatTime(duration);
       updateProgressBar();
     });
-    
+
     audioElement.addEventListener('loadedmetadata', () => {
       document.getElementById('modalTime').textContent = '0:00 / ' + formatTime(audioElement.duration);
     });

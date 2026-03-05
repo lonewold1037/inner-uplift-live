@@ -16,9 +16,9 @@ class ReflectionsController < ApplicationController
       session[:anonymous_reflection_id] = @reflection.id unless user_signed_in?
 
       @reflection.update(status: 'generating_recap')
-      
+
       GenerateRecapJob.perform_later(@reflection)
-      
+
       redirect_to @reflection
     else
       render :new, status: :unprocessable_entity
@@ -43,7 +43,7 @@ class ReflectionsController < ApplicationController
 
     if @reflection.voice_recording.attached? && @reflection.save
       Rails.logger.info "🎤 Voice recording attached. Kicking off ProcessAudioJob for Reflection ##{@reflection.id}"
-      
+
       @reflection.update!(status: 'processing_audio')
 
       ProcessAudioJob.perform_later(@reflection)
@@ -58,16 +58,16 @@ class ReflectionsController < ApplicationController
   def mix_audio
     soundscape = Soundscape.find(params.dig(:reflection, :soundscape_id))
     @reflection.update!(soundscape: soundscape, status: 'mixing')
-    
+
     @reflection.broadcast_replace_to(
       @reflection,
       target: "reflection_status_area_#{@reflection.id}",
       partial: "reflections/status_content",
       locals: { reflection: @reflection, soundscapes: Soundscape.all }
     )
-    
+
     MixAudioJob.perform_later(@reflection, soundscape.id)
-    
+
     redirect_to @reflection
   rescue ActiveRecord::RecordNotFound
     redirect_to @reflection, alert: "Soundscape not found"
@@ -92,7 +92,7 @@ class ReflectionsController < ApplicationController
 
     exclude_id = (soundscape.category == @reflection.soundscape&.category) ? @reflection.soundscape_id : nil
     MixAudioJob.perform_later(@reflection, soundscape.category, exclude_id: exclude_id)
-    
+
     redirect_to @reflection
   rescue ActiveRecord::RecordNotFound
     redirect_to @reflection, alert: "Soundscape not found"
@@ -101,25 +101,25 @@ class ReflectionsController < ApplicationController
   def apply_eq_preset
     @reflection.reload
     @reflection.update!(eq_preset: params[:eq_preset], status: 'mixing')
-    
+
     @reflection.broadcast_replace_to(
       @reflection,
       target: "reflection_status_area_#{@reflection.id}",
       partial: "reflections/status_content",
       locals: { reflection: @reflection, soundscapes: set_soundscapes }
     )
-    
+
     MixAudioJob.perform_later(@reflection, @reflection.soundscape.id)
-    
+
     redirect_to @reflection
   end
-  
+
   def checkout
     @reflection = Reflection.find(params[:id])
     customer_email = params[:customer_email]
-    
+
     @reflection.update!(email: customer_email) if customer_email.present?
-    
+
     session = Stripe::Checkout::Session.create(
       payment_method_types: ['card'],
       customer_email: customer_email,
@@ -141,7 +141,7 @@ class ReflectionsController < ApplicationController
         reflection_id: @reflection.id
       }
     )
-    
+
     redirect_to session.url, allow_other_host: true
   end
 
@@ -208,6 +208,10 @@ class ReflectionsController < ApplicationController
   end
 
   def reflection_params_for_create
-    params.require(:reflection).permit(:remember_when, :felt_like, :because_of, :lift_up_request, :name_for_recap, :style, :vibe, :setting, :mode, :recipient_name)
+    params.require(:reflection).permit(
+      :remember_when, :felt_like, :because_of, :lift_up_request,
+      :name_for_recap, :style, :vibe, :setting, :mode, :recipient_name,
+      :cover_image
+    )
   end
 end
