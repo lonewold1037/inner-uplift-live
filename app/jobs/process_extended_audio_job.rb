@@ -144,7 +144,7 @@ class ProcessExtendedAudioJob < ApplicationJob
       "highpass=f=80," +
       "equalizer=f=3500:width_type=h:width=1500:g=-3," +
       "acompressor=threshold=-20dB:ratio=2:attack=50:release=300[v];" +
-      "[bg][v]amix=inputs=2:duration=longest:dropout_transition=0:normalize=0[mixed];[mixed]dynaudnorm=p=0.9:s=3:f=10",
+      "[bg][v]amix=inputs=2:duration=longest:dropout_transition=0:normalize=0",
       "-t", "300",
       "-c:a", "libmp3lame", "-q:a", "2",
       mixed_file.path
