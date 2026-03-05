@@ -60,7 +60,7 @@ class MixAudioJob < ApplicationJob
         "highpass=f=80," +
         "equalizer=f=3500:width_type=h:width=1500:g=-1," +
         "acompressor=threshold=-20dB:ratio=1.5:attack=100:release=300[v];" +
-        "[bg][v]amix=inputs=2:duration=longest:dropout_transition=0:normalize=0[mixed];[mixed]dynaudnorm=p=0.9:s=5",
+        "[bg][v]amix=inputs=2:duration=longest:dropout_transition=0:normalize=0[mixed];[mixed]dynaudnorm=p=0.9:s=3:f=10",
         "-t", "30", "-c:a", "libmp3lame", "-q:a", "2",
         mixed_file.path
       ]
@@ -124,7 +124,7 @@ class MixAudioJob < ApplicationJob
     when "ambient_blend"
       { voice: 1.0, music: 0.25 }
     else # "balanced" or nil
-      { voice: 1.0, music: 0.13 }
+      { voice: 1.2, music: 0.13 }
     end
   end
 end
