@@ -11,14 +11,14 @@
     
     <!-- Large Play/Pause Button -->
     <div class="flex justify-center mb-8">
-      <button id="modalPlayBtn" onclick="toggleModalPlay()" class="bg-lime-500 hover:bg-lime-400 rounded-full p-8 transition-all transform hover:scale-110 shadow-2xl">
+      <button id="modalPlayBtn" onclick="toggleModalPlay()" class="bg-indigo-600 hover:bg-indigo-500 rounded-full p-8 transition-all transform hover:scale-110 shadow-2xl" style="box-shadow: 0 0 40px rgba(99,102,241,0.5);">
         <svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24">
           <path d="M8 5v14l11-7z"/>
         </svg>
       </button>
     </div>
     
-    <!-- Particle Visualizer Canvas -->
+    <!-- Equalizer Visualizer Canvas -->
     <canvas id="particleCanvas" class="mb-6 rounded-lg w-full" height="200"></canvas>
 
     <!-- Progress Bar (Seekable) -->
@@ -29,8 +29,8 @@
         min="0" 
         max="100" 
         value="0" 
-        class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-lime-500"
-        style="background: linear-gradient(to right, #84cc16 0%, #334155 0%);"
+        class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+        style="background: linear-gradient(to right, #6366f1 0%, #334155 0%);"
       >
     </div>
     
@@ -88,7 +88,7 @@
                       <div class="flex flex-col items-center gap-2">
                         <button
                           onclick="openAudioModal('<%= j(reflection.title || 'Untitled') %>', '<%= extended_audio_url(reflection, play: true) %>', '<%= extended_audio_url(reflection) %>')"
-                          class="inline-flex items-center gap-2 bg-lime-500 hover:bg-lime-400 text-white font-medium py-3 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg">
+                          class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg" style="box-shadow: 0 0 20px rgba(99,102,241,0.3);">
                           <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z"/>
                           </svg>
@@ -131,70 +131,69 @@
   let audioContext, analyser, dataArray, audioElement, animationId;
   const canvas = document.getElementById('particleCanvas');
   const ctx = canvas.getContext('2d');
-  let particles = [];
 
-  class Particle {
-    constructor(x, y) {
-      this.x = x;
-      this.y = y;
-      this.size = Math.random() * 3 + 1;
-      this.speedX = Math.random() * 2 - 1;
-      this.speedY = Math.random() * 2 - 1;
-      this.color = `hsl(${Math.random() * 60 + 80}, 100%, 50%)`; // Lime green hues
-    }
-    
-    update(audioLevel) {
-      this.x += this.speedX * (1 + audioLevel);
-      this.y += this.speedY * (1 + audioLevel);
-      
-      // Wrap around edges
-      if (this.x > canvas.width) this.x = 0;
-      if (this.x < 0) this.x = canvas.width;
-      if (this.y > canvas.height) this.y = 0;
-      if (this.y < 0) this.y = canvas.height;
-      
-      // Size pulsates with audio
-      this.size = (Math.random() * 2 + 1) * (1 + audioLevel * 2);
-    }
-    
-    draw() {
-      ctx.fillStyle = this.color;
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  }
+  const BAR_COUNT = 48;
+  let barHeights = new Array(BAR_COUNT).fill(0);
+  let barTargets = new Array(BAR_COUNT).fill(0);
 
   function initParticles() {
-    particles = [];
-    for (let i = 0; i < 100; i++) {
-      particles.push(new Particle(
-        Math.random() * canvas.width,
-        Math.random() * canvas.height
-      ));
-    }
+    barHeights = new Array(BAR_COUNT).fill(0);
+    barTargets = new Array(BAR_COUNT).fill(0);
   }
 
   function animate() {
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.1)'; // Slight trail effect
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
+    canvas.width = canvas.offsetWidth;
+    const W = canvas.width;
+    const H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+
+    // Background
+    ctx.fillStyle = 'rgba(10, 10, 30, 0.95)';
+    ctx.fillRect(0, 0, W, H);
+
+    const barWidth = (W / BAR_COUNT) * 0.7;
+    const gap = (W / BAR_COUNT) * 0.3;
+
     if (analyser) {
       analyser.getByteFrequencyData(dataArray);
-      const average = dataArray.reduce((a, b) => a + b) / dataArray.length / 255;
-      
-      particles.forEach(particle => {
-        particle.update(average);
-        particle.draw();
-      });
-    } else {
-      // When not playing, gentle drift
-      particles.forEach(particle => {
-        particle.update(0);
-        particle.draw();
-      });
     }
-    
+
+    for (let i = 0; i < BAR_COUNT; i++) {
+      let value;
+      if (analyser && audioElement && !audioElement.paused) {
+        value = dataArray[Math.floor(i * dataArray.length / BAR_COUNT)] / 255;
+      } else {
+        // Idle breathing animation
+        value = 0.05 + 0.04 * Math.sin(Date.now() / 800 + i * 0.4);
+      }
+
+      barTargets[i] = value;
+      barHeights[i] += (barTargets[i] - barHeights[i]) * 0.15;
+
+      const barH = Math.max(4, barHeights[i] * H * 0.85);
+      const x = i * (barWidth + gap) + gap / 2;
+      const y = H - barH;
+
+      // Gradient per bar: indigo → violet → purple
+      const grad = ctx.createLinearGradient(x, y, x, H);
+      grad.addColorStop(0, `hsla(${240 + i * 1.5}, 80%, 75%, 0.9)`);
+      grad.addColorStop(0.5, `hsla(${260 + i * 1.2}, 70%, 60%, 0.8)`);
+      grad.addColorStop(1, `hsla(${280 + i}, 60%, 40%, 0.6)`);
+
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.roundRect(x, y, barWidth, barH, [3, 3, 0, 0]);
+      ctx.fill();
+
+      // Glow on tall bars
+      if (barHeights[i] > 0.5) {
+        ctx.shadowColor = `hsla(${250 + i}, 80%, 70%, 0.6)`;
+        ctx.shadowBlur = 8;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+    }
+
     animationId = requestAnimationFrame(animate);
   }
 
@@ -203,27 +202,19 @@
     document.getElementById('modalTitle').textContent = title;
     document.getElementById('modalDownload').href = downloadUrl;
     
-    // Set canvas size
     canvas.width = canvas.offsetWidth;
-    
-    // Initialize particles
     initParticles();
-    
-    // Start animation
     animate();
     
-    // Fetch the redirect to get the actual S3 URL
     const response = await fetch(audioUrl);
-    const finalUrl = response.url; // This is the S3 URL after redirect
+    const finalUrl = response.url;
     
-    // Setup audio
     if (!audioElement) {
       audioElement = new Audio();
     }
     
-    audioElement.src = finalUrl; // Use S3 URL, not redirect URL
+    audioElement.src = finalUrl;
     
-    // Update play button
     audioElement.addEventListener('play', () => {
       document.getElementById('modalPlayBtn').innerHTML = '<svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/></svg>';
     });
@@ -232,7 +223,6 @@
       document.getElementById('modalPlayBtn').innerHTML = '<svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
     });
     
-    // Update time
     audioElement.addEventListener('timeupdate', () => {
       const current = audioElement.currentTime;
       const duration = audioElement.duration || 0;
@@ -247,9 +237,7 @@
 
   function closeAudioModal() {
     document.getElementById('audioModal').classList.add('hidden');
-    if (audioElement) {
-      audioElement.pause();
-    }
+    if (audioElement) audioElement.pause();
     cancelAnimationFrame(animationId);
   }
 
@@ -269,7 +257,6 @@
     return minutes + ':' + (secs < 10 ? '0' : '') + secs;
   }
 
-  // Progress bar seeking
   document.getElementById('progressBar').addEventListener('input', function(e) {
     if (audioElement && audioElement.duration) {
       const seekTime = (e.target.value / 100) * audioElement.duration;
@@ -277,13 +264,12 @@
     }
   });
 
-  // Update progress bar as audio plays
   function updateProgressBar() {
     if (audioElement && audioElement.duration) {
       const progress = (audioElement.currentTime / audioElement.duration) * 100;
       const progressBar = document.getElementById('progressBar');
       progressBar.value = progress;
-      progressBar.style.background = `linear-gradient(to right, #84cc16 ${progress}%, #334155 ${progress}%)`;
+      progressBar.style.background = `linear-gradient(to right, #6366f1 ${progress}%, #334155 ${progress}%)`;
     }
   }
 
@@ -292,16 +278,16 @@
       const response = await fetch(audioUrl);
       const finalUrl = response.url;
       const blob = await response.blob();
-      const file = new File([blob], `${title} - memflect.app.mp3`, { type: 'audio/mpeg' });
+      const file = new File([blob], `memflect.app - ${title}.mp3`, { type: 'audio/mpeg' });
 
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
           files: [file],
           title: title,
-          text: `🎧 "${title}" — a cinematic audio reflection I created at memflect.app`
+          text: `🎧 "${title}" — a therapeutic audio reflection I created at memflect.com`
         });
       } else {
-        await navigator.clipboard.writeText(`🎧 "${title}" — a cinematic audio reflection I created at memflect.app`);
+        await navigator.clipboard.writeText(`🎧 "${title}" — a therapeutic audio reflection I created at memflect.com`);
         alert('Copied to clipboard! Paste into WhatsApp or email.');
       }
     } catch (err) {
@@ -309,26 +295,23 @@
     }
   }
 
-  // Close modal on Escape key
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      closeAudioModal();
-    }
+    if (e.key === 'Escape') closeAudioModal();
   });
-  </script>
+</script>
 
-  <!-- Account Deletion Section -->
-  <div class="container mx-auto max-w-6xl mt-16 pt-8 border-t border-white/10">
-    <div class="text-center">
-      <p class="text-slate-500 text-sm mb-3">Need to delete your account?</p>
-      <%= button_to "Delete My Account & All Data", 
-          delete_account_path, 
-          method: :delete,
-          data: { 
-            turbo_confirm: "⚠️ Are you sure? This will permanently delete all your reflections and cannot be undone." 
-          },
-          class: "text-red-400 hover:text-red-300 text-sm underline cursor-pointer" %>
-    </div>
+<!-- Account Deletion Section -->
+<div class="container mx-auto max-w-6xl mt-16 pt-8 border-t border-white/10">
+  <div class="text-center">
+    <p class="text-slate-500 text-sm mb-3">Need to delete your account?</p>
+    <%= button_to "Delete My Account & All Data", 
+        delete_account_path, 
+        method: :delete,
+        data: { 
+          turbo_confirm: "⚠️ Are you sure? This will permanently delete all your reflections and cannot be undone." 
+        },
+        class: "text-red-400 hover:text-red-300 text-sm underline cursor-pointer" %>
   </div>
+</div>
 
 </div>
