@@ -42,7 +42,6 @@
                   record_reflection_path(reflection),
                   class: "bg-sky-600 hover:bg-sky-500 text-white font-medium tracking-wider py-3 px-5 rounded-lg",
                   data: { turbo_frame: "_top" } %>
-
       <%= link_to "No, let me try that again.",
                   new_reflection_path,
                   class: "bg-slate-600 hover:bg-slate-500 text-white font-medium tracking-wider py-3 px-5 rounded-lg" %>
@@ -54,6 +53,10 @@
 
   <% when 'completed' %>
     <%# ----- STATE: COMPLETED (Final Audio Player) ----- %>
+
+    <%# Confetti Canvas %>
+    <canvas id="confetti-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
+
     <div class="text-center">
       <h1 class="text-3xl md:text-4xl font-medium tracking-wider text-white tracking-wide">
         Your Memflection Sample is Ready! ✨
@@ -72,12 +75,18 @@
     <div class="bg-black/50 backdrop-blur-xl p-6 rounded-2xl shadow-lg border border-white/20">
       <% if reflection.final_audio.attached? %>
         <div class="flex flex-col items-center justify-center space-y-6">
-          <audio controls class="w-full max-w-md rounded-lg">
+
+          <%# Autoplay nudge (hidden unless browser blocks) %>
+          <div id="autoplay-nudge" class="hidden w-full max-w-md text-center">
+            <p class="text-indigo-300 text-sm animate-pulse">🎧 Tap play to hear your Memflection</p>
+          </div>
+
+          <audio id="preview-audio" controls class="w-full max-w-md rounded-lg">
             <source src="<%= preview_audio_path(reflection) %>" type="audio/mpeg">
             Your browser does not support the audio element.
           </audio>
-          
-          <%# Shuffle Button - Same Category, Different Track %>
+
+          <%# Shuffle Button %>
           <div class="w-full">
             <%= button_to "🔀 Shuffle Soundscape",
                           remix_audio_reflection_path(reflection, reflection: { soundscape_id: reflection.soundscape_id }),
@@ -87,10 +96,9 @@
             <p class="text-slate-400 text-sm text-center mt-2">Get a different <%= reflection.soundscape.category %> track</p>
           </div>
 
-          <%# Remix Soundscape Section %>
+          <%# Remix Soundscape %>
           <div class="w-full max-w-md pt-6 border-t border-white/20">
             <p class="text-lg font-medium tracking-wider text-white mb-4 text-center">Want a different soundscape?</p>
-            
             <%= form_with(model: reflection,
                           url: remix_audio_reflection_path(reflection),
                           method: :post,
@@ -108,7 +116,6 @@
           </div>
 
           <% if Features::EQ_PRESETS_ENABLED %>
-            <%# Mix Balance Section %>
             <div class="w-full max-w-md pt-6 border-t border-white/20">
               <p class="text-lg font-medium tracking-wider text-white mb-4 text-center">Adjust Mix Balance</p>
               <%= form_with(url: apply_eq_preset_reflection_path(reflection),
@@ -129,7 +136,7 @@
             </div>
           <% end %>
 
-          <%# Upgrade Pitch Section %>
+          <%# Upgrade Pitch %>
           <div class="w-full max-w-md pt-8 pb-4">
             <div class="bg-gradient-to-br from-green-900/30 to-emerald-900/30 backdrop-blur-sm border border-green-500/30 rounded-xl p-6">
               <p class="text-white text-lg font-normal tracking-wider mb-3 text-center">
@@ -161,7 +168,6 @@
 
           <%# Action Buttons %>
           <div class="flex flex-col justify-center items-center gap-4 pt-1 w-full max-w-md">
-            <%# Email + Purchase %>
             <%= form_with url: checkout_reflection_path(reflection), method: :post, data: { turbo: false }, class: "w-full flex flex-col gap-3" do |f| %>
               <div class="w-full">
                 <label for="customer_email" class="block text-slate-300 text-sm mb-2">Email for your receipt & dashboard access:</label>
@@ -173,7 +179,6 @@
                   class: "w-full bg-green-600 hover:bg-green-500 text-white font-medium tracking-wider py-3 px-6 rounded-lg shadow-lg text-center cursor-pointer" %>
             <% end %>
 
-            <%# Promo Code Section %>
             <div class="w-full border-t border-white/20 pt-4 mt-2">
               <p class="text-slate-400 text-sm text-center mb-3">Have a gift code?</p>
               <%= form_with url: redeem_promo_reflection_path(reflection), method: :post, data: { turbo: false }, class: "w-full flex flex-col gap-3" do |f| %>
@@ -197,11 +202,100 @@
       <% end %>
     </div>
 
+    <script>
+      // ─── CONFETTI ──────────────────────────────────────────────────────────
+      (function() {
+        const canvas = document.getElementById('confetti-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const COLORS = [
+          '#7c3aed', // purple
+          '#6366f1', // indigo
+          '#4ade80', // green
+          '#a78bfa', // violet
+          '#34d399', // emerald
+          '#818cf8', // indigo light
+          '#86efac', // green light
+        ];
+
+        const pieces = [];
+        for (let i = 0; i < 120; i++) {
+          pieces.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height * -1,
+            w: Math.random() * 10 + 5,
+            h: Math.random() * 5 + 3,
+            color: COLORS[Math.floor(Math.random() * COLORS.length)],
+            rotation: Math.random() * 360,
+            rotationSpeed: (Math.random() - 0.5) * 3,
+            speedX: (Math.random() - 0.5) * 2,
+            speedY: Math.random() * 2.5 + 1.2,
+            isEllipse: Math.random() > 0.5
+          });
+        }
+
+        let startTime = null;
+        const DURATION = 3200;
+
+        function drawConfetti(timestamp) {
+          if (!startTime) startTime = timestamp;
+          const elapsed = timestamp - startTime;
+          const progress = Math.min(elapsed / DURATION, 1);
+          const globalOpacity = progress > 0.7 ? 1 - ((progress - 0.7) / 0.3) : 1;
+
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          pieces.forEach(p => {
+            p.x += p.speedX;
+            p.y += p.speedY;
+            p.rotation += p.rotationSpeed;
+
+            ctx.save();
+            ctx.globalAlpha = globalOpacity;
+            ctx.translate(p.x + p.w / 2, p.y + p.h / 2);
+            ctx.rotate((p.rotation * Math.PI) / 180);
+            ctx.fillStyle = p.color;
+            ctx.beginPath();
+            if (p.isEllipse) {
+              ctx.ellipse(0, 0, p.w / 2, p.h / 4, 0, 0, Math.PI * 2);
+            } else {
+              ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+            }
+            ctx.fill();
+            ctx.restore();
+          });
+
+          if (progress < 1) {
+            requestAnimationFrame(drawConfetti);
+          } else {
+            canvas.style.display = 'none';
+          }
+        }
+
+        requestAnimationFrame(drawConfetti);
+      })();
+
+      // ─── AUTOPLAY ──────────────────────────────────────────────────────────
+      document.addEventListener('DOMContentLoaded', function() {
+        const audio = document.getElementById('preview-audio');
+        const nudge = document.getElementById('autoplay-nudge');
+        if (!audio) return;
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(function() {
+            if (nudge) nudge.classList.remove('hidden');
+          });
+        }
+      });
+    </script>
+
   <% when 'failed' %>
     <%# ----- STATE: FAILED ----- %>
     <div class="text-center">
       <h1 class="text-4xl font-bold tracking-wider text-red-400 tracking-wide">Something Went Wrong</h1>
-
       <% if reflection.voice_recording.blank? %>
         <p class="text-lg text-slate-300 mt-4">We couldn't record your audio.</p>
       <% else %>
@@ -217,25 +311,21 @@
           <li>• Privacy settings preventing recording</li>
           <li>• Network connection issues</li>
         </ul>
-
         <div class="bg-green-900/20 border border-green-500/30 rounded-lg p-4 mb-6">
           <p class="text-green-300 font-semibold mb-2">✅ Good news: Your memory was saved!</p>
           <p class="text-slate-300 text-sm">You won't lose the story you wrote. Just try recording again in a different browser.</p>
         </div>
-
         <div class="flex flex-col gap-3">
           <p class="text-white font-medium mb-2">Try one of these browsers:</p>
           <ul class="text-white/80 text-sm mb-4">
             <li>• <strong>Safari</strong> (recommended for iPhone/Mac)</li>
             <li>• <strong>Chrome</strong> (recommended for Android/PC)</li>
           </ul>
-
           <%= link_to "Try Recording Again", record_reflection_path(reflection),
               class: "bg-green-600 hover:bg-green-500 text-white font-medium py-3 px-5 rounded-lg block text-center" %>
           <%= link_to "Start Over", new_reflection_path,
               class: "bg-slate-600 hover:bg-slate-500 text-white font-medium py-3 px-5 rounded-lg block text-center" %>
         </div>
-
       <% else %>
         <p class="text-white mb-4">Something went wrong during audio processing. Please try creating a new reflection or contact support.</p>
         <%= link_to "Start Over", new_reflection_path,
