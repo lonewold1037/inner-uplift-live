@@ -252,7 +252,9 @@
 
       function goToSlide(n) {
         currentSlide = n;
-        document.getElementById('testimonial-track').style.transform = `translateX(-${currentSlide * 100}%)`;
+        const track = document.getElementById('testimonial-track');
+        if (!track) return;
+        track.style.transform = `translateX(-${currentSlide * 100}%)`;
         document.querySelectorAll('[id^="dot-"]').forEach((dot, i) => {
           dot.className = i === currentSlide
             ? 'w-2 h-2 rounded-full bg-sky-400 transition-all'

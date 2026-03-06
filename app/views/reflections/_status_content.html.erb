@@ -279,17 +279,25 @@
       })();
 
       // ─── AUTOPLAY ──────────────────────────────────────────────────────────
-      document.addEventListener('DOMContentLoaded', function() {
-        const audio = document.getElementById('preview-audio');
-        const nudge = document.getElementById('autoplay-nudge');
-        if (!audio) return;
-        const playPromise = audio.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(function() {
-            if (nudge) nudge.classList.remove('hidden');
-          });
+      (function() {
+        function tryAutoplay() {
+          const audio = document.getElementById('preview-audio');
+          const nudge = document.getElementById('autoplay-nudge');
+          if (!audio) return;
+          const playPromise = audio.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(function() {
+              if (nudge) nudge.classList.remove('hidden');
+            });
+          }
         }
-      });
+        // Works whether page loaded fresh OR via Turbo Stream
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', tryAutoplay);
+        } else {
+          tryAutoplay();
+        }
+      })();
     </script>
 
   <% when 'failed' %>
