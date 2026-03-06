@@ -2,6 +2,7 @@
   <% case reflection.status %>
   <% when 'generating_recap', 'processing_voice', 'generating_preview', 'mixing' %>
     <%# ----- All IN-PROGRESS States ----- %>
+    <meta http-equiv="refresh" content="5">
     <%
       title = case reflection.status
               when 'generating_recap'   then 'Generating Your Recap...'
