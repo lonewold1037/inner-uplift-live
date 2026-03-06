@@ -123,18 +123,24 @@
 
         <!-- Audio Player -->
         <div class="bg-black/30 rounded-xl p-4">
-          <div class="flex gap-2 mb-4 flex-wrap justify-center">
-            <button onclick="switchSample(0)" id="sample-tab-0" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-sky-600 text-white">
+          <div class="grid grid-cols-3 gap-2 mb-4">
+            <button onclick="switchSample(0)" id="sample-tab-0" class="px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-sky-600 text-white text-center">
               💪 Hurdle Conquered
             </button>
-            <button onclick="switchSample(1)" id="sample-tab-1" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-white/10 text-slate-300 hover:bg-white/20">
+            <button onclick="switchSample(1)" id="sample-tab-1" class="px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-white/10 text-slate-300 hover:bg-white/20 text-center">
               🌼 Dandelion Whispers
             </button>
-            <button onclick="switchSample(2)" id="sample-tab-2" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-white/10 text-slate-300 hover:bg-white/20">
+            <button onclick="switchSample(2)" id="sample-tab-2" class="px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-white/10 text-slate-300 hover:bg-white/20 text-center">
               🌙 Shadows of Stillness
             </button>
-            <button onclick="switchSample(3)" id="sample-tab-3" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-white/10 text-slate-300 hover:bg-white/20">
+            <button onclick="switchSample(3)" id="sample-tab-3" class="px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-white/10 text-slate-300 hover:bg-white/20 text-center">
               🧠 First Code Dawn
+            </button>
+            <button onclick="switchSample(4)" id="sample-tab-4" class="px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-white/10 text-slate-300 hover:bg-white/20 text-center">
+              🎙️ Echoes of Silence
+            </button>
+            <button onclick="switchSample(5)" id="sample-tab-5" class="px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-white/10 text-slate-300 hover:bg-white/20 text-center">
+              🏈 Seahawks Triumph
             </button>
           </div>
 
@@ -165,6 +171,14 @@
             {
               src: "/audio/homepage-sample-1.mp3",
               caption: "First Code Dawn — Gratitude · The moment coding finally clicked for Ryan and excitement to release his 1st app"
+            },
+            {
+              src: "/audio/homepage-sample-5.mp3",
+              caption: "Echoes of Silence — Transformation · The power of hearing your own voice and what it can unlock in you"
+            },
+            {
+              src: "/audio/homepage-sample-6.mp3",
+              caption: "Seahawks Triumph — Gift Mode · A 12th Man's cinematic letter to the Seahawks on their Super Bowl win"
             }
           ];
 
