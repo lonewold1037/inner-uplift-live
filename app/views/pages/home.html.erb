@@ -14,7 +14,7 @@
 
     <!-- Floating Animated Logo -->
     <div class="relative mb-8">
-      <h1 class="text-5xl md:text-7xl font-bold tracking-wider text-white relative z-10 whitespace-nowrap">
+      <h1 class="text-5xl md:text-7xl font-bold tracking-wider text-white relative z-10">
         <span class="inline-block animate-float" style="animation-delay: 0s;">M</span>
         <span class="inline-block animate-float" style="animation-delay: 0.1s;">E</span>
         <span class="inline-block animate-float" style="animation-delay: 0.2s;">M</span>
@@ -382,14 +382,14 @@
         </p>
 
         <div class="overflow-x-auto">
-          <table class="w-full text-sm">
+          <table class="w-full text-xs md:text-sm">
             <thead>
               <tr class="border-b border-white/10">
-                <th class="text-left py-3 px-4 text-slate-400 font-medium" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;"></th>
-                <th class="py-3 px-4 text-sky-400 font-bold text-center" style="font-family: 'Bebas Neue', sans-serif; font-size: 1rem;">Memflect</th>
-                <th class="py-3 px-4 text-slate-400 font-medium text-center" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">Journaling</th>
-                <th class="py-3 px-4 text-slate-400 font-medium text-center" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">Therapy Apps</th>
-                <th class="py-3 px-4 text-slate-400 font-medium text-center" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">Meditation Apps</th>
+                <th class="text-left py-2 px-2 md:px-4 text-slate-400 font-medium" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;"></th>
+                <th class="py-2 px-2 md:px-4 text-sky-400 font-bold text-center" style="font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem;">Memflect</th>
+                <th class="py-2 px-2 md:px-4 text-slate-400 font-medium text-center" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">Journaling</th>
+                <th class="py-2 px-2 md:px-4 text-slate-400 font-medium text-center" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">Therapy Apps</th>
+                <th class="py-2 px-2 md:px-4 text-slate-400 font-medium text-center" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">Meditation Apps</th>
               </tr>
             </thead>
             <tbody>
@@ -404,11 +404,11 @@
                 ["Shareable as a gift", true, false, false, false]
               ].each do |row| %>
                 <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
-                  <td class="py-3 px-4 text-slate-300" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;"><%= row[0] %></td>
-                  <td class="py-3 px-4 text-center text-lg"><%= row[1] ? "✅" : "❌" %></td>
-                  <td class="py-3 px-4 text-center text-lg"><%= row[2] ? "✅" : "❌" %></td>
-                  <td class="py-3 px-4 text-center text-lg"><%= row[3] ? "✅" : "❌" %></td>
-                  <td class="py-3 px-4 text-center text-lg"><%= row[4] ? "✅" : "❌" %></td>
+                  <td class="py-2 px-2 md:px-4 text-slate-300" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;"><%= row[0] %></td>
+                  <td class="py-2 px-2 md:px-4 text-center text-base md:text-lg"><%= row[1] ? "✅" : "❌" %></td>
+                  <td class="py-2 px-2 md:px-4 text-center text-base md:text-lg"><%= row[2] ? "✅" : "❌" %></td>
+                  <td class="py-2 px-2 md:px-4 text-center text-base md:text-lg"><%= row[3] ? "✅" : "❌" %></td>
+                  <td class="py-2 px-2 md:px-4 text-center text-base md:text-lg"><%= row[4] ? "✅" : "❌" %></td>
                 </tr>
               <% end %>
             </tbody>
