@@ -139,11 +139,11 @@ class ProcessAudioJob < ApplicationJob
 
   def synthesize_audio(script, voice_id)
     return nil unless script.present?
-    # poetic_script = add_poetic_pauses(script)
+    poetic_script = add_poetic_pauses(script)
     uri = URI.parse("https://api.elevenlabs.io/v1/text-to-speech/#{voice_id}")
     headers = { "Accept" => "audio/mpeg", "Content-Type" => "application/json", "xi-api-key" => ENV["ELEVEN_LABS_API_KEY"] }
     body = {
-      text: script,
+      text: poetic_script,
       model_id: "eleven_multilingual_v2",
       output_format: "mp3_44100_128"
     }.to_json

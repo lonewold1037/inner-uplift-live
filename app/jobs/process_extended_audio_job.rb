@@ -174,16 +174,11 @@ class ProcessExtendedAudioJob < ApplicationJob
 
   def add_poetic_pauses(text)
     return "" unless text.present?
-
     text
-      # Add SSML breaks after sentences for natural pacing
-      .gsub(/\.\s+/, '.<break time="0.8s"/> ')
-      # Shorter pause after commas
-      .gsub(/,\s+/, ',<break time="0.3s"/> ')
-      # Pause before emotional connectors
-      .gsub(/\b(but|and|so|yet|because)\b/i, '<break time="0.2s"/>\1')
-      # Paragraph breaks get longer pauses
-      .gsub(/\n\n/, '<break time="1.2s"/>')
+      .gsub(/([a-z])([,;:])\s/i, '\1...\2 ')
+      .gsub(/([^.])\.\s+([A-Z])/, '\1... \2')
+      .gsub(/\b(but|and|so|yet)\b/i, '...\1')
+      .gsub(/\.{4,}/, '...')
       .strip
   end
 
@@ -210,7 +205,7 @@ class ProcessExtendedAudioJob < ApplicationJob
     when "ambient_blend"
       { voice: 1.0, music: 0.25 }
     else # "balanced" or nil
-      { voice: 1.2, music: 0.14 }
+      { voice: 1.2, music: 0.20 }
     end
   end
 end
