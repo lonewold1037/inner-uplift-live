@@ -129,10 +129,10 @@ class ProcessAudioJob < ApplicationJob
     uri = URI.parse("https://api.elevenlabs.io/v1/voices/#{voice_id}/settings/edit")
     headers = { "Content-Type" => "application/json", "xi-api-key" => ENV["ELEVEN_LABS_API_KEY"] }
     body = {
-      stability: 0.95,
-      similarity_boost: 0.90,
-      # use_speaker_boost: true,
-      speed: 0.91
+      stability: 0.85,
+      similarity_boost: 0.95,
+      use_speaker_boost: true,
+      speed: 0.93
     }.to_json
     Net::HTTP.post(uri, body, headers)
   end
@@ -144,7 +144,7 @@ class ProcessAudioJob < ApplicationJob
     headers = { "Accept" => "audio/mpeg", "Content-Type" => "application/json", "xi-api-key" => ENV["ELEVEN_LABS_API_KEY"] }
     body = {
       text: script,
-      model_id: "eleven_v3",
+      model_id: "eleven_multilingual_v2",
       output_format: "mp3_44100_128"
     }.to_json
     response = Net::HTTP.post(uri, body, headers)
