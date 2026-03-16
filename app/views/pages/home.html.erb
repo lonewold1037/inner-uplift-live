@@ -10,11 +10,11 @@
 </div>
 
 <div class="min-h-screen flex flex-col items-center justify-center text-center p-4 md:p-8 pt-16 relative">
-  <div class="max-w-3xl w-full overflow-hidden">
+  <div class="w-full max-w-3xl">
 
-    <!-- Floating Animated Logo -->
-    <div class="relative mb-8 pt-8">
-      <h1 class="text-4xl md:text-7xl font-bold tracking-wider text-white relative z-10">
+    <!-- Floating Animated Logo — full width, overflow visible so letters can float freely -->
+    <div class="relative mb-8 pt-10 pb-6">
+      <h1 class="text-6xl sm:text-7xl md:text-8xl font-bold tracking-widest text-white relative z-10">
         <span class="inline-block animate-float" style="animation-delay: 0s;">M</span>
         <span class="inline-block animate-float" style="animation-delay: 0.1s;">E</span>
         <span class="inline-block animate-float" style="animation-delay: 0.2s;">M</span>
@@ -27,455 +27,397 @@
       <div class="absolute inset-0 blur-3xl bg-gradient-to-r from-purple-500 via-pink-500 to-sky-500 opacity-30 animate-pulse -z-10"></div>
     </div>
 
-    <!-- NEW: Problem/Solution Hero -->
-    <p class="mt-4 text-lg md:text-xl text-slate-400 font-light max-w-2xl mx-auto leading-relaxed" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">
-      Meditation apps are too generic. Journaling feels like homework.<br>
-      <span class="text-white font-medium">Sometimes you just need to hear a voice.</span>
-    </p>
+    <!-- Everything below logo is overflow-hidden to prevent horizontal scroll -->
+    <div class="w-full overflow-hidden">
 
-    <p class="mt-4 text-base md:text-lg text-slate-300 font-light max-w-xl mx-auto leading-relaxed" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">
-      Memflect is for the moment you need something personal. Your voice. Your music. Your situation. Right now.
-    </p>
-
-    <!-- Use Case Strip -->
-    <div class="mt-6 grid grid-cols-2 gap-3 w-full max-w-lg mx-auto text-left px-1">
-      <div class="bg-white/5 rounded-xl p-3 border border-white/10">
-        <p class="text-sm text-slate-300" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">😰 When anxiety hits and you need to calm down</p>
-      </div>
-      <div class="bg-white/5 rounded-xl p-3 border border-white/10">
-        <p class="text-sm text-slate-300" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">💔 When you're processing something painful</p>
-      </div>
-      <div class="bg-white/5 rounded-xl p-3 border border-white/10">
-        <p class="text-sm text-slate-300" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">🌅 When you want to mentally prepare for something big</p>
-      </div>
-      <div class="bg-white/5 rounded-xl p-3 border border-white/10">
-        <p class="text-sm text-slate-300" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">🎁 When someone you love needs to hear they're not alone</p>
-      </div>
-    </div>
-
-    <!-- Primary CTA -->
-    <div class="mt-8 text-center">
-      <%= link_to "Start my Memflection", new_reflection_path, class: "inline-block bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-medium tracking-widest py-5 px-10 rounded-xl shadow-2xl text-xl transform hover:scale-105 transition-all duration-300" %>
-      
-      <!-- Android Install Button (hidden by default, only for guests) -->
-      <% unless user_signed_in? %>
-        <div id="android-install-button" class="hidden mt-6">
-          <button onclick="installPWA()" class="inline-block bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-medium tracking-widest py-4 px-8 rounded-xl shadow-2xl text-lg transform hover:scale-105 transition-all duration-300">
-            📱 Install App
-          </button>
-        </div>
-      <% end %>
-    </div>
-
-    <!-- Rotating Text -->
-    <div class="mt-6 mb-8 text-center">
-      <p class="text-slate-400 text-xl md:text-2xl font-light tracking-wide" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">
-        <span id="rotating-text" class="text-sky-400 font-medium transition-opacity duration-700">Turn memories into audio you'll actually listen to</span>
+      <!-- Problem/Solution Hero -->
+      <p class="mt-4 text-lg md:text-xl text-slate-400 font-light max-w-2xl mx-auto leading-relaxed" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">
+        Meditation apps are too generic. Journaling feels like homework.<br>
+        <span class="text-white font-medium">Sometimes you just need to hear a voice.</span>
       </p>
-    </div>
 
-    <script>
-      const phrases = [
-        "Your voice, your soundscape choice",
-        "Private by default",
-        "Simple by design",
-        "For moments that stuck with you",
-        "A nice supplement to journaling",
-        "A narrated musical creation that fits in your pocket",
-        "For the car ride, a quiet time, or just walking down the street",
-        "Hear yourself the way a friend would",
-        "Made by someone who needed it",
-        "No big corporate app to learn, just press play",
-        "5 minutes to process what you feel matters",
-        "Made for regular people, not just therapy clients",
-        "For memories that deserve more than a journal entry",
-        "Customized audio reflections for daily self-improvement",
-        "Downloadable, shareable, yours forever"
-      ];
-      
-      let currentIndex = 0;
-      const rotatingText = document.getElementById('rotating-text');
-      
-      function rotateText() {
-        rotatingText.style.opacity = '0';
-        setTimeout(() => {
-          currentIndex = (currentIndex + 1) % phrases.length;
-          rotatingText.textContent = phrases[currentIndex];
-          rotatingText.style.opacity = '1';
-        }, 700);
-      }
-      
-      setInterval(rotateText, 4000);
-    </script>
+      <p class="mt-4 text-base md:text-lg text-slate-300 font-light max-w-xl mx-auto leading-relaxed" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">
+        Memflect is for the moment you need something personal. Your voice. Your music. Your situation. Right now.
+      </p>
 
-    <!-- Hear a Memflection Section -->
-    <div class="mt-12 max-w-2xl mx-auto">
-      <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8 relative">
-        
-        <!-- Photo + Intro -->
-        <div class="flex flex-col items-center mb-6">
-          <img src="/images/ryan-headshot.png" class="w-40 h-52 rounded-2xl border-2 border-sky-400 shadow-lg mb-4 object-cover" alt="Ryan McLeod, creator of Memflect">
-          <p class="text-slate-300 text-center text-lg leading-relaxed" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">
-            Hi, I'm Ryan — I built Memflect because some memories deserve more than a journal entry.<br>
-            <span class="text-white font-medium">Here's an example of what you can create:</span>
-          </p>
+      <!-- Use Case Strip -->
+      <div class="mt-6 grid grid-cols-2 gap-3 w-full max-w-lg mx-auto text-left">
+        <div class="bg-white/5 rounded-xl p-3 border border-white/10">
+          <p class="text-sm text-slate-300" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">😰 When anxiety hits and you need to calm down</p>
         </div>
+        <div class="bg-white/5 rounded-xl p-3 border border-white/10">
+          <p class="text-sm text-slate-300" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">💔 When you're processing something painful</p>
+        </div>
+        <div class="bg-white/5 rounded-xl p-3 border border-white/10">
+          <p class="text-sm text-slate-300" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">🌅 When you want to mentally prepare for something big</p>
+        </div>
+        <div class="bg-white/5 rounded-xl p-3 border border-white/10">
+          <p class="text-sm text-slate-300" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">🎁 When someone you love needs to hear they're not alone</p>
+        </div>
+      </div>
 
-        <!-- Audio Player -->
-        <div class="bg-black/30 rounded-xl p-4">
-          <div class="grid grid-cols-3 gap-2 mb-4">
-            <button onclick="switchSample(0)" id="sample-tab-0" class="px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-sky-600 text-white text-center">
-              💪 Hurdle Conquered
-            </button>
-            <button onclick="switchSample(1)" id="sample-tab-1" class="px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-white/10 text-slate-300 hover:bg-white/20 text-center">
-              🌼 Dandelion Whispers
-            </button>
-            <button onclick="switchSample(2)" id="sample-tab-2" class="px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-white/10 text-slate-300 hover:bg-white/20 text-center">
-              🌙 Shadows of Stillness
-            </button>
-            <button onclick="switchSample(3)" id="sample-tab-3" class="px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-white/10 text-slate-300 hover:bg-white/20 text-center">
-              🧠 First Code Dawn
-            </button>
-            <button onclick="switchSample(4)" id="sample-tab-4" class="px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-white/10 text-slate-300 hover:bg-white/20 text-center">
-              🎙️ Echoes of Silence
-            </button>
-            <button onclick="switchSample(5)" id="sample-tab-5" class="px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-white/10 text-slate-300 hover:bg-white/20 text-center">
-              🏈 Seahawks Triumph
+      <!-- Primary CTA -->
+      <div class="mt-8 text-center">
+        <%= link_to "Start my Memflection", new_reflection_path, class: "inline-block bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-medium tracking-widest py-5 px-10 rounded-xl shadow-2xl text-xl transform hover:scale-105 transition-all duration-300" %>
+        
+        <!-- Android Install Button -->
+        <% unless user_signed_in? %>
+          <div id="android-install-button" class="hidden mt-6">
+            <button onclick="installPWA()" class="inline-block bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-medium tracking-widest py-4 px-8 rounded-xl shadow-2xl text-lg transform hover:scale-105 transition-all duration-300">
+              📱 Install App
             </button>
           </div>
+        <% end %>
+      </div>
 
-          <audio id="sample-player" controls preload="metadata" class="w-full" style="border-radius: 8px;">
-            <source id="sample-source" src="/audio/homepage-sample-1.mp3" type="audio/mpeg">
-            Your browser does not support the audio element.
-          </audio>
+      <!-- Rotating Text -->
+      <div class="mt-6 mb-8 text-center">
+        <p class="text-slate-400 text-xl md:text-2xl font-light tracking-wide" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">
+          <span id="rotating-text" class="text-sky-400 font-medium transition-opacity duration-700">Turn memories into audio you'll actually listen to</span>
+        </p>
+      </div>
 
-          <p id="sample-caption" class="text-slate-500 text-xs text-center mt-2" style="text-transform: none; letter-spacing: normal;">
-            Hurdle Conquered — Resilience · For when you made it through something hard
-          </p>
-        </div>
+      <script>
+        const phrases = [
+          "Your voice, your soundscape choice",
+          "Private by default",
+          "Simple by design",
+          "For moments that stuck with you",
+          "A nice supplement to journaling",
+          "A narrated musical creation that fits in your pocket",
+          "For the car ride, a quiet time, or just walking down the street",
+          "Hear yourself the way a friend would",
+          "Made by someone who needed it",
+          "No big corporate app to learn, just press play",
+          "5 minutes to process what you feel matters",
+          "Made for regular people, not just therapy clients",
+          "For memories that deserve more than a journal entry",
+          "Customized audio reflections for daily self-improvement",
+          "Downloadable, shareable, yours forever"
+        ];
+        
+        let currentIndex = 0;
+        const rotatingText = document.getElementById('rotating-text');
+        
+        function rotateText() {
+          rotatingText.style.opacity = '0';
+          setTimeout(() => {
+            currentIndex = (currentIndex + 1) % phrases.length;
+            rotatingText.textContent = phrases[currentIndex];
+            rotatingText.style.opacity = '1';
+          }, 700);
+        }
+        
+        setInterval(rotateText, 4000);
+      </script>
 
-        <script>
-          const samples = [
-            {
-              src: "/audio/homepage-sample-2.mp3",
-              caption: "Hurdle Conquered — Resilience · For when you made it through something hard recently and overcame"
-            },
-            {
-              src: "/audio/homepage-sample-3.mp3",
-              caption: "Dandelion Whispers — Love · A son's memory of giving his mom a flower, now a father's lesson"
-            },
-            {
-              src: "/audio/homepage-sample-4.mp3",
-              caption: "Shadows of Stillness — Gift Mode · Sent to someone who needed to hear they're not alone in depression"
-            },
-            {
-              src: "/audio/homepage-sample-1.mp3",
-              caption: "First Code Dawn — Gratitude · The moment coding finally clicked for Ryan and excitement to release his 1st app"
-            },
-            {
-              src: "/audio/homepage-sample-5.mp3",
-              caption: "Echoes of Silence — Transformation · The power of hearing your own voice and what it can unlock in you"
-            },
-            {
-              src: "/audio/homepage-sample-6.mp3",
-              caption: "Seahawks Triumph — Gift Mode · A 12th Man's cinematic letter to the Seahawks on their Super Bowl win"
+      <!-- Hear a Memflection Section -->
+      <div class="mt-12 max-w-2xl mx-auto">
+        <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-6 md:p-8 relative">
+          
+          <!-- Photo + Intro -->
+          <div class="flex flex-col items-center mb-6">
+            <img src="/images/ryan-headshot.png" class="w-40 h-52 rounded-2xl border-2 border-sky-400 shadow-lg mb-4 object-cover" alt="Ryan McLeod, creator of Memflect">
+            <p class="text-slate-300 text-center text-lg leading-relaxed" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">
+              Hi, I'm Ryan — I built Memflect because some memories deserve more than a journal entry.<br>
+              <span class="text-white font-medium">Here's an example of what you can create:</span>
+            </p>
+          </div>
+
+          <!-- Audio Player -->
+          <div class="bg-black/30 rounded-xl p-4">
+            <!-- Tab grid — all 6 tabs same size, text scales down to fit -->
+            <div class="grid grid-cols-3 gap-2 mb-4">
+              <button onclick="switchSample(0)" id="sample-tab-0" class="sample-tab active-tab px-2 py-2 rounded-lg text-xs font-medium transition-all duration-200 text-center leading-tight">
+                💪<br>Hurdle Conquered
+              </button>
+              <button onclick="switchSample(1)" id="sample-tab-1" class="sample-tab inactive-tab px-2 py-2 rounded-lg text-xs font-medium transition-all duration-200 text-center leading-tight">
+                🌼<br>Dandelion Whispers
+              </button>
+              <button onclick="switchSample(2)" id="sample-tab-2" class="sample-tab inactive-tab px-2 py-2 rounded-lg text-xs font-medium transition-all duration-200 text-center leading-tight">
+                🌙<br>Shadows of Stillness
+              </button>
+              <button onclick="switchSample(3)" id="sample-tab-3" class="sample-tab inactive-tab px-2 py-2 rounded-lg text-xs font-medium transition-all duration-200 text-center leading-tight">
+                🧠<br>First Code Dawn
+              </button>
+              <button onclick="switchSample(4)" id="sample-tab-4" class="sample-tab inactive-tab px-2 py-2 rounded-lg text-xs font-medium transition-all duration-200 text-center leading-tight">
+                🎙️<br>Echoes of Silence
+              </button>
+              <button onclick="switchSample(5)" id="sample-tab-5" class="sample-tab inactive-tab px-2 py-2 rounded-lg text-xs font-medium transition-all duration-200 text-center leading-tight">
+                🏈<br>Seahawks Triumph
+              </button>
+            </div>
+
+            <audio id="sample-player" controls preload="metadata" class="w-full" style="border-radius: 8px;">
+              <source id="sample-source" src="/audio/homepage-sample-2.mp3" type="audio/mpeg">
+              Your browser does not support the audio element.
+            </audio>
+
+            <p id="sample-caption" class="text-slate-500 text-xs text-center mt-2" style="text-transform: none; letter-spacing: normal;">
+              Hurdle Conquered — Resilience · For when you made it through something hard
+            </p>
+          </div>
+
+          <style>
+            .active-tab { background-color: rgb(2 132 199); color: white; }
+            .inactive-tab { background-color: rgba(255,255,255,0.1); color: rgb(148 163 184); }
+            .inactive-tab:hover { background-color: rgba(255,255,255,0.2); }
+          </style>
+
+          <script>
+            const samples = [
+              {
+                src: "/audio/homepage-sample-2.mp3",
+                caption: "Hurdle Conquered — Resilience · For when you made it through something hard recently and overcame"
+              },
+              {
+                src: "/audio/homepage-sample-3.mp3",
+                caption: "Dandelion Whispers — Love · A son's memory of giving his mom a flower, now a father's lesson"
+              },
+              {
+                src: "/audio/homepage-sample-4.mp3",
+                caption: "Shadows of Stillness — Gift Mode · Sent to someone who needed to hear they're not alone in depression"
+              },
+              {
+                src: "/audio/homepage-sample-1.mp3",
+                caption: "First Code Dawn — Gratitude · The moment coding finally clicked for Ryan and excitement to release his 1st app"
+              },
+              {
+                src: "/audio/homepage-sample-5.mp3",
+                caption: "Echoes of Silence — Transformation · The power of hearing your own voice and what it can unlock in you"
+              },
+              {
+                src: "/audio/homepage-sample-6.mp3",
+                caption: "Seahawks Triumph — Gift Mode · A 12th Man's cinematic letter to the Seahawks on their Super Bowl win"
+              }
+            ];
+
+            function switchSample(index) {
+              const player = document.getElementById('sample-player');
+              const source = document.getElementById('sample-source');
+              const caption = document.getElementById('sample-caption');
+              player.pause();
+              source.src = samples[index].src;
+              player.load();
+              caption.textContent = samples[index].caption;
+              document.querySelectorAll('.sample-tab').forEach((tab, i) => {
+                tab.className = tab.className.replace('active-tab', 'inactive-tab');
+                if (i === index) {
+                  tab.className = tab.className.replace('inactive-tab', 'active-tab');
+                }
+              });
             }
-          ];
+          </script>
 
-          function switchSample(index) {
-            const player = document.getElementById('sample-player');
-            const source = document.getElementById('sample-source');
-            const caption = document.getElementById('sample-caption');
-            player.pause();
-            source.src = samples[index].src;
-            player.load();
-            caption.textContent = samples[index].caption;
-            samples.forEach((_, i) => {
-              const tab = document.getElementById(`sample-tab-${i}`);
-              tab.className = i === index
-                ? 'px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-sky-600 text-white'
-                : 'px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-white/10 text-slate-300 hover:bg-white/20';
-            });
-          }
-        </script>
-
+        </div>
       </div>
-    </div>
 
-    <!-- Testimonials Carousel -->
-    <div class="mt-8 max-w-2xl mx-auto">
-      <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8">
-        
-        <h2 class="text-3xl md:text-4xl font-bold text-white text-center mb-1 tracking-wide" style="font-family: 'Bebas Neue', sans-serif;">
-          What People Are Saying
-        </h2>
-        <p class="text-slate-400 text-center mb-6" style="font-family: 'Crimson Text', serif; font-size: 1.1rem; text-transform: none; letter-spacing: normal;">
-          🗣️ Unfiltered reactions
-        </p>
+      <!-- Testimonials Carousel -->
+      <div class="mt-8 max-w-2xl mx-auto">
+        <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-6 md:p-8">
+          
+          <h2 class="text-3xl md:text-4xl font-bold text-white text-center mb-1 tracking-wide" style="font-family: 'Bebas Neue', sans-serif;">
+            What People Are Saying
+          </h2>
+          <p class="text-slate-400 text-center mb-6" style="font-family: 'Crimson Text', serif; font-size: 1.1rem; text-transform: none; letter-spacing: normal;">
+            🗣️ Unfiltered reactions
+          </p>
 
-        <div class="relative overflow-hidden rounded-xl">
-          <div id="testimonial-track" class="flex transition-transform duration-500 ease-in-out">
-            <div class="min-w-full flex flex-col justify-center px-2">
-              <img src="/images/testimonials/t1.png" class="rounded-xl max-h-[600px] w-full object-contain shadow-lg" alt="Customer reaction">
-            </div>
-            <div class="min-w-full flex flex-col justify-center px-2">
-              <img src="/images/testimonials/t2.png" class="rounded-xl max-h-[600px] w-full object-contain shadow-lg" alt="Customer reaction">
-            </div>
-            <div class="min-w-full flex flex-col justify-center px-2">
-              <img src="/images/testimonials/t3.png" class="rounded-xl max-h-[600px] w-full object-contain shadow-lg" alt="Customer reaction">
-            </div>
-            <div class="min-w-full flex flex-col justify-center px-2">
-              <img src="/images/testimonials/t4.png" class="rounded-xl max-h-[600px] w-full object-contain shadow-lg" alt="How it works">
-              <p class="text-slate-400 text-sm text-center mt-2" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">4 fields. 5 minutes. Yours forever.</p>
+          <div class="relative overflow-hidden rounded-xl">
+            <div id="testimonial-track" class="flex transition-transform duration-500 ease-in-out">
+              <div class="min-w-full flex flex-col justify-center px-2">
+                <img src="/images/testimonials/t1.png" class="rounded-xl max-h-[600px] w-full object-contain shadow-lg" alt="Customer reaction">
+              </div>
+              <div class="min-w-full flex flex-col justify-center px-2">
+                <img src="/images/testimonials/t2.png" class="rounded-xl max-h-[600px] w-full object-contain shadow-lg" alt="Customer reaction">
+              </div>
+              <div class="min-w-full flex flex-col justify-center px-2">
+                <img src="/images/testimonials/t3.png" class="rounded-xl max-h-[600px] w-full object-contain shadow-lg" alt="Customer reaction">
+              </div>
+              <div class="min-w-full flex flex-col justify-center px-2">
+                <img src="/images/testimonials/t4.png" class="rounded-xl max-h-[600px] w-full object-contain shadow-lg" alt="How it works">
+                <p class="text-slate-400 text-sm text-center mt-2" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">4 fields. 5 minutes. Yours forever.</p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="flex justify-center gap-2 mt-4">
-          <button onclick="goToSlide(0)" id="dot-0" class="w-2 h-2 rounded-full bg-sky-400 transition-all"></button>
-          <button onclick="goToSlide(1)" id="dot-1" class="w-2 h-2 rounded-full bg-white/30 transition-all"></button>
-          <button onclick="goToSlide(2)" id="dot-2" class="w-2 h-2 rounded-full bg-white/30 transition-all"></button>
-          <button onclick="goToSlide(3)" id="dot-3" class="w-2 h-2 rounded-full bg-white/30 transition-all"></button>
-        </div>
-
-        <div class="flex justify-center gap-4 mt-4">
-          <button onclick="prevSlide()" class="text-slate-400 hover:text-white transition-colors text-2xl">‹</button>
-          <button onclick="nextSlide()" class="text-slate-400 hover:text-white transition-colors text-2xl">›</button>
-        </div>
-
-      </div>
-    </div>
-
-    <script>
-      let currentSlide = 0;
-      const totalSlides = 4;
-
-      function goToSlide(n) {
-        currentSlide = n;
-        const track = document.getElementById('testimonial-track');
-        if (!track) return;
-        track.style.transform = `translateX(-${currentSlide * 100}%)`;
-        document.querySelectorAll('[id^="dot-"]').forEach((dot, i) => {
-          dot.className = i === currentSlide
-            ? 'w-2 h-2 rounded-full bg-sky-400 transition-all'
-            : 'w-2 h-2 rounded-full bg-white/30 transition-all';
-        });
-      }
-
-      function nextSlide() { goToSlide((currentSlide + 1) % totalSlides); }
-      function prevSlide() { goToSlide((currentSlide - 1 + totalSlides) % totalSlides); }
-      setInterval(nextSlide, 8000);
-    </script>
-
-    <!-- How It Works Video Section -->
-    <div class="mt-8 max-w-2xl mx-auto">
-      <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8 relative">
-        <h2 class="text-3xl md:text-4xl font-bold text-white text-center mb-6 tracking-wide" style="font-family: 'Bebas Neue', sans-serif;">
-          Still not sure? Watch this.
-        </h2>
-        <div class="relative w-full" style="padding-bottom: 56.25%;">
-          <iframe 
-            class="absolute top-0 left-0 w-full h-full rounded-xl"
-            src="https://www.youtube.com/embed/PHPOoJCdiII"
-            title="What is Memflect?" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen>
-          </iframe>
-        </div>
-        <p class="text-slate-700 font-semibold text-xs text-center mt-4" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">
-          5-minute overview — the science, the process, and why it works.
-        </p>
-      </div>
-    </div>
-
-    <!-- Science Behind It Banner -->
-    <div class="mt-8 max-w-2xl mx-auto">
-      <div id="science-banner" class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8 relative">
-        
-        <h2 class="text-3xl md:text-4xl font-bold text-white text-center mb-8 tracking-wide" style="font-family: 'Bebas Neue', sans-serif;">
-          What Does Memflect Help With?
-        </h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-slate-300">
-          
-          <div class="text-center">
-            <div class="text-4xl mb-4">🧠</div>
-            <h3 class="text-white font-semibold tracking-wider mb-3" style="font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem;">
-              Neural Pathways
-            </h3>
-            <p class="text-sm leading-relaxed" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">
-              Recalling positive memories activates neural pathways that lower cortisol levels, reducing stress and enhancing feelings of happiness and well-being in daily life.
-            </p>
+          <div class="flex justify-center gap-2 mt-4">
+            <button onclick="goToSlide(0)" id="dot-0" class="w-2 h-2 rounded-full bg-sky-400 transition-all"></button>
+            <button onclick="goToSlide(1)" id="dot-1" class="w-2 h-2 rounded-full bg-white/30 transition-all"></button>
+            <button onclick="goToSlide(2)" id="dot-2" class="w-2 h-2 rounded-full bg-white/30 transition-all"></button>
+            <button onclick="goToSlide(3)" id="dot-3" class="w-2 h-2 rounded-full bg-white/30 transition-all"></button>
           </div>
-          
-          <div class="text-center">
-            <div class="text-4xl mb-4">💭</div>
-            <h3 class="text-white font-semibold tracking-wider mb-3" style="font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem;">
-              Emotional Regulation
-            </h3>
-            <p class="text-sm leading-relaxed" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">
-              Music activates limbic brain regions including the amygdala and hippocampus, regulating stress responses while strengthening emotional memory processing.
-            </p>
+
+          <div class="flex justify-center gap-4 mt-4">
+            <button onclick="prevSlide()" class="text-slate-400 hover:text-white transition-colors text-2xl">‹</button>
+            <button onclick="nextSlide()" class="text-slate-400 hover:text-white transition-colors text-2xl">›</button>
           </div>
+
+        </div>
+      </div>
+
+      <script>
+        let currentSlide = 0;
+        const totalSlides = 4;
+
+        function goToSlide(n) {
+          currentSlide = n;
+          const track = document.getElementById('testimonial-track');
+          if (!track) return;
+          track.style.transform = `translateX(-${currentSlide * 100}%)`;
+          document.querySelectorAll('[id^="dot-"]').forEach((dot, i) => {
+            dot.className = i === currentSlide
+              ? 'w-2 h-2 rounded-full bg-sky-400 transition-all'
+              : 'w-2 h-2 rounded-full bg-white/30 transition-all';
+          });
+        }
+
+        function nextSlide() { goToSlide((currentSlide + 1) % totalSlides); }
+        function prevSlide() { goToSlide((currentSlide - 1 + totalSlides) % totalSlides); }
+        setInterval(nextSlide, 8000);
+      </script>
+
+      <!-- How It Works Video Section -->
+      <div class="mt-8 max-w-2xl mx-auto">
+        <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-6 md:p-8 relative">
+          <h2 class="text-3xl md:text-4xl font-bold text-white text-center mb-6 tracking-wide" style="font-family: 'Bebas Neue', sans-serif;">
+            Still not sure? Watch this.
+          </h2>
+          <div class="relative w-full" style="padding-bottom: 56.25%;">
+            <iframe 
+              class="absolute top-0 left-0 w-full h-full rounded-xl"
+              src="https://www.youtube.com/embed/PHPOoJCdiII"
+              title="What is Memflect?" 
+              frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen>
+            </iframe>
+          </div>
+          <p class="text-slate-400 text-xs text-center mt-4" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">
+            5-minute overview — the science, the process, and why it works.
+          </p>
+        </div>
+      </div>
+
+      <!-- Science Behind It Banner -->
+      <div class="mt-8 max-w-2xl mx-auto">
+        <div id="science-banner" class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-6 md:p-8 relative">
           
-          <div class="text-center">
-            <div class="text-4xl mb-4">🌱</div>
-            <h3 class="text-white font-semibold tracking-wider mb-3" style="font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem;">
-              Reflective Growth
-            </h3>
-            <p class="text-sm leading-relaxed" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">
-              Structured reflection on meaningful experiences promotes post-traumatic growth, building resilience, discovering new meaning, and fostering lasting personal transformation.
-            </p>
+          <h2 class="text-3xl md:text-4xl font-bold text-white text-center mb-8 tracking-wide" style="font-family: 'Bebas Neue', sans-serif;">
+            What Does Memflect Help With?
+          </h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-slate-300">
+            <div class="text-center">
+              <div class="text-4xl mb-4">🧠</div>
+              <h3 class="text-white font-semibold tracking-wider mb-3" style="font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem;">Neural Pathways</h3>
+              <p class="text-sm leading-relaxed" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">
+                Recalling positive memories activates neural pathways that lower cortisol levels, reducing stress and enhancing feelings of happiness and well-being in daily life.
+              </p>
+            </div>
+            <div class="text-center">
+              <div class="text-4xl mb-4">💭</div>
+              <h3 class="text-white font-semibold tracking-wider mb-3" style="font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem;">Emotional Regulation</h3>
+              <p class="text-sm leading-relaxed" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">
+                Music activates limbic brain regions including the amygdala and hippocampus, regulating stress responses while strengthening emotional memory processing.
+              </p>
+            </div>
+            <div class="text-center">
+              <div class="text-4xl mb-4">🌱</div>
+              <h3 class="text-white font-semibold tracking-wider mb-3" style="font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem;">Reflective Growth</h3>
+              <p class="text-sm leading-relaxed" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">
+                Structured reflection on meaningful experiences promotes post-traumatic growth, building resilience, discovering new meaning, and fostering lasting personal transformation.
+              </p>
+            </div>
+          </div>
+
+          <div class="mt-8 text-center">
+            <button onclick="document.getElementById('science-modal').classList.remove('hidden')" class="text-slate-400 hover:text-white text-sm flex items-center gap-1 transition-colors mx-auto" style="text-transform: none; letter-spacing: normal;">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              View Sources
+            </button>
           </div>
           
         </div>
-
-        <div class="mt-8 text-center">
-          <button onclick="document.getElementById('science-modal').classList.remove('hidden')" class="text-slate-400 hover:text-white text-sm flex items-center gap-1 transition-colors mx-auto" style="text-transform: none; letter-spacing: normal;">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            View Sources
-          </button>
-        </div>
-        
       </div>
-    </div>
 
-    <!-- Use Cases - Floating Emoji Banner -->
-    <div class="mt-8 max-w-2xl mx-auto">
-      <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8 pt-6 relative overflow-hidden" style="min-height: 300px;">
-        
-        <h2 class="text-3xl md:text-4xl font-bold text-white text-center mb-2 tracking-wide relative z-10" style="font-family: 'Bebas Neue', sans-serif;">
-          Use Memflect Anywhere
-        </h2>
-        <p class="text-slate-400 text-center text-sm relative z-10 mb-8" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">
-          Morning reflections, commute processing, bedtime wind-down
-        </p>
-
-        <div class="absolute bottom-0 left-0 right-0 pointer-events-none z-0" style="height: 60%; top: 40%;">
-          <span class="absolute text-4xl animate-float-1" style="top: 10%; left: 10%;">🧠</span>
-          <span class="absolute text-4xl animate-float-2" style="top: 20%; right: 15%;">🎤</span>
-          <span class="absolute text-5xl animate-float-3" style="top: 40%; left: 20%;">🎵</span>
-          <span class="absolute text-4xl animate-float-4" style="top: 60%; right: 20%;">👂</span>
-          <span class="absolute text-5xl animate-float-5" style="top: 75%; left: 15%;">🚗</span>
-          <span class="absolute text-4xl animate-float-6" style="top: 30%; left: 50%;">🧘</span>
-          <span class="absolute text-4xl animate-float-7" style="top: 55%; right: 10%;">☕</span>
-          <span class="absolute text-5xl animate-float-8" style="top: 15%; right: 35%;">🛏️</span>
-          <span class="absolute text-4xl animate-float-9" style="top: 70%; left: 40%;">🚶</span>
-          <span class="absolute text-4xl animate-float-10" style="top: 45%; right: 45%;">💭</span>
+      <!-- Use Cases - Floating Emoji Banner -->
+      <div class="mt-8 max-w-2xl mx-auto">
+        <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8 pt-6 relative overflow-hidden" style="min-height: 300px;">
+          <h2 class="text-3xl md:text-4xl font-bold text-white text-center mb-2 tracking-wide relative z-10" style="font-family: 'Bebas Neue', sans-serif;">
+            Use Memflect Anywhere
+          </h2>
+          <p class="text-slate-400 text-center text-sm relative z-10 mb-8" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">
+            Morning reflections, commute processing, bedtime wind-down
+          </p>
+          <div class="absolute bottom-0 left-0 right-0 pointer-events-none z-0" style="height: 60%; top: 40%;">
+            <span class="absolute text-4xl animate-float-1" style="top: 10%; left: 10%;">🧠</span>
+            <span class="absolute text-4xl animate-float-2" style="top: 20%; right: 15%;">🎤</span>
+            <span class="absolute text-5xl animate-float-3" style="top: 40%; left: 20%;">🎵</span>
+            <span class="absolute text-4xl animate-float-4" style="top: 60%; right: 20%;">👂</span>
+            <span class="absolute text-5xl animate-float-5" style="top: 75%; left: 15%;">🚗</span>
+            <span class="absolute text-4xl animate-float-6" style="top: 30%; left: 50%;">🧘</span>
+            <span class="absolute text-4xl animate-float-7" style="top: 55%; right: 10%;">☕</span>
+            <span class="absolute text-5xl animate-float-8" style="top: 15%; right: 35%;">🛏️</span>
+            <span class="absolute text-4xl animate-float-9" style="top: 70%; left: 40%;">🚶</span>
+            <span class="absolute text-4xl animate-float-10" style="top: 45%; right: 45%;">💭</span>
+          </div>
         </div>
-
       </div>
-    </div>
 
-    <!-- Comparison Table -->
-    <div class="mt-8 max-w-2xl mx-auto">
-      <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8">
-
-        <h2 class="text-3xl md:text-4xl font-bold text-white text-center mb-2 tracking-wide" style="font-family: 'Bebas Neue', sans-serif;">
-          How Memflect Compares
-        </h2>
-        <p class="text-slate-400 text-center mb-6" style="font-family: 'Crimson Text', serif; font-size: 1.1rem; text-transform: none; letter-spacing: normal;">
-          Finally, a tool built around you — not a subscription
-        </p>
-
-        <div class="overflow-x-auto">
-          <table class="w-full text-xs md:text-sm">
-            <thead>
-              <tr class="border-b border-white/10">
-                <th class="text-left py-2 px-2 md:px-4 text-slate-400 font-medium" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;"></th>
-                <th class="py-2 px-2 md:px-4 text-sky-400 font-bold text-center" style="font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem;">Memflect</th>
-                <th class="py-2 px-2 md:px-4 text-slate-400 font-medium text-center" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">Journaling</th>
-                <th class="py-2 px-2 md:px-4 text-slate-400 font-medium text-center" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">Therapy Apps</th>
-                <th class="py-2 px-2 md:px-4 text-slate-400 font-medium text-center" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">Meditation Apps</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% [
-                ["Your own voice", true, false, false, false],
-                ["Personalised to your memory", true, true, false, false],
-                ["You choose the music", true, false, false, false],
-                ["Ready in 5 minutes", true, false, false, true],
-                ["One-time payment", true, true, false, false],
-                ["No subscription", true, true, false, false],
-                ["Yours to keep forever", true, true, false, false],
-                ["Shareable as a gift", true, false, false, false]
-              ].each do |row| %>
-                <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
-                  <td class="py-2 px-2 md:px-4 text-slate-300" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;"><%= row[0] %></td>
-                  <td class="py-2 px-2 md:px-4 text-center text-base md:text-lg"><%= row[1] ? "✅" : "❌" %></td>
-                  <td class="py-2 px-2 md:px-4 text-center text-base md:text-lg"><%= row[2] ? "✅" : "❌" %></td>
-                  <td class="py-2 px-2 md:px-4 text-center text-base md:text-lg"><%= row[3] ? "✅" : "❌" %></td>
-                  <td class="py-2 px-2 md:px-4 text-center text-base md:text-lg"><%= row[4] ? "✅" : "❌" %></td>
+      <!-- Comparison Table -->
+      <div class="mt-8 max-w-2xl mx-auto">
+        <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-6 md:p-8">
+          <h2 class="text-3xl md:text-4xl font-bold text-white text-center mb-2 tracking-wide" style="font-family: 'Bebas Neue', sans-serif;">
+            How Memflect Compares
+          </h2>
+          <p class="text-slate-400 text-center mb-6" style="font-family: 'Crimson Text', serif; font-size: 1.1rem; text-transform: none; letter-spacing: normal;">
+            Finally, a tool built around you — not a subscription
+          </p>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs md:text-sm">
+              <thead>
+                <tr class="border-b border-white/10">
+                  <th class="text-left py-2 px-2 md:px-4 text-slate-400 font-medium" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;"></th>
+                  <th class="py-2 px-2 md:px-4 text-sky-400 font-bold text-center" style="font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem;">Memflect</th>
+                  <th class="py-2 px-2 md:px-4 text-slate-400 font-medium text-center" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">Journaling</th>
+                  <th class="py-2 px-2 md:px-4 text-slate-400 font-medium text-center" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">Therapy Apps</th>
+                  <th class="py-2 px-2 md:px-4 text-slate-400 font-medium text-center" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">Meditation Apps</th>
                 </tr>
-              <% end %>
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                <% [
+                  ["Your own voice", true, false, false, false],
+                  ["Personalised to your memory", true, true, false, false],
+                  ["You choose the music", true, false, false, false],
+                  ["Ready in 5 minutes", true, false, false, true],
+                  ["One-time payment", true, true, false, false],
+                  ["No subscription", true, true, false, false],
+                  ["Yours to keep forever", true, true, false, false],
+                  ["Shareable as a gift", true, false, false, false]
+                ].each do |row| %>
+                  <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+                    <td class="py-2 px-2 md:px-4 text-slate-300" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;"><%= row[0] %></td>
+                    <td class="py-2 px-2 md:px-4 text-center text-base md:text-lg"><%= row[1] ? "✅" : "❌" %></td>
+                    <td class="py-2 px-2 md:px-4 text-center text-base md:text-lg"><%= row[2] ? "✅" : "❌" %></td>
+                    <td class="py-2 px-2 md:px-4 text-center text-base md:text-lg"><%= row[3] ? "✅" : "❌" %></td>
+                    <td class="py-2 px-2 md:px-4 text-center text-base md:text-lg"><%= row[4] ? "✅" : "❌" %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
         </div>
-
       </div>
-    </div>
 
-    <style>
-      @keyframes float-1 {
-        0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.3; }
-        50% { transform: translate(10px, -15px) rotate(5deg); opacity: 0.6; }
-      }
-      @keyframes float-2 {
-        0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.4; }
-        50% { transform: translate(-15px, 10px) rotate(-8deg); opacity: 0.7; }
-      }
-      @keyframes float-3 {
-        0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
-        50% { transform: translate(12px, 12px) scale(1.1); opacity: 0.8; }
-      }
-      @keyframes float-4 {
-        0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.3; }
-        50% { transform: translate(-10px, -10px) rotate(10deg); opacity: 0.6; }
-      }
-      @keyframes float-5 {
-        0%, 100% { transform: translate(0, 0); opacity: 0.4; }
-        50% { transform: translate(8px, -12px); opacity: 0.7; }
-      }
-      @keyframes float-6 {
-        0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.5; }
-        50% { transform: translate(-8px, 15px) rotate(-5deg); opacity: 0.8; }
-      }
-      @keyframes float-7 {
-        0%, 100% { transform: translate(0, 0); opacity: 0.3; }
-        50% { transform: translate(15px, 8px); opacity: 0.6; }
-      }
-      @keyframes float-8 {
-        0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
-        50% { transform: translate(-12px, -8px) scale(1.05); opacity: 0.7; }
-      }
-      @keyframes float-9 {
-        0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.5; }
-        50% { transform: translate(10px, 10px) rotate(8deg); opacity: 0.8; }
-      }
-      @keyframes float-10 {
-        0%, 100% { transform: translate(0, 0); opacity: 0.4; }
-        50% { transform: translate(-15px, -15px); opacity: 0.7; }
-      }
-      .animate-float-1 { animation: float-1 6s ease-in-out infinite; }
-      .animate-float-2 { animation: float-2 7s ease-in-out infinite 0.5s; }
-      .animate-float-3 { animation: float-3 5s ease-in-out infinite 1s; }
-      .animate-float-4 { animation: float-4 8s ease-in-out infinite 1.5s; }
-      .animate-float-5 { animation: float-5 6.5s ease-in-out infinite 2s; }
-      .animate-float-6 { animation: float-6 7.5s ease-in-out infinite 0.8s; }
-      .animate-float-7 { animation: float-7 5.5s ease-in-out infinite 1.2s; }
-      .animate-float-8 { animation: float-8 6.8s ease-in-out infinite 1.8s; }
-      .animate-float-9 { animation: float-9 7.2s ease-in-out infinite 0.3s; }
-      .animate-float-10 { animation: float-10 6.2s ease-in-out infinite 1.4s; }
-    </style>
+      <!-- Secondary CTA -->
+      <div class="mt-8 text-center">
+        <%= link_to "Try a 30-Second Demo →", new_reflection_path, class: "inline-block bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/40 text-white font-medium tracking-wide text-lg py-4 px-10 rounded-xl transition-all duration-300" %>
+      </div>
 
-    <!-- Secondary CTA -->
-    <div class="mt-8 text-center">
-      <%= link_to "Try a 30-Second Demo →", new_reflection_path, class: "inline-block bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/40 text-white font-medium tracking-wide text-lg py-4 px-10 rounded-xl transition-all duration-300" %>
-    </div>
-
+    </div><!-- end overflow-hidden wrapper -->
   </div>
 </div>
 
@@ -483,62 +425,32 @@
 <div id="science-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
   <div class="bg-slate-900 rounded-2xl max-w-2xl w-full p-8 relative border border-white/10 max-h-[80vh] overflow-y-auto">
     <button onclick="document.getElementById('science-modal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-2xl">✕</button>
-    
-    <h2 class="text-3xl font-bold text-white mb-6" style="font-family: 'Bebas Neue', sans-serif;">
-      The Science Behind Memflect
-    </h2>
-    
+    <h2 class="text-3xl font-bold text-white mb-6" style="font-family: 'Bebas Neue', sans-serif;">The Science Behind Memflect</h2>
     <div class="space-y-6 text-slate-300 text-sm">
-      
       <div>
-        <h3 class="font-semibold text-white mb-2" style="font-family: 'Bebas Neue', sans-serif; font-size: 1rem;">
-          🧠 Positive Memories Reduce Stress
-        </h3>
-        <p class="mb-2" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">
-          Research shows that recalling positive memories significantly dampens cortisol (stress hormone) response and reduces negative affect, especially when memories involve social connection.
-        </p>
-        <a href="https://www.psychologytoday.com/us/blog/ulterior-motives/202109/happy-memories-are-even-happier-if-they-involve-people" target="_blank" class="text-sky-400 hover:text-sky-300 underline block mb-1" style="text-transform: none; letter-spacing: normal;">
-          Speer & Delgado (2021) - Happy Memories Buffer Stress (Psychology Today)
-        </a>
-        <a href="https://www.nature.com/articles/s41562-017-0093" target="_blank" class="text-sky-400 hover:text-sky-300 underline block" style="text-transform: none; letter-spacing: normal;">
-          Speer & Delgado (2017) - Positive Memories Buffer Acute Stress (Nature Human Behaviour)
-        </a>
+        <h3 class="font-semibold text-white mb-2" style="font-family: 'Bebas Neue', sans-serif; font-size: 1rem;">🧠 Positive Memories Reduce Stress</h3>
+        <p class="mb-2" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">Research shows that recalling positive memories significantly dampens cortisol (stress hormone) response and reduces negative affect, especially when memories involve social connection.</p>
+        <a href="https://www.psychologytoday.com/us/blog/ulterior-motives/202109/happy-memories-are-even-happier-if-they-involve-people" target="_blank" class="text-sky-400 hover:text-sky-300 underline block mb-1" style="text-transform: none; letter-spacing: normal;">Speer & Delgado (2021) - Happy Memories Buffer Stress (Psychology Today)</a>
+        <a href="https://www.nature.com/articles/s41562-017-0093" target="_blank" class="text-sky-400 hover:text-sky-300 underline block" style="text-transform: none; letter-spacing: normal;">Speer & Delgado (2017) - Positive Memories Buffer Acute Stress (Nature Human Behaviour)</a>
       </div>
-      
       <div>
-        <h3 class="font-semibold text-white mb-2" style="font-family: 'Bebas Neue', sans-serif; font-size: 1rem;">
-          🎵 Music Enhances Emotional Processing
-        </h3>
-        <p class="mb-2" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">
-          Music activates the limbic system (amygdala and hippocampus), enhancing emotional memory and promoting mood regulation during reflection.
-        </p>
-        <a href="https://magazine.hms.harvard.edu/articles/how-music-resonates-brain" target="_blank" class="text-sky-400 hover:text-sky-300 underline block mb-1" style="text-transform: none; letter-spacing: normal;">
-          Harvard Medical School - How Music Resonates in the Brain
-        </a>
-        <a href="https://www.frontiersin.org/journals/neuroscience/articles/10.3389/fnins.2017.00600/full" target="_blank" class="text-sky-400 hover:text-sky-300 underline block" style="text-transform: none; letter-spacing: normal;">
-          Koelsch (2017) - Music-Evoked Emotions (Frontiers in Neuroscience)
-        </a>
+        <h3 class="font-semibold text-white mb-2" style="font-family: 'Bebas Neue', sans-serif; font-size: 1rem;">🎵 Music Enhances Emotional Processing</h3>
+        <p class="mb-2" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">Music activates the limbic system (amygdala and hippocampus), enhancing emotional memory and promoting mood regulation during reflection.</p>
+        <a href="https://magazine.hms.harvard.edu/articles/how-music-resonates-brain" target="_blank" class="text-sky-400 hover:text-sky-300 underline block mb-1" style="text-transform: none; letter-spacing: normal;">Harvard Medical School - How Music Resonates in the Brain</a>
+        <a href="https://www.frontiersin.org/journals/neuroscience/articles/10.3389/fnins.2017.00600/full" target="_blank" class="text-sky-400 hover:text-sky-300 underline block" style="text-transform: none; letter-spacing: normal;">Koelsch (2017) - Music-Evoked Emotions (Frontiers in Neuroscience)</a>
       </div>
-      
       <div>
-        <h3 class="font-semibold text-white mb-2" style="font-family: 'Bebas Neue', sans-serif; font-size: 1rem;">
-          🌱 Reflection Promotes Growth & Resilience
-        </h3>
-        <p class="mb-2" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">
-          Structured reflection on meaningful experiences promotes post-traumatic growth, resilience, and psychological well-being through meaning-making.
-        </p>
-        <a href="https://www.apa.org/monitor/2016/11/growth-trauma" target="_blank" class="text-sky-400 hover:text-sky-300 underline block mb-1" style="text-transform: none; letter-spacing: normal;">
-          American Psychological Association - Post-Traumatic Growth
-        </a>
-        <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8996075/" target="_blank" class="text-sky-400 hover:text-sky-300 underline block" style="text-transform: none; letter-spacing: normal;">
-          Meyerson et al. (2022) - PTG & Meaning-Making (NIH/PMC)
-        </a>
+        <h3 class="font-semibold text-white mb-2" style="font-family: 'Bebas Neue', sans-serif; font-size: 1rem;">🌱 Reflection Promotes Growth & Resilience</h3>
+        <p class="mb-2" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">Structured reflection on meaningful experiences promotes post-traumatic growth, resilience, and psychological well-being through meaning-making.</p>
+        <a href="https://www.apa.org/monitor/2016/11/growth-trauma" target="_blank" class="text-sky-400 hover:text-sky-300 underline block mb-1" style="text-transform: none; letter-spacing: normal;">American Psychological Association - Post-Traumatic Growth</a>
+        <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8996075/" target="_blank" class="text-sky-400 hover:text-sky-300 underline block" style="text-transform: none; letter-spacing: normal;">Meyerson et al. (2022) - PTG & Meaning-Making (NIH/PMC)</a>
       </div>
     </div>
   </div>
 </div>
 
 <style>
+  /* ── Logo float animation ── */
   @keyframes float {
     0%, 100% { 
       transform: translateY(0px) rotateY(0deg);
@@ -549,27 +461,42 @@
       text-shadow: 0 0 40px rgba(147, 51, 234, 0.8);
     }
   }
-  
   .animate-float {
     animation: float 3s ease-in-out infinite;
     display: inline-block;
   }
+
+  /* ── Emoji float animations ── */
+  @keyframes float-1 { 0%, 100% { transform: translate(0,0) rotate(0deg); opacity:0.3; } 50% { transform: translate(10px,-15px) rotate(5deg); opacity:0.6; } }
+  @keyframes float-2 { 0%, 100% { transform: translate(0,0) rotate(0deg); opacity:0.4; } 50% { transform: translate(-15px,10px) rotate(-8deg); opacity:0.7; } }
+  @keyframes float-3 { 0%, 100% { transform: translate(0,0) scale(1); opacity:0.5; } 50% { transform: translate(12px,12px) scale(1.1); opacity:0.8; } }
+  @keyframes float-4 { 0%, 100% { transform: translate(0,0) rotate(0deg); opacity:0.3; } 50% { transform: translate(-10px,-10px) rotate(10deg); opacity:0.6; } }
+  @keyframes float-5 { 0%, 100% { transform: translate(0,0); opacity:0.4; } 50% { transform: translate(8px,-12px); opacity:0.7; } }
+  @keyframes float-6 { 0%, 100% { transform: translate(0,0) rotate(0deg); opacity:0.5; } 50% { transform: translate(-8px,15px) rotate(-5deg); opacity:0.8; } }
+  @keyframes float-7 { 0%, 100% { transform: translate(0,0); opacity:0.3; } 50% { transform: translate(15px,8px); opacity:0.6; } }
+  @keyframes float-8 { 0%, 100% { transform: translate(0,0) scale(1); opacity:0.4; } 50% { transform: translate(-12px,-8px) scale(1.05); opacity:0.7; } }
+  @keyframes float-9 { 0%, 100% { transform: translate(0,0) rotate(0deg); opacity:0.5; } 50% { transform: translate(10px,10px) rotate(8deg); opacity:0.8; } }
+  @keyframes float-10 { 0%, 100% { transform: translate(0,0); opacity:0.4; } 50% { transform: translate(-15px,-15px); opacity:0.7; } }
+  .animate-float-1 { animation: float-1 6s ease-in-out infinite; }
+  .animate-float-2 { animation: float-2 7s ease-in-out infinite 0.5s; }
+  .animate-float-3 { animation: float-3 5s ease-in-out infinite 1s; }
+  .animate-float-4 { animation: float-4 8s ease-in-out infinite 1.5s; }
+  .animate-float-5 { animation: float-5 6.5s ease-in-out infinite 2s; }
+  .animate-float-6 { animation: float-6 7.5s ease-in-out infinite 0.8s; }
+  .animate-float-7 { animation: float-7 5.5s ease-in-out infinite 1.2s; }
+  .animate-float-8 { animation: float-8 6.8s ease-in-out infinite 1.8s; }
+  .animate-float-9 { animation: float-9 7.2s ease-in-out infinite 0.3s; }
+  .animate-float-10 { animation: float-10 6.2s ease-in-out infinite 1.4s; }
 </style>
 
 <script>
   let deferredPrompt;
-  
   window.addEventListener('load', () => {
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     const isAndroid = /Android/.test(navigator.userAgent);
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-    
     if (isStandalone) return;
-    
-    if (isIOS) {
-      document.getElementById('ios-install-banner').classList.remove('hidden');
-    }
-    
+    if (isIOS) document.getElementById('ios-install-banner').classList.remove('hidden');
     if (isAndroid) {
       window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
@@ -578,7 +505,6 @@
       });
     }
   });
-  
   function installPWA() {
     if (deferredPrompt) {
       deferredPrompt.prompt();
