@@ -8,9 +8,9 @@ class ReflectionsController < ApplicationController
   def new
     if params[:from].present?
       source = Reflection.find_by(id: params[:from])
-      @reflection = Reflection.new(source&.slice(
-        :remember_when, :felt_like, :because_of, :lift_up_request,
-        :name_for_recap, :style, :vibe, :setting, :mode, :recipient_name
+      @reflection = Reflection.new(source&.attributes&.slice(
+        "remember_when", "felt_like", "because_of", "lift_up_request",
+        "name_for_recap", "style", "vibe", "setting", "mode", "recipient_name"
       ))
     else
       @reflection = Reflection.new
