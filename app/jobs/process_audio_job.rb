@@ -132,7 +132,7 @@ class ProcessAudioJob < ApplicationJob
       stability: 0.85,
       similarity_boost: 0.95,
       use_speaker_boost: true,
-      speed: 0.93
+      speed: 0.94
     }.to_json
     Net::HTTP.post(uri, body, headers)
   end
@@ -166,7 +166,7 @@ class ProcessAudioJob < ApplicationJob
       # turn normal clause endings into gentle pauses
       .gsub(/([a-z])([,;:])\s/i, '\1...\2 ')
       # soften sentence breaks a bit
-      .gsub(/([^.])\.\s+([A-Z])/, '\1.. \2')
+      .gsub(/([^.])\.\s+([A-Z])/, '\1... \2')
       # slight hesitation before connectors
       .gsub(/\b(but|and|so|yet)\b/i, '...\1')
       # clean up accidental triple dots

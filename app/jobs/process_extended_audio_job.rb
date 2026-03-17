@@ -92,7 +92,7 @@ class ProcessExtendedAudioJob < ApplicationJob
       voice_settings: {
         stability: 0.85,
         similarity_boost: 0.95,
-        speed: 0.90,
+        speed: 0.94,
         use_speaker_boost: true
       }
     }.to_json
@@ -176,7 +176,7 @@ class ProcessExtendedAudioJob < ApplicationJob
     return "" unless text.present?
     text
       .gsub(/([a-z])([,;:])\s/i, '\1...\2 ')
-      .gsub(/([^.])\.\s+([A-Z])/, '\1.. \2')
+      .gsub(/([^.])\.\s+([A-Z])/, '\1... \2')
       .gsub(/\b(but|and|so|yet)\b/i, '...\1')
       .gsub(/\.{4,}/, '...')
       .strip
