@@ -50,7 +50,7 @@
                   class: "bg-sky-600 hover:bg-sky-500 text-white font-medium tracking-wider py-3 px-5 rounded-lg",
                   data: { turbo_frame: "_top" } %>
       <%= link_to "No, let me try that again.",
-                  new_reflection_path,
+                  new_reflection_path(from: reflection.id),
                   class: "bg-slate-600 hover:bg-slate-500 text-white font-medium tracking-wider py-3 px-5 rounded-lg" %>
     </div>
 
