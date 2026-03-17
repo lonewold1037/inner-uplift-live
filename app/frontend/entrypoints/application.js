@@ -20,5 +20,3 @@ registerControllers(application, import.meta.glob('../controllers/**/*_controlle
 
 // Expose ActionCable
 window.cable = ActionCable.createConsumer()
-
-console.log('Vite ⚡️ Rails')
