@@ -176,7 +176,7 @@ class ProcessExtendedAudioJob < ApplicationJob
     return "" unless text.present?
     text
       .gsub(/([a-z])([,;:])\s/i, '\1...\2 ')
-      .gsub(/([^.])\.\s+([A-Z])/, '\1... \2')
+      .gsub(/([^.])\.\s+([A-Z])/, '\1.. \2')
       .gsub(/\b(but|and|so|yet)\b/i, '...\1')
       .gsub(/\.{4,}/, '...')
       .strip
