@@ -92,7 +92,7 @@ class ProcessExtendedAudioJob < ApplicationJob
       voice_settings: {
         stability: 0.85,
         similarity_boost: 0.95,
-        speed: 0.94,
+        speed: 0.93,
         use_speaker_boost: true
       }
     }.to_json

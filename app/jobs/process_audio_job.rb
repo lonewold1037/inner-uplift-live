@@ -132,7 +132,7 @@ class ProcessAudioJob < ApplicationJob
       stability: 0.85,
       similarity_boost: 0.95,
       use_speaker_boost: true,
-      speed: 0.94
+      speed: 0.93
     }.to_json
     Net::HTTP.post(uri, body, headers)
   end
