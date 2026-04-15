@@ -153,6 +153,28 @@ class ReflectionsController < ApplicationController
     redirect_to session.url, allow_other_host: true
   end
 
+  def enable_memcard
+    @reflection = current_user.reflections.find(params[:id])
+
+    unless @reflection.purchased? && @reflection.extended_audio.attached?
+      redirect_to dashboard_path, alert: "Memcard sharing is only available for completed Memflections."
+      return
+    end
+
+    @reflection.enable_memcard!
+
+    redirect_to dashboard_path(reflection_id: @reflection.id),
+                notice: "Memcard link created! Share it with anyone."
+  end
+
+  def disable_memcard
+    @reflection = current_user.reflections.find(params[:id])
+    @reflection.disable_memcard!
+
+    redirect_to dashboard_path(reflection_id: @reflection.id),
+                notice: "Memcard sharing disabled. Old link is permanently dead."
+  end
+
   def redeem_promo
     @reflection = Reflection.find(params[:id])
     customer_email = params[:customer_email]
