@@ -57,9 +57,18 @@ Rails.application.routes.draw do
       # Stripe checkout for extended version
       post "checkout"
       post "redeem_promo"
+
+      # Memcard sharing (enable/disable public portal link)
+      post   "enable_memcard"
+      delete "disable_memcard"
     end
   end
 
   # Optional browse routes for soundscapes
   resources :soundscapes, only: [:index, :show]
+
+  # ========== PUBLIC MEMCARD PORTAL ==========
+  # The cinematic theater reveal page — unauthenticated, token-based lookup
+  # Short /m/ prefix for clean share links on SMS/WhatsApp/social
+  get "/m/:token", to: "memcards#show", as: :memcard, constraints: { token: /[A-Za-z0-9]{16}/ }
 end
