@@ -18,6 +18,13 @@ class Rack::Attack
     end
   end
 
+  # Throttle public Memcard portal views to prevent token-guessing bots
+  throttle('memcards/ip', limit: 60, period: 1.minute) do |req|
+    if req.path.match?(/\A\/m\/[A-Za-z0-9]{16}\z/) && req.get?
+      req.ip
+    end
+  end
+
   # Custom response for throttled requests
   self.throttled_responder = lambda do |env|
     retry_after = env['rack.attack.match_data'][:period]
