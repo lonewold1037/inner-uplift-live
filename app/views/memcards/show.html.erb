@@ -11,42 +11,135 @@
   <meta name="twitter:card" content="summary_large_image">
 <% end %>
 
-<%# ========================================================================
-    MEMCARD CINEMATIC PORTAL
-    Architecture:
-      - #memcard-stage: full viewport container
-        - #theater-screen (top ~80%): spotlights, curtains, title, image, grain
-        - #stage-apron (bottom ~20%): custom audio player, CTAs, fullscreen
-    ======================================================================== %>
+<style>
+  /* ===== 3D STAGE FLOOR ===== */
+  #stage-floor {
+    position: absolute;
+    bottom: 0; left: -10%; right: -10%;
+    height: 35%;
+    background: linear-gradient(to bottom,
+      rgba(10, 6, 18, 0.0) 0%,
+      rgba(10, 6, 18, 0.6) 20%,
+      rgba(15, 10, 25, 0.85) 45%,
+      rgba(20, 14, 32, 0.95) 100%
+    );
+    transform: perspective(600px) rotateX(25deg);
+    transform-origin: bottom center;
+    z-index: 1;
+  }
+  #stage-floor::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 80px,
+      rgba(168, 85, 247, 0.03) 80px,
+      rgba(168, 85, 247, 0.03) 82px
+    );
+  }
+
+  /* ===== SPOTLIGHT CONES ===== */
+  .spotlight-cone {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+  }
+  #spot-cone-left {
+    left: 0;
+    background: conic-gradient(
+      from 155deg at 0% 0%,
+      transparent 0deg,
+      rgba(168, 85, 247, 0.06) 10deg,
+      rgba(168, 85, 247, 0.10) 20deg,
+      rgba(168, 85, 247, 0.06) 35deg,
+      transparent 45deg
+    );
+  }
+  #spot-cone-right {
+    right: 0;
+    background: conic-gradient(
+      from -20deg at 100% 0%,
+      transparent 0deg,
+      rgba(251, 191, 36, 0.04) 10deg,
+      rgba(251, 191, 36, 0.07) 20deg,
+      rgba(251, 191, 36, 0.04) 35deg,
+      transparent 45deg
+    );
+  }
+
+  /* ===== SPOTLIGHT SOURCE GLOW (the "bulb" at the top) ===== */
+  .spot-source {
+    position: absolute;
+    top: -2px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    z-index: 6;
+    filter: blur(12px);
+  }
+  #spot-source-left {
+    left: 3%;
+    background: radial-gradient(circle, rgba(168,85,247,0.5) 0%, transparent 70%);
+  }
+  #spot-source-right {
+    right: 3%;
+    background: radial-gradient(circle, rgba(251,191,36,0.35) 0%, transparent 70%);
+  }
+
+  /* ===== IMAGE GLOW (spotlight hitting the photo) ===== */
+  #image-spotlight-glow {
+    position: absolute;
+    top: -20px; left: -20px; right: -20px; bottom: -20px;
+    border-radius: 20px;
+    background: radial-gradient(ellipse at center, rgba(168,85,247,0.15) 0%, transparent 60%);
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 3s ease-in;
+  }
+
+  /* ===== CTA ROW RESPONSIVE ===== */
+  .cta-link {
+    white-space: nowrap;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.08em;
+    font-size: 11px;
+  }
+  @media (min-width: 640px) {
+    .cta-link { font-size: 13px; }
+  }
+</style>
 
 <div id="memcard-stage" class="fixed inset-0 bg-black overflow-hidden flex flex-col">
 
-  <%# ==================== THEATER SCREEN (top ~80%) ==================== %>
-  <div id="theater-screen" class="relative flex-1 overflow-hidden">
+  <%# ==================== THEATER SCREEN (top portion) ==================== %>
+  <div id="theater-screen" class="relative flex-1 overflow-hidden flex flex-col">
 
-    <%# ---- SPOTLIGHTS ---- %>
-    <div id="spotlight-left" class="absolute pointer-events-none" style="
-      top: -10%; left: -5%; width: 55%; height: 70%;
-      background: radial-gradient(ellipse at 20% 0%, rgba(168,85,247,0.12) 0%, rgba(168,85,247,0.04) 30%, transparent 65%);
-      transform: rotate(15deg); z-index: 2;
-    "></div>
-    <div id="spotlight-right" class="absolute pointer-events-none" style="
-      top: -10%; right: -5%; width: 55%; height: 70%;
-      background: radial-gradient(ellipse at 80% 0%, rgba(251,191,36,0.08) 0%, rgba(251,191,36,0.03) 30%, transparent 65%);
-      transform: rotate(-15deg); z-index: 2;
-    "></div>
+    <%# ---- 3D STAGE FLOOR ---- %>
+    <div id="stage-floor"></div>
+
+    <%# ---- SPOTLIGHT CONES ---- %>
+    <div id="spot-cone-left" class="spotlight-cone"></div>
+    <div id="spot-cone-right" class="spotlight-cone"></div>
+    <div id="spot-source-left" class="spot-source"></div>
+    <div id="spot-source-right" class="spot-source"></div>
 
     <%# ---- VIGNETTE ---- %>
     <div class="absolute inset-0 pointer-events-none" style="
       z-index: 3;
-      background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.5) 80%, rgba(0,0,0,0.8) 100%);
+      background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.4) 70%, rgba(0,0,0,0.75) 100%);
     "></div>
 
     <%# ---- FILM GRAIN + FLICKER ---- %>
     <div id="film-overlay" class="absolute inset-0 pointer-events-none" style="z-index: 4;">
       <div id="film-flicker" class="absolute inset-0 mix-blend-overlay" style="opacity: 0;
-        background: radial-gradient(ellipse at 30% 20%, rgba(251,191,36,0.15) 0%, transparent 50%),
-                    radial-gradient(ellipse at 70% 20%, rgba(168,85,247,0.10) 0%, transparent 50%);
+        background: radial-gradient(ellipse at 25% 15%, rgba(251,191,36,0.2) 0%, transparent 45%),
+                    radial-gradient(ellipse at 75% 15%, rgba(168,85,247,0.12) 0%, transparent 45%);
       "></div>
       <div class="absolute inset-0 opacity-[0.06]" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22><filter id=%22n%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22/></filter><rect width=%22300%22 height=%22300%22 filter=%22url(%23n)%22 opacity=%220.5%22/></svg>');"></div>
       <div class="absolute top-0 h-full w-px bg-amber-100/20" style="left: 23%;"></div>
@@ -54,43 +147,45 @@
       <div class="absolute top-0 h-full w-0.5 bg-amber-100/10" style="left: 84%;"></div>
     </div>
 
-    <%# ---- TITLE (above image, on screen) ---- %>
-    <div id="memcard-title" class="absolute left-1/2 transform -translate-x-1/2 text-center px-4 opacity-0 transition-opacity" style="z-index: 15; max-width: 90vw; top: 5%; transition-duration: 1500ms;">
-      <h1 class="text-3xl md:text-5xl font-bold tracking-wider text-white" style="font-family: 'Bebas Neue', sans-serif; text-shadow: 0 0 40px rgba(168,85,247,0.5), 0 2px 20px rgba(0,0,0,0.8);">
+    <%# ---- TITLE (flexbox child — sits at top, never overlaps image) ---- %>
+    <div id="memcard-title" class="relative text-center px-6 pt-5 pb-2 md:pt-8 md:pb-3 flex-shrink-0 opacity-0 transition-opacity" style="z-index: 15; transition-duration: 1500ms;">
+      <h1 class="text-2xl md:text-4xl lg:text-5xl font-bold tracking-wider text-white leading-tight" style="font-family: 'Bebas Neue', sans-serif; text-shadow: 0 0 40px rgba(168,85,247,0.5), 0 2px 20px rgba(0,0,0,0.8);">
         <%= @reflection.title || "A Memflection" %>
       </h1>
       <% if @reflection.name_for_recap.present? %>
-        <p class="text-purple-300/80 text-sm md:text-base mt-1 italic" style="font-family: 'Crimson Text', serif; text-shadow: 0 0 20px rgba(168,85,247,0.3);">
+        <p class="text-purple-300/70 text-xs md:text-sm mt-1 italic" style="font-family: 'Crimson Text', serif; text-shadow: 0 0 20px rgba(168,85,247,0.3);">
           a Memflection from <%= @reflection.name_for_recap %><% if @reflection.mode == "gift" && @reflection.recipient_name.present? %> for <%= @reflection.recipient_name %><% end %>
         </p>
       <% end %>
     </div>
 
-    <%# ---- COVER IMAGE ---- %>
-    <div class="absolute inset-0 flex items-start justify-center" style="z-index: 10; padding-top: 15%;">
-      <% if @reflection.cover_image.attached? %>
-        <img id="memcard-image" src="<%= url_for(@reflection.cover_image) %>"
-             class="rounded-xl object-contain opacity-0 transition-opacity"
-             style="max-height: 62vh; max-width: 75vw; transition-duration: 2500ms;
-                    filter: sepia(30%) contrast(112%) brightness(90%) saturate(85%);
-                    box-shadow: 0 0 60px rgba(168,85,247,0.3), 0 0 120px rgba(0,0,0,0.9), 0 20px 60px rgba(0,0,0,0.7);">
-      <% else %>
-        <div id="memcard-image" class="rounded-xl bg-purple-950/40 border border-purple-500/20 flex items-center justify-center opacity-0 transition-opacity" style="width: 55vw; max-width: 380px; height: 45vh; max-height: 380px; transition-duration: 2500ms;">
-          <p class="text-purple-300 text-6xl">🎭</p>
-        </div>
-      <% end %>
+    <%# ---- COVER IMAGE (flexbox child — centered in remaining space) ---- %>
+    <div class="relative flex-1 flex items-center justify-center px-6 pb-4" style="z-index: 10;">
+      <div class="relative">
+        <div id="image-spotlight-glow"></div>
+        <% if @reflection.cover_image.attached? %>
+          <img id="memcard-image" src="<%= url_for(@reflection.cover_image) %>"
+               class="rounded-xl object-contain opacity-0 transition-opacity"
+               style="max-height: 55vh; max-width: 80vw; transition-duration: 2500ms;
+                      filter: sepia(30%) contrast(112%) brightness(90%) saturate(85%);
+                      box-shadow: 0 0 60px rgba(168,85,247,0.25), 0 20px 60px rgba(0,0,0,0.7), 0 0 120px rgba(0,0,0,0.5);">
+        <% else %>
+          <div id="memcard-image" class="rounded-xl bg-purple-950/40 border border-purple-500/20 flex items-center justify-center opacity-0 transition-opacity" style="width: 55vw; max-width: 380px; height: 45vh; max-height: 380px; transition-duration: 2500ms;">
+            <p class="text-purple-300 text-6xl">🎭</p>
+          </div>
+        <% end %>
+      </div>
     </div>
 
     <%# ---- PURPLE THEATER CURTAINS ---- %>
     <div id="curtain-left" class="absolute top-0 left-0 h-full w-1/2" style="z-index: 20; transition: transform 4.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); background: linear-gradient(90deg, #1a0533 0%, #4c1d95 25%, #6b21a8 45%, #7e22ce 50%, #6b21a8 55%, #4c1d95 75%, #1a0533 100%); box-shadow: inset -20px 0 60px rgba(0,0,0,0.6), 5px 0 30px rgba(0,0,0,0.5);">
       <div class="absolute inset-0" style="background: repeating-linear-gradient(90deg, transparent 0px, transparent 28px, rgba(0,0,0,0.18) 28px, rgba(0,0,0,0.18) 30px, transparent 30px, transparent 58px, rgba(255,255,255,0.03) 58px, rgba(255,255,255,0.03) 60px);"></div>
-      <%# Bottom weight / hem of curtain %>
-      <div class="absolute bottom-0 left-0 right-0 h-8" style="background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);"></div>
+      <div class="absolute bottom-0 left-0 right-0 h-10" style="background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);"></div>
     </div>
 
     <div id="curtain-right" class="absolute top-0 right-0 h-full w-1/2" style="z-index: 20; transition: transform 4.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); background: linear-gradient(270deg, #1a0533 0%, #4c1d95 25%, #6b21a8 45%, #7e22ce 50%, #6b21a8 55%, #4c1d95 75%, #1a0533 100%); box-shadow: inset 20px 0 60px rgba(0,0,0,0.6), -5px 0 30px rgba(0,0,0,0.5);">
       <div class="absolute inset-0" style="background: repeating-linear-gradient(90deg, transparent 0px, transparent 28px, rgba(0,0,0,0.18) 28px, rgba(0,0,0,0.18) 30px, transparent 30px, transparent 58px, rgba(255,255,255,0.03) 58px, rgba(255,255,255,0.03) 60px);"></div>
-      <div class="absolute bottom-0 left-0 right-0 h-8" style="background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);"></div>
+      <div class="absolute bottom-0 left-0 right-0 h-10" style="background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);"></div>
     </div>
 
     <%# ---- AUTOPLAY FALLBACK ---- %>
@@ -98,32 +193,28 @@
       <div class="text-center">
         <div class="text-7xl mb-6 animate-pulse" style="filter: drop-shadow(0 0 30px rgba(168,85,247,0.5));">🎭</div>
         <p class="text-white text-3xl font-bold tracking-widest mb-2" style="font-family: 'Bebas Neue', sans-serif; text-shadow: 0 0 30px rgba(168,85,247,0.5);">Tap to Begin</p>
-        <p class="text-purple-300/70 text-sm" style="font-family: 'Crimson Text', serif;">Your Memflection awaits</p>
+        <p class="text-purple-300/60 text-sm" style="font-family: 'Crimson Text', serif;">Your Memflection awaits</p>
       </div>
     </div>
 
     <%# ---- POST-AUDIO REVEAL ---- %>
     <div id="post-audio" class="hidden absolute inset-0 flex items-center justify-center px-4" style="z-index: 40; background: rgba(0,0,0,0.85); backdrop-filter: blur(4px);">
-      <div class="max-w-md w-full rounded-2xl border border-purple-500/20 p-8 text-center" style="background: linear-gradient(135deg, rgba(15,10,30,0.95), rgba(60,20,90,0.9), rgba(15,10,30,0.95)); box-shadow: 0 0 80px rgba(168,85,247,0.15), 0 25px 50px rgba(0,0,0,0.5);">
+      <div class="max-w-sm w-full rounded-2xl border border-purple-500/20 p-6 md:p-8 text-center" style="background: linear-gradient(135deg, rgba(15,10,30,0.95), rgba(60,20,90,0.9), rgba(15,10,30,0.95)); box-shadow: 0 0 80px rgba(168,85,247,0.15), 0 25px 50px rgba(0,0,0,0.5);">
         <p class="text-5xl mb-4" style="filter: drop-shadow(0 0 20px rgba(168,85,247,0.4));">🎭</p>
-        <h2 class="text-3xl font-bold tracking-widest text-white mb-2" style="font-family: 'Bebas Neue', sans-serif;">A Moment to Reflect</h2>
-        <p class="text-slate-400 text-sm mb-8" style="font-family: 'Crimson Text', serif;">
+        <h2 class="text-2xl md:text-3xl font-bold tracking-widest text-white mb-2" style="font-family: 'Bebas Neue', sans-serif;">A Moment to Reflect</h2>
+        <p class="text-slate-400 text-sm mb-6" style="font-family: 'Crimson Text', serif;">
           Thank you for experiencing this Memflection.
         </p>
-
         <div class="space-y-3">
           <button onclick="replayMemcard()" class="w-full text-white font-medium tracking-wider py-3 px-6 rounded-lg transition-all hover:scale-[1.02] active:scale-[0.98]" style="background: linear-gradient(135deg, #7c3aed, #db2777); box-shadow: 0 4px 20px rgba(124,58,237,0.4);">
             🔁 Play Again
           </button>
-
           <button id="install-btn" onclick="promptInstall()" class="hidden w-full text-white font-medium tracking-wider py-3 px-6 rounded-lg transition-all hover:scale-[1.02] active:scale-[0.98]" style="background: linear-gradient(135deg, #059669, #10b981); box-shadow: 0 4px 20px rgba(5,150,105,0.3);">
             📱 Save to My Phone
           </button>
-
           <a href="<%= new_reflection_url(host: ENV.fetch("APP_HOST", "memflect.com")) %>" class="block w-full text-white font-medium tracking-wider py-3 px-6 rounded-lg transition-all hover:scale-[1.02] active:scale-[0.98]" style="background: linear-gradient(135deg, #0284c7, #2563eb); box-shadow: 0 4px 20px rgba(37,99,235,0.3);">
-            ✨ Create My Own Memflection
+            ✨ Create My Own
           </a>
-
           <a href="<%= url_for(@reflection.extended_audio) %>" download class="block w-full text-slate-300 font-medium tracking-wider py-3 px-6 rounded-lg transition-all hover:bg-white/10" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
             💾 Download MP3
           </a>
@@ -135,56 +226,55 @@
   <%# ==================== END THEATER SCREEN ==================== %>
 
 
-  <%# ==================== STAGE APRON (bottom ~20%) ==================== %>
+  <%# ==================== STAGE APRON (bottom control deck) ==================== %>
   <div id="stage-apron" class="relative flex-shrink-0" style="z-index: 25;">
 
     <%# ---- Stage edge lighting strip ---- %>
-    <div class="w-full h-px" style="background: linear-gradient(90deg, transparent 5%, rgba(251,191,36,0.3) 20%, rgba(168,85,247,0.5) 50%, rgba(251,191,36,0.3) 80%, transparent 95%);"></div>
-    <div class="w-full h-px" style="background: linear-gradient(90deg, transparent 10%, rgba(168,85,247,0.15) 30%, rgba(168,85,247,0.25) 50%, rgba(168,85,247,0.15) 70%, transparent 90%); filter: blur(1px);"></div>
+    <div class="w-full h-px" style="background: linear-gradient(90deg, transparent 5%, rgba(251,191,36,0.4) 20%, rgba(168,85,247,0.6) 50%, rgba(251,191,36,0.4) 80%, transparent 95%);"></div>
+    <div class="w-full h-0.5" style="background: linear-gradient(90deg, transparent 10%, rgba(168,85,247,0.1) 30%, rgba(168,85,247,0.2) 50%, rgba(168,85,247,0.1) 70%, transparent 90%); filter: blur(2px);"></div>
 
     <%# ---- Stage floor ---- %>
-    <div class="px-4 py-3 md:py-4" style="background: linear-gradient(to bottom, #0a0612 0%, #0d0a18 40%, #110e1f 100%);">
-      <div class="max-w-2xl mx-auto">
+    <div class="px-4 py-3" style="background: linear-gradient(to bottom, #08050f 0%, #0b0815 50%, #0e0b1a 100%);">
+      <div class="max-w-xl mx-auto">
 
         <%# ---- Custom audio player ---- %>
-        <div class="flex items-center gap-3 mb-3">
-          <%# Play/Pause button %>
-          <button id="player-playpause" onclick="togglePlayPause()" class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full transition-all hover:scale-110 active:scale-95" style="background: linear-gradient(135deg, #7c3aed, #9333ea); box-shadow: 0 0 20px rgba(124,58,237,0.3);">
-            <svg id="icon-play" class="w-4 h-4 text-white ml-0.5" fill="currentColor" viewBox="0 0 20 20"><polygon points="5,3 18,10 5,17"/></svg>
-            <svg id="icon-pause" class="w-4 h-4 text-white hidden" fill="currentColor" viewBox="0 0 20 20"><rect x="4" y="3" width="4" height="14"/><rect x="12" y="3" width="4" height="14"/></svg>
+        <div class="flex items-center gap-2.5 sm:gap-3 mb-2.5">
+          <%# Play/Pause %>
+          <button id="player-playpause" onclick="togglePlayPause()" class="flex-shrink-0 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full transition-all hover:scale-110 active:scale-95" style="background: linear-gradient(135deg, #7c3aed, #9333ea); box-shadow: 0 0 15px rgba(124,58,237,0.3);">
+            <svg id="icon-play" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white ml-0.5" fill="currentColor" viewBox="0 0 20 20"><polygon points="5,3 18,10 5,17"/></svg>
+            <svg id="icon-pause" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white hidden" fill="currentColor" viewBox="0 0 20 20"><rect x="4" y="3" width="4" height="14"/><rect x="12" y="3" width="4" height="14"/></svg>
           </button>
 
-          <%# Time display %>
-          <span id="player-time" class="flex-shrink-0 text-xs text-slate-500 font-mono w-24 text-center tabular-nums">0:00 / 0:00</span>
+          <%# Time %>
+          <span id="player-time" class="flex-shrink-0 text-[10px] sm:text-xs text-slate-500 font-mono tabular-nums">0:00 / 0:00</span>
 
           <%# Progress bar %>
           <div id="player-track" class="flex-1 h-8 flex items-center cursor-pointer group relative">
             <div class="w-full h-1 rounded-full overflow-hidden" style="background: rgba(255,255,255,0.08);">
-              <div id="player-progress" class="h-full rounded-full transition-none" style="width: 0%; background: linear-gradient(90deg, #7c3aed, #a855f7); box-shadow: 0 0 8px rgba(168,85,247,0.5);"></div>
+              <div id="player-progress" class="h-full rounded-full" style="width: 0%; background: linear-gradient(90deg, #7c3aed, #a855f7); box-shadow: 0 0 8px rgba(168,85,247,0.5);"></div>
             </div>
-            <%# Hover scrub indicator %>
             <div id="player-scrub" class="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-white opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" style="box-shadow: 0 0 10px rgba(168,85,247,0.6); left: 0;"></div>
           </div>
 
-          <%# Fullscreen button %>
-          <button id="btn-fullscreen" onclick="toggleFullscreen()" class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:text-purple-400 transition-all hover:bg-white/5" title="Toggle fullscreen">
+          <%# Fullscreen %>
+          <button id="btn-fullscreen" onclick="toggleFullscreen()" class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:text-purple-400 transition-all hover:bg-white/5" title="Fullscreen">
             <svg id="icon-expand" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg>
             <svg id="icon-compress" class="w-4 h-4 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 14h6m0 0v6m0-6L3 21M20 10h-6m0 0V4m0 6l7-7"/></svg>
           </button>
         </div>
 
         <%# ---- CTA row ---- %>
-        <div class="flex items-center justify-center gap-2 md:gap-3">
-          <a href="<%= url_for(@reflection.extended_audio) %>" download class="text-slate-500 hover:text-purple-400 text-xs tracking-wider py-1.5 px-3 rounded-lg transition-all hover:bg-white/5" style="font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.1em;">
-            💾 Download
+        <div class="flex items-center justify-center gap-1">
+          <a href="<%= url_for(@reflection.extended_audio) %>" download class="cta-link text-slate-500 hover:text-purple-400 py-1 px-2.5 rounded-lg transition-all hover:bg-white/5">
+            Download
           </a>
-          <span class="text-slate-700">·</span>
-          <a href="<%= new_reflection_url(host: ENV.fetch("APP_HOST", "memflect.com")) %>" class="text-slate-500 hover:text-purple-400 text-xs tracking-wider py-1.5 px-3 rounded-lg transition-all hover:bg-white/5" style="font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.1em;">
-            ✨ Create Your Own
+          <span class="text-slate-700 text-xs">&middot;</span>
+          <a href="<%= new_reflection_url(host: ENV.fetch("APP_HOST", "memflect.com")) %>" class="cta-link text-slate-500 hover:text-purple-400 py-1 px-2.5 rounded-lg transition-all hover:bg-white/5">
+            Create Your Own
           </a>
-          <span class="text-slate-700">·</span>
-          <a href="https://memflect.com" class="text-slate-500 hover:text-purple-400 text-xs tracking-wider py-1.5 px-3 rounded-lg transition-all hover:bg-white/5" style="font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.1em;">
-            🎭 Memflect
+          <span class="text-slate-700 text-xs">&middot;</span>
+          <a href="https://memflect.com" class="cta-link text-slate-500 hover:text-purple-400 py-1 px-2.5 rounded-lg transition-all hover:bg-white/5">
+            Memflect
           </a>
         </div>
 
@@ -193,7 +283,7 @@
   </div>
   <%# ==================== END STAGE APRON ==================== %>
 
-  <%# ========== HIDDEN AUDIO ELEMENT (no browser controls) ========== %>
+  <%# ========== HIDDEN AUDIO ELEMENT ========== %>
   <audio id="memcard-audio" preload="auto">
     <source src="<%= url_for(@reflection.extended_audio) %>" type="audio/mpeg">
   </audio>
@@ -204,109 +294,103 @@
 <script>
 (function() {
   // ========== DOM REFS ==========
-  const audio         = document.getElementById('memcard-audio');
-  const curtainLeft   = document.getElementById('curtain-left');
-  const curtainRight  = document.getElementById('curtain-right');
-  const memcardImage  = document.getElementById('memcard-image');
-  const memcardTitle  = document.getElementById('memcard-title');
-  const postAudio     = document.getElementById('post-audio');
-  const autoplayTap   = document.getElementById('autoplay-tap');
-  const installBtn    = document.getElementById('install-btn');
-  const filmFlicker   = document.getElementById('film-flicker');
-  const spotlightL    = document.getElementById('spotlight-left');
-  const spotlightR    = document.getElementById('spotlight-right');
+  var audio         = document.getElementById('memcard-audio');
+  var curtainLeft   = document.getElementById('curtain-left');
+  var curtainRight  = document.getElementById('curtain-right');
+  var memcardImage  = document.getElementById('memcard-image');
+  var memcardTitle  = document.getElementById('memcard-title');
+  var postAudio     = document.getElementById('post-audio');
+  var autoplayTap   = document.getElementById('autoplay-tap');
+  var installBtn    = document.getElementById('install-btn');
+  var filmFlicker   = document.getElementById('film-flicker');
+  var spotConeL     = document.getElementById('spot-cone-left');
+  var spotConeR     = document.getElementById('spot-cone-right');
+  var spotSourceL   = document.getElementById('spot-source-left');
+  var spotSourceR   = document.getElementById('spot-source-right');
+  var imageGlow     = document.getElementById('image-spotlight-glow');
 
-  // Player refs
-  const playerProgress = document.getElementById('player-progress');
-  const playerScrub    = document.getElementById('player-scrub');
-  const playerTrack    = document.getElementById('player-track');
-  const playerTime     = document.getElementById('player-time');
-  const iconPlay       = document.getElementById('icon-play');
-  const iconPause      = document.getElementById('icon-pause');
-  const iconExpand     = document.getElementById('icon-expand');
-  const iconCompress   = document.getElementById('icon-compress');
+  var playerProgress = document.getElementById('player-progress');
+  var playerScrub    = document.getElementById('player-scrub');
+  var playerTrack    = document.getElementById('player-track');
+  var playerTime     = document.getElementById('player-time');
+  var iconPlay       = document.getElementById('icon-play');
+  var iconPause      = document.getElementById('icon-pause');
+  var iconExpand     = document.getElementById('icon-expand');
+  var iconCompress   = document.getElementById('icon-compress');
 
-  let deferredInstallPrompt = null;
-  let curtainsOpened = false;
-  let audioReady = false;
-  let autoplayTimeout = null;
+  var deferredInstallPrompt = null;
+  var curtainsOpened = false;
+  var audioReady = false;
+  var autoplayTimeout = null;
 
   // ========== UTILITIES ==========
-  function formatTime(sec) {
+  function fmt(sec) {
     if (isNaN(sec) || !isFinite(sec)) return '0:00';
-    const m = Math.floor(sec / 60);
-    const s = Math.floor(sec % 60);
+    var m = Math.floor(sec / 60);
+    var s = Math.floor(sec % 60);
     return m + ':' + (s < 10 ? '0' : '') + s;
   }
 
   // ========== SPOTLIGHT FLICKER ==========
-  // Simulates two theater spotlights with subtle, independent intensity shifts
-  let flickerFrame;
   function flickerLoop() {
-    const t = Date.now();
-    // Left spotlight: slow purple pulse + random flicker
-    const leftBase = 0.10 + 0.03 * Math.sin(t / 2000);
-    const leftFlicker = (Math.random() - 0.5) * 0.04;
-    spotlightL.style.opacity = Math.max(0.04, leftBase + leftFlicker).toFixed(3);
-    // Right spotlight: offset amber pulse + random flicker
-    const rightBase = 0.06 + 0.02 * Math.sin(t / 2500 + 1);
-    const rightFlicker = (Math.random() - 0.5) * 0.03;
-    spotlightR.style.opacity = Math.max(0.02, rightBase + rightFlicker).toFixed(3);
-    // Film flicker overlay
-    filmFlicker.style.opacity = (0.03 + Math.random() * 0.06).toFixed(3);
+    var t = Date.now();
+    // Left: purple, slow breathe + random jitter
+    var lBase = 0.85 + 0.15 * Math.sin(t / 2200);
+    var lJitter = (Math.random() - 0.5) * 0.15;
+    var lVal = Math.max(0.3, Math.min(1, lBase + lJitter)).toFixed(3);
+    spotConeL.style.opacity = lVal;
+    spotSourceL.style.opacity = Math.min(1, parseFloat(lVal) + 0.1).toFixed(3);
 
-    flickerFrame = requestAnimationFrame(flickerLoop);
+    // Right: amber, offset cycle
+    var rBase = 0.7 + 0.15 * Math.sin(t / 2800 + 1.5);
+    var rJitter = (Math.random() - 0.5) * 0.12;
+    var rVal = Math.max(0.2, Math.min(1, rBase + rJitter)).toFixed(3);
+    spotConeR.style.opacity = rVal;
+    spotSourceR.style.opacity = Math.min(1, parseFloat(rVal) + 0.1).toFixed(3);
+
+    // Film flicker
+    filmFlicker.style.opacity = (0.04 + Math.random() * 0.08).toFixed(3);
+
+    requestAnimationFrame(flickerLoop);
   }
   flickerLoop();
 
-  // ========== CURTAIN OPENING SEQUENCE ==========
+  // ========== CURTAIN OPENING ==========
   function openCurtains() {
     if (curtainsOpened) return;
     curtainsOpened = true;
-
-    // Curtains slide open (4.5s via CSS transition)
     curtainLeft.style.transform = 'translateX(-88%)';
     curtainRight.style.transform = 'translateX(88%)';
-
-    // Title fades in after curtains have started parting
+    // Title: mid-open reveal
     setTimeout(function() { memcardTitle.style.opacity = '1'; }, 2000);
-
-    // Image fades in late — you LISTEN first, then SEE
-    setTimeout(function() { memcardImage.style.opacity = '1'; }, 3200);
+    // Image: late reveal — listen first, see second
+    setTimeout(function() {
+      memcardImage.style.opacity = '1';
+      if (imageGlow) imageGlow.style.opacity = '1';
+    }, 3200);
   }
 
-  // ========== AUTOPLAY — FIXED RACE CONDITION ==========
-  // Strategy:
-  //   1. Wait for canplaythrough (audio is buffered enough to play)
-  //   2. Attempt autoplay
-  //   3. Open curtains ONLY when `playing` event fires (audio actually started)
-  //   4. If autoplay fails → show tap fallback
-  //   5. If nothing happens within 6s → show tap fallback (timeout safety net)
-
+  // ========== AUTOPLAY — FIXED ==========
   audio.addEventListener('canplaythrough', function() {
     audioReady = true;
   }, { once: true });
 
-  // Open curtains when audio is ACTUALLY playing (not just promised)
-  audio.addEventListener('playing', function() {
+  audio.addEventListener('playing', function onFirstPlay() {
     clearTimeout(autoplayTimeout);
     autoplayTap.classList.add('hidden');
     autoplayTap.classList.remove('flex');
     openCurtains();
-  }, { once: true });
+    audio.removeEventListener('playing', onFirstPlay);
+  });
 
   function tryAutoplay() {
     if (!audioReady) {
-      // Audio not buffered yet — wait and retry, but with a hard timeout
       autoplayTimeout = setTimeout(function() {
         if (!curtainsOpened) {
-          // Gave up waiting — show tap fallback
           autoplayTap.classList.remove('hidden');
           autoplayTap.classList.add('flex');
         }
       }, 6000);
-
-      // Also listen for canplaythrough then retry
       audio.addEventListener('canplaythrough', function() {
         audioReady = true;
         attemptPlay();
@@ -317,48 +401,44 @@
   }
 
   function attemptPlay() {
-    var playPromise = audio.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(function() {
-        // Browser blocked autoplay — show tap fallback
-        curtainsOpened = false; // Reset so openCurtains works after tap
+    var p = audio.play();
+    if (p !== undefined) {
+      p.catch(function() {
+        curtainsOpened = false;
         autoplayTap.classList.remove('hidden');
         autoplayTap.classList.add('flex');
       });
     }
   }
 
-  // Tap-to-begin handler
   autoplayTap.addEventListener('click', function() {
-    curtainsOpened = false; // Ensure curtains can open
-    audio.play(); // `playing` event listener will handle curtains
+    curtainsOpened = false;
+    audio.addEventListener('playing', function() {
+      autoplayTap.classList.add('hidden');
+      autoplayTap.classList.remove('flex');
+      openCurtains();
+    }, { once: true });
+    audio.play();
   });
 
-  // Kick off after page load + small delay for paint
   window.addEventListener('load', function() {
     setTimeout(tryAutoplay, 600);
   });
 
   // ========== CUSTOM AUDIO PLAYER ==========
-  // Update progress bar and time display
   audio.addEventListener('timeupdate', function() {
     if (!audio.duration) return;
     var pct = (audio.currentTime / audio.duration) * 100;
     playerProgress.style.width = pct + '%';
-    playerTime.textContent = formatTime(audio.currentTime) + ' / ' + formatTime(audio.duration);
+    playerTime.textContent = fmt(audio.currentTime) + ' / ' + fmt(audio.duration);
   });
 
   audio.addEventListener('loadedmetadata', function() {
-    playerTime.textContent = '0:00 / ' + formatTime(audio.duration);
+    playerTime.textContent = '0:00 / ' + fmt(audio.duration);
   });
 
-  // Play/pause toggle
   function togglePlayPause() {
-    if (audio.paused) {
-      audio.play();
-    } else {
-      audio.pause();
-    }
+    if (audio.paused) { audio.play(); } else { audio.pause(); }
   }
   window.togglePlayPause = togglePlayPause;
 
@@ -371,8 +451,8 @@
     iconPlay.classList.remove('hidden');
   });
 
-  // Seek on track click/drag
-  function seekToPosition(e) {
+  // Seek
+  function seekTo(e) {
     var rect = playerTrack.getBoundingClientRect();
     var pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
     if (audio.duration) {
@@ -380,49 +460,34 @@
       playerProgress.style.width = (pct * 100) + '%';
     }
   }
+  playerTrack.addEventListener('click', seekTo);
 
-  playerTrack.addEventListener('click', seekToPosition);
-
-  // Drag-to-seek
-  var isDragging = false;
-  playerTrack.addEventListener('mousedown', function(e) { isDragging = true; seekToPosition(e); });
+  var dragging = false;
+  playerTrack.addEventListener('mousedown', function(e) { dragging = true; seekTo(e); });
   document.addEventListener('mousemove', function(e) {
-    if (!isDragging) return;
-    seekToPosition(e);
-    // Update scrub indicator position
+    if (!dragging) return;
+    seekTo(e);
     var rect = playerTrack.getBoundingClientRect();
-    var pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-    playerScrub.style.left = (pct * 100) + '%';
+    playerScrub.style.left = (Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width)) * 100) + '%';
   });
-  document.addEventListener('mouseup', function() { isDragging = false; });
+  document.addEventListener('mouseup', function() { dragging = false; });
 
-  // Touch seek
-  playerTrack.addEventListener('touchstart', function(e) {
-    var touch = e.touches[0];
-    seekToPosition(touch);
-  }, { passive: true });
-  playerTrack.addEventListener('touchmove', function(e) {
-    var touch = e.touches[0];
-    seekToPosition(touch);
-  }, { passive: true });
+  playerTrack.addEventListener('touchstart', function(e) { seekTo(e.touches[0]); }, { passive: true });
+  playerTrack.addEventListener('touchmove', function(e) { seekTo(e.touches[0]); }, { passive: true });
 
-  // Hover scrub indicator
   playerTrack.addEventListener('mousemove', function(e) {
-    if (isDragging) return;
+    if (dragging) return;
     var rect = playerTrack.getBoundingClientRect();
-    var pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-    playerScrub.style.left = (pct * 100) + '%';
+    playerScrub.style.left = (Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width)) * 100) + '%';
   });
 
-  // ========== POST-AUDIO REVEAL ==========
+  // ========== POST-AUDIO ==========
   audio.addEventListener('ended', function() {
-    // Close curtains gracefully
     curtainLeft.style.transform = 'translateX(0)';
     curtainRight.style.transform = 'translateX(0)';
-    // Fade out image and title
     memcardImage.style.opacity = '0';
     memcardTitle.style.opacity = '0';
-    // Show end screen after curtains close
+    if (imageGlow) imageGlow.style.opacity = '0';
     setTimeout(function() {
       postAudio.classList.remove('hidden');
       postAudio.classList.add('flex');
@@ -433,24 +498,15 @@
   function replayMemcard() {
     postAudio.classList.add('hidden');
     postAudio.classList.remove('flex');
-
-    // Reset everything
     curtainLeft.style.transform = 'translateX(0)';
     curtainRight.style.transform = 'translateX(0)';
     curtainsOpened = false;
     memcardTitle.style.opacity = '0';
     memcardImage.style.opacity = '0';
+    if (imageGlow) imageGlow.style.opacity = '0';
     audio.currentTime = 0;
-
-    // Re-attach the one-time playing listener for curtain open
-    audio.addEventListener('playing', function() {
-      openCurtains();
-    }, { once: true });
-
-    // Small pause then play — let the curtains be visible closed first
-    setTimeout(function() {
-      audio.play();
-    }, 800);
+    audio.addEventListener('playing', function() { openCurtains(); }, { once: true });
+    setTimeout(function() { audio.play(); }, 800);
   }
   window.replayMemcard = replayMemcard;
 
@@ -458,28 +514,22 @@
   function toggleFullscreen() {
     if (!document.fullscreenElement && !document.webkitFullscreenElement) {
       var el = document.documentElement;
-      if (el.requestFullscreen) {
-        el.requestFullscreen();
-      } else if (el.webkitRequestFullscreen) {
-        el.webkitRequestFullscreen(); // Safari
-      }
+      if (el.requestFullscreen) { el.requestFullscreen(); }
+      else if (el.webkitRequestFullscreen) { el.webkitRequestFullscreen(); }
     } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      }
+      if (document.exitFullscreen) { document.exitFullscreen(); }
+      else if (document.webkitExitFullscreen) { document.webkitExitFullscreen(); }
     }
   }
   window.toggleFullscreen = toggleFullscreen;
 
-  document.addEventListener('fullscreenchange', updateFullscreenIcon);
-  document.addEventListener('webkitfullscreenchange', updateFullscreenIcon);
-  function updateFullscreenIcon() {
+  function updateFSIcon() {
     var isFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
     iconExpand.classList.toggle('hidden', isFS);
     iconCompress.classList.toggle('hidden', !isFS);
   }
+  document.addEventListener('fullscreenchange', updateFSIcon);
+  document.addEventListener('webkitfullscreenchange', updateFSIcon);
 
   // ========== PWA INSTALL ==========
   window.addEventListener('beforeinstallprompt', function(e) {
@@ -491,7 +541,7 @@
   function promptInstall() {
     var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     if (isIOS) {
-      alert("To save this Memcard:\n\n1. Tap the Share button at the bottom\n2. Tap 'Add to Home Screen'\n3. Name it whatever you'd like ❤️");
+      alert("To save this Memcard:\n\n1. Tap the Share button at the bottom\n2. Tap 'Add to Home Screen'\n3. Name it whatever you'd like");
       return;
     }
     if (deferredInstallPrompt) {
@@ -503,7 +553,6 @@
   }
   window.promptInstall = promptInstall;
 
-  // Show install button on iOS
   var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
   if (isIOS) installBtn.classList.remove('hidden');
 
