@@ -1,23 +1,239 @@
-<% content_for :title, @reflection.title %>
+<%# ========== OG META TAGS — for beautiful link previews ========== %>
+<% content_for :head do %>
+  <title><%= @reflection.title || "A Memflection" %> — Memcard from Memflect</title>
+  <meta property="og:title" content="<%= @reflection.title || "A Memflection" %>">
+  <meta property="og:description" content="A personal Memflection — a 5-minute cinematic audio reflection. Tap to open the portal.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="<%= request.original_url %>">
+  <% if @reflection.cover_image.attached? %>
+    <meta property="og:image" content="<%= url_for(@reflection.cover_image) %>">
+  <% end %>
+  <meta name="twitter:card" content="summary_large_image">
+<% end %>
 
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-8">
-  <div class="max-w-xl w-full bg-black/50 backdrop-blur-xl rounded-2xl border border-white/20 p-8 text-center">
-    <p class="text-sky-400 text-sm uppercase tracking-widest mb-2">Memcard Portal (stub)</p>
-    <h1 class="text-4xl font-bold text-white mb-6"><%= @reflection.title || "Untitled" %></h1>
+<div id="memcard-stage" class="fixed inset-0 bg-black overflow-hidden" style="z-index: 9999;">
 
-    <% if @reflection.cover_image.attached? %>
-      <img src="<%= url_for(@reflection.cover_image) %>" class="mx-auto rounded-xl mb-6 max-h-64 shadow-2xl" style="filter: sepia(30%) contrast(110%) brightness(95%) saturate(85%);">
-    <% end %>
-
-    <p class="text-slate-300 mb-4">Style: <%= @reflection.style %></p>
-    <p class="text-slate-400 text-sm mb-6">View count: <%= @reflection.memcard_view_count %></p>
-
-    <% if @reflection.extended_audio.attached? %>
-      <audio controls class="w-full">
-        <source src="<%= url_for(@reflection.extended_audio) %>" type="audio/mpeg">
-      </audio>
-    <% end %>
-
-    <p class="text-slate-500 text-xs mt-8">This is a stub. The full cinematic theater experience is coming next.</p>
+  <%# ========== FILM GRAIN + FLICKER OVERLAY ========== %>
+  <div id="film-overlay" class="absolute inset-0 pointer-events-none" style="z-index: 5;">
+    <div id="film-flicker" class="absolute inset-0 bg-amber-100 mix-blend-overlay" style="opacity: 0.04;"></div>
+    <div id="film-grain" class="absolute inset-0 opacity-[0.08]" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22><filter id=%22n%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22/></filter><rect width=%22300%22 height=%22300%22 filter=%22url(%23n)%22 opacity=%220.5%22/></svg>');"></div>
+    <div id="scratch-1" class="absolute top-0 h-full w-px bg-amber-100/30" style="left: 23%;"></div>
+    <div id="scratch-2" class="absolute top-0 h-full w-px bg-amber-100/20" style="left: 67%;"></div>
+    <div id="scratch-3" class="absolute top-0 h-full w-0.5 bg-amber-100/15" style="left: 84%;"></div>
   </div>
+
+  <%# ========== TITLE (above image, on stage) ========== %>
+  <div id="memcard-title" class="absolute top-8 left-1/2 transform -translate-x-1/2 text-center px-4 opacity-0 transition-opacity duration-1000" style="z-index: 15; max-width: 90vw;">
+    <h1 class="text-3xl md:text-5xl font-bold tracking-wider text-white drop-shadow-2xl" style="font-family: 'Bebas Neue', sans-serif; text-shadow: 0 0 30px rgba(168,85,247,0.6);">
+      <%= @reflection.title || "A Memflection" %>
+    </h1>
+    <% if @reflection.name_for_recap.present? %>
+      <p class="text-purple-300 text-sm md:text-base mt-2 italic" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">
+        a Memflection from <%= @reflection.name_for_recap %><% if @reflection.mode == "gift" && @reflection.recipient_name.present? %> for <%= @reflection.recipient_name %><% end %>
+      </p>
+    <% end %>
+  </div>
+
+  <%# ========== STAGE / IMAGE REVEAL ========== %>
+  <div class="absolute inset-0 flex items-center justify-center px-4" style="z-index: 10;">
+    <% if @reflection.cover_image.attached? %>
+      <img id="memcard-image" src="<%= url_for(@reflection.cover_image) %>"
+           class="rounded-2xl shadow-2xl object-contain opacity-0 transition-opacity duration-2000 ease-in"
+           style="max-height: 70vh; max-width: 80vw; filter: sepia(35%) contrast(115%) brightness(92%) saturate(80%); box-shadow: 0 0 80px rgba(168,85,247,0.4), 0 0 120px rgba(0,0,0,0.8);">
+    <% else %>
+      <div id="memcard-image" class="rounded-2xl bg-purple-950/50 border border-purple-500/30 flex items-center justify-center opacity-0 transition-opacity duration-2000" style="width: 60vw; max-width: 400px; height: 50vh; max-height: 400px;">
+        <p class="text-purple-300 text-6xl">🎭</p>
+      </div>
+    <% end %>
+  </div>
+
+  <%# ========== AUDIO ELEMENT (hidden, controlled by JS) ========== %>
+  <audio id="memcard-audio" preload="auto">
+    <source src="<%= url_for(@reflection.extended_audio) %>" type="audio/mpeg">
+  </audio>
+
+  <%# ========== PURPLE THEATER CURTAINS ========== %>
+  <div id="curtain-left" class="absolute top-0 left-0 h-full w-1/2 transition-transform ease-in-out" style="z-index: 20; transition-duration: 3000ms; background: linear-gradient(90deg, #2e1065 0%, #6b21a8 30%, #7e22ce 50%, #6b21a8 70%, #2e1065 100%); box-shadow: inset -20px 0 60px rgba(0,0,0,0.6);">
+    <%# Vertical fabric pleats %>
+    <div class="absolute inset-0" style="background: repeating-linear-gradient(90deg, transparent 0px, transparent 30px, rgba(0,0,0,0.15) 30px, rgba(0,0,0,0.15) 32px, transparent 32px, transparent 62px, rgba(255,255,255,0.04) 62px, rgba(255,255,255,0.04) 64px);"></div>
+  </div>
+
+  <div id="curtain-right" class="absolute top-0 right-0 h-full w-1/2 transition-transform ease-in-out" style="z-index: 20; transition-duration: 3000ms; background: linear-gradient(270deg, #2e1065 0%, #6b21a8 30%, #7e22ce 50%, #6b21a8 70%, #2e1065 100%); box-shadow: inset 20px 0 60px rgba(0,0,0,0.6);">
+    <div class="absolute inset-0" style="background: repeating-linear-gradient(90deg, transparent 0px, transparent 30px, rgba(0,0,0,0.15) 30px, rgba(0,0,0,0.15) 32px, transparent 32px, transparent 62px, rgba(255,255,255,0.04) 62px, rgba(255,255,255,0.04) 64px);"></div>
+  </div>
+
+  <%# ========== AUTOPLAY FALLBACK (shown if browser blocks autoplay) ========== %>
+  <div id="autoplay-tap" class="hidden absolute inset-0 flex items-center justify-center cursor-pointer" style="z-index: 50; background: rgba(0,0,0,0.7);">
+    <div class="text-center">
+      <div class="text-6xl mb-4 animate-pulse">🎭</div>
+      <p class="text-white text-2xl font-bold tracking-wider mb-2" style="font-family: 'Bebas Neue', sans-serif;">Tap to Begin</p>
+      <p class="text-purple-300 text-sm" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">Your Memflection is ready</p>
+    </div>
+  </div>
+
+  <%# ========== HIDDEN CTA TASKBAR (hover desktop / scroll mobile) ========== %>
+  <div id="cta-bar" class="absolute bottom-0 left-0 right-0 transform translate-y-full transition-transform duration-500 ease-out" style="z-index: 30;">
+    <div class="bg-gradient-to-t from-black via-black/95 to-black/70 backdrop-blur-sm border-t border-purple-500/30 px-4 py-3">
+      <div class="max-w-4xl mx-auto flex flex-wrap justify-center gap-3">
+        <a href="<%= url_for(@reflection.extended_audio) %>" download class="bg-purple-600/80 hover:bg-purple-500 text-white text-xs md:text-sm font-medium tracking-wider py-2 px-4 rounded-lg transition-all">
+          💾 Download
+        </a>
+        <a href="<%= new_reflection_url(host: ENV.fetch("APP_HOST", "memflect.com")) %>" class="bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white text-xs md:text-sm font-medium tracking-wider py-2 px-4 rounded-lg shadow-lg transition-all">
+          ✨ Create My Own
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <%# ========== POST-AUDIO REVEAL (shown after audio ends) ========== %>
+  <div id="post-audio" class="hidden absolute inset-0 flex items-center justify-center px-4" style="z-index: 40; background: rgba(0,0,0,0.85);">
+    <div class="max-w-md w-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 rounded-2xl border border-purple-500/30 p-8 text-center shadow-2xl">
+      <p class="text-4xl mb-4">🎭</p>
+      <h2 class="text-2xl font-bold tracking-wider text-white mb-2" style="font-family: 'Bebas Neue', sans-serif;">A Moment to Reflect</h2>
+      <p class="text-slate-300 text-sm mb-6" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">
+        Thank you for experiencing this Memflection.
+      </p>
+
+      <div class="space-y-3">
+        <button onclick="replayMemcard()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-medium tracking-wider py-3 px-6 rounded-lg shadow-lg transition-all">
+          🔁 Play Again
+        </button>
+
+        <button id="install-btn" onclick="promptInstall()" class="hidden w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white font-medium tracking-wider py-3 px-6 rounded-lg shadow-lg transition-all">
+          📱 Save to My Phone
+        </button>
+
+        <a href="<%= new_reflection_url(host: ENV.fetch("APP_HOST", "memflect.com")) %>" class="block w-full bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-medium tracking-wider py-3 px-6 rounded-lg shadow-lg transition-all">
+          ✨ Create My Own Memflection
+        </a>
+
+        <a href="<%= url_for(@reflection.extended_audio) %>" download class="block w-full bg-slate-700 hover:bg-slate-600 text-slate-200 font-medium tracking-wider py-3 px-6 rounded-lg transition-all">
+          💾 Download MP3
+        </a>
+      </div>
+    </div>
+  </div>
+
 </div>
+
+<script>
+  (function() {
+    const audio = document.getElementById('memcard-audio');
+    const curtainLeft = document.getElementById('curtain-left');
+    const curtainRight = document.getElementById('curtain-right');
+    const memcardImage = document.getElementById('memcard-image');
+    const memcardTitle = document.getElementById('memcard-title');
+    const ctaBar = document.getElementById('cta-bar');
+    const postAudio = document.getElementById('post-audio');
+    const autoplayTap = document.getElementById('autoplay-tap');
+    const installBtn = document.getElementById('install-btn');
+    const filmFlicker = document.getElementById('film-flicker');
+
+    let deferredInstallPrompt = null;
+    let curtainsOpened = false;
+
+    // ========== FILM FLICKER ==========
+    setInterval(() => {
+      filmFlicker.style.opacity = (0.02 + Math.random() * 0.08).toFixed(3);
+    }, 120);
+
+    // ========== CURTAIN OPENING SEQUENCE ==========
+    function openCurtains() {
+      if (curtainsOpened) return;
+      curtainsOpened = true;
+      curtainLeft.style.transform = 'translateX(-85%)';
+      curtainRight.style.transform = 'translateX(85%)';
+      setTimeout(() => { memcardTitle.style.opacity = '1'; }, 1500);
+      setTimeout(() => { memcardImage.style.opacity = '1'; }, 2000);
+    }
+
+    // ========== AUTOPLAY ATTEMPT ==========
+    function tryAutoplay() {
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => { openCurtains(); })
+          .catch(() => {
+            autoplayTap.classList.remove('hidden');
+            autoplayTap.classList.add('flex');
+          });
+      }
+    }
+
+    autoplayTap.addEventListener('click', () => {
+      audio.play().then(() => {
+        autoplayTap.classList.add('hidden');
+        autoplayTap.classList.remove('flex');
+        openCurtains();
+      });
+    });
+
+    window.addEventListener('load', () => {
+      setTimeout(tryAutoplay, 800);
+    });
+
+    // ========== POST-AUDIO REVEAL ==========
+    audio.addEventListener('ended', () => {
+      curtainLeft.style.transform = 'translateX(0)';
+      curtainRight.style.transform = 'translateX(0)';
+      setTimeout(() => {
+        postAudio.classList.remove('hidden');
+        postAudio.classList.add('flex');
+      }, 2000);
+    });
+
+    function replayMemcard() {
+      postAudio.classList.add('hidden');
+      postAudio.classList.remove('flex');
+      curtainLeft.style.transform = 'translateX(0)';
+      curtainRight.style.transform = 'translateX(0)';
+      curtainsOpened = false;
+      memcardTitle.style.opacity = '0';
+      memcardImage.style.opacity = '0';
+      audio.currentTime = 0;
+      setTimeout(tryAutoplay, 500);
+    }
+    window.replayMemcard = replayMemcard;
+
+    // ========== HIDDEN CTA BAR REVEAL ==========
+    let ctaTimeout;
+    function showCtaBar() {
+      ctaBar.style.transform = 'translateY(0)';
+      clearTimeout(ctaTimeout);
+      ctaTimeout = setTimeout(() => {
+        ctaBar.style.transform = 'translateY(100%)';
+      }, 4000);
+    }
+
+    document.addEventListener('mousemove', (e) => {
+      if (e.clientY > window.innerHeight - 80) showCtaBar();
+    });
+    document.addEventListener('touchstart', () => { showCtaBar(); });
+
+    // ========== PWA INSTALL PROMPT ==========
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      installBtn.classList.remove('hidden');
+    });
+
+    function promptInstall() {
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      if (isIOS) {
+        alert("To save this Memcard:\\n\\n1. Tap the Share button at the bottom\\n2. Tap 'Add to Home Screen'\\n3. Name it whatever you'd like ❤️");
+        return;
+      }
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        deferredInstallPrompt.userChoice.then(() => { deferredInstallPrompt = null; });
+      } else {
+        alert("Bookmark this page (Ctrl/Cmd+D) to save it for later!");
+      }
+    }
+    window.promptInstall = promptInstall;
+
+    // Show install button on iOS even without beforeinstallprompt
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (isIOS) installBtn.classList.remove('hidden');
+  })();
+</script>
