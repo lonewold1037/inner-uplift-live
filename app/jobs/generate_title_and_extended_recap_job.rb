@@ -90,7 +90,7 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
       "#{reflection.recap}"
 
       THE USER'S NAME IS: #{reflection.name_for_recap}
-      USE THIS NAME 3-5 TIMES NATURALLY THROUGHOUT (e.g., "#{reflection.name_for_recap}, you...")
+      USE THIS NAME 1-2 TIMES (maximum) NATURALLY THROUGHOUT --> (e.g., "#{reflection.name_for_recap}, you...")
 
       Your task: Continue with Acts 2-5 for EXACTLY 480-500 words. YOU MUST WRITE AT LEAST 480 WORDS.
 

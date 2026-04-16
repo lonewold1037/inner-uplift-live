@@ -90,7 +90,7 @@ class ProcessExtendedAudioJob < ApplicationJob
       model_id: "eleven_multilingual_v2",
       output_format: "mp3_44100_128",
       voice_settings: {
-        stability: 0.84,
+        stability: 0.83,
         similarity_boost: 0.95,
         speed: 0.93,
         use_speaker_boost: true
