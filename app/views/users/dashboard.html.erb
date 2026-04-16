@@ -1,16 +1,16 @@
 <%= turbo_stream_from "user_#{current_user.id}_dashboard" %>
 
 <!-- Audio Player Modal (Hidden by default) -->
-<div id="audioModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-  <div class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 rounded-2xl shadow-2xl max-w-4xl w-full p-8 border border-white/20 relative">
+<div id="audioModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+  <div class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-8 border border-white/20 relative my-auto">
     <!-- Close Button -->
     <button onclick="closeAudioModal()" class="absolute top-4 right-4 text-white/60 hover:text-white text-3xl">&times;</button>
 
     <!-- Cover Image (above title, hidden if no image) -->
     <div id="modalImageWrap" class="hidden flex justify-center mb-6">
       <img id="modalCoverImage" src="" alt=""
-           class="rounded-2xl shadow-2xl object-cover max-h-64 w-auto border border-white/10"
-           style="filter: sepia(30%) contrast(110%) brightness(95%) saturate(85%);">
+           class="rounded-2xl shadow-2xl object-contain max-h-48 sm:max-h-56 w-auto mx-auto border border-white/10"
+           style="filter: sepia(30%) contrast(110%) brightness(95%) saturate(85%);">i jus
     </div>
 
     <!-- Reflection Title -->
