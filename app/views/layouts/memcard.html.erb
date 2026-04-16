@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+
+  <%# OG meta tags injected by memcards/show.html.erb via content_for :head %>
+  <%= yield :head %>
+
+  <!-- Fonts for the cinematic portal -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+  <!-- Vite (Tailwind etc.) -->
+  <%= vite_client_tag %>
+  <%= vite_stylesheet_tag 'application' %>
+
+  <style>
+    /* Kill every possible scroll/overflow — the portal IS the viewport */
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #000;
+      width: 100%;
+      height: 100%;
+      /* Prevent iOS bounce/rubber-band scrolling */
+      overscroll-behavior: none;
+      -webkit-overflow-scrolling: touch;
+    }
+  </style>
+</head>
+
+<body>
+  <%= yield %>
+</body>
+</html>

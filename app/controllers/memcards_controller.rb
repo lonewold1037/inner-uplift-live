@@ -1,5 +1,8 @@
 class MemcardsController < ApplicationController
+  layout "memcard"
+
   # This is a PUBLIC portal — no authentication required.
+  
   # Anyone with a valid token can view the Memcard.
   skip_before_action :authenticate_user!, only: [:show]
 
