@@ -11,229 +11,501 @@
   <meta name="twitter:card" content="summary_large_image">
 <% end %>
 
-<div id="memcard-stage" class="fixed inset-0 bg-black overflow-hidden" style="z-index: 9999;">
+<%# ========================================================================
+    MEMCARD CINEMATIC PORTAL
+    Architecture:
+      - #memcard-stage: full viewport container
+        - #theater-screen (top ~80%): spotlights, curtains, title, image, grain
+        - #stage-apron (bottom ~20%): custom audio player, CTAs, fullscreen
+    ======================================================================== %>
 
-  <%# ========== FILM GRAIN + FLICKER OVERLAY ========== %>
-  <div id="film-overlay" class="absolute inset-0 pointer-events-none" style="z-index: 5;">
-    <div id="film-flicker" class="absolute inset-0 bg-amber-100 mix-blend-overlay" style="opacity: 0.04;"></div>
-    <div id="film-grain" class="absolute inset-0 opacity-[0.08]" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22><filter id=%22n%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22/></filter><rect width=%22300%22 height=%22300%22 filter=%22url(%23n)%22 opacity=%220.5%22/></svg>');"></div>
-    <div id="scratch-1" class="absolute top-0 h-full w-px bg-amber-100/30" style="left: 23%;"></div>
-    <div id="scratch-2" class="absolute top-0 h-full w-px bg-amber-100/20" style="left: 67%;"></div>
-    <div id="scratch-3" class="absolute top-0 h-full w-0.5 bg-amber-100/15" style="left: 84%;"></div>
-  </div>
+<div id="memcard-stage" class="fixed inset-0 bg-black overflow-hidden flex flex-col">
 
-  <%# ========== TITLE (above image, on stage) ========== %>
-  <div id="memcard-title" class="absolute top-8 left-1/2 transform -translate-x-1/2 text-center px-4 opacity-0 transition-opacity duration-1000" style="z-index: 15; max-width: 90vw;">
-    <h1 class="text-3xl md:text-5xl font-bold tracking-wider text-white drop-shadow-2xl" style="font-family: 'Bebas Neue', sans-serif; text-shadow: 0 0 30px rgba(168,85,247,0.6);">
-      <%= @reflection.title || "A Memflection" %>
-    </h1>
-    <% if @reflection.name_for_recap.present? %>
-      <p class="text-purple-300 text-sm md:text-base mt-2 italic" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">
-        a Memflection from <%= @reflection.name_for_recap %><% if @reflection.mode == "gift" && @reflection.recipient_name.present? %> for <%= @reflection.recipient_name %><% end %>
-      </p>
-    <% end %>
-  </div>
+  <%# ==================== THEATER SCREEN (top ~80%) ==================== %>
+  <div id="theater-screen" class="relative flex-1 overflow-hidden">
 
-  <%# ========== STAGE / IMAGE REVEAL ========== %>
-  <div class="absolute inset-0 flex items-center justify-center px-4" style="z-index: 10;">
-    <% if @reflection.cover_image.attached? %>
-      <img id="memcard-image" src="<%= url_for(@reflection.cover_image) %>"
-           class="rounded-2xl shadow-2xl object-contain opacity-0 transition-opacity duration-2000 ease-in"
-           style="max-height: 70vh; max-width: 80vw; filter: sepia(35%) contrast(115%) brightness(92%) saturate(80%); box-shadow: 0 0 80px rgba(168,85,247,0.4), 0 0 120px rgba(0,0,0,0.8);">
-    <% else %>
-      <div id="memcard-image" class="rounded-2xl bg-purple-950/50 border border-purple-500/30 flex items-center justify-center opacity-0 transition-opacity duration-2000" style="width: 60vw; max-width: 400px; height: 50vh; max-height: 400px;">
-        <p class="text-purple-300 text-6xl">🎭</p>
+    <%# ---- SPOTLIGHTS ---- %>
+    <div id="spotlight-left" class="absolute pointer-events-none" style="
+      top: -10%; left: -5%; width: 55%; height: 70%;
+      background: radial-gradient(ellipse at 20% 0%, rgba(168,85,247,0.12) 0%, rgba(168,85,247,0.04) 30%, transparent 65%);
+      transform: rotate(15deg); z-index: 2;
+    "></div>
+    <div id="spotlight-right" class="absolute pointer-events-none" style="
+      top: -10%; right: -5%; width: 55%; height: 70%;
+      background: radial-gradient(ellipse at 80% 0%, rgba(251,191,36,0.08) 0%, rgba(251,191,36,0.03) 30%, transparent 65%);
+      transform: rotate(-15deg); z-index: 2;
+    "></div>
+
+    <%# ---- VIGNETTE ---- %>
+    <div class="absolute inset-0 pointer-events-none" style="
+      z-index: 3;
+      background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.5) 80%, rgba(0,0,0,0.8) 100%);
+    "></div>
+
+    <%# ---- FILM GRAIN + FLICKER ---- %>
+    <div id="film-overlay" class="absolute inset-0 pointer-events-none" style="z-index: 4;">
+      <div id="film-flicker" class="absolute inset-0 mix-blend-overlay" style="opacity: 0;
+        background: radial-gradient(ellipse at 30% 20%, rgba(251,191,36,0.15) 0%, transparent 50%),
+                    radial-gradient(ellipse at 70% 20%, rgba(168,85,247,0.10) 0%, transparent 50%);
+      "></div>
+      <div class="absolute inset-0 opacity-[0.06]" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22><filter id=%22n%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22/></filter><rect width=%22300%22 height=%22300%22 filter=%22url(%23n)%22 opacity=%220.5%22/></svg>');"></div>
+      <div class="absolute top-0 h-full w-px bg-amber-100/20" style="left: 23%;"></div>
+      <div class="absolute top-0 h-full w-px bg-amber-100/15" style="left: 67%;"></div>
+      <div class="absolute top-0 h-full w-0.5 bg-amber-100/10" style="left: 84%;"></div>
+    </div>
+
+    <%# ---- TITLE (above image, on screen) ---- %>
+    <div id="memcard-title" class="absolute left-1/2 transform -translate-x-1/2 text-center px-4 opacity-0 transition-opacity" style="z-index: 15; max-width: 90vw; top: 5%; transition-duration: 1500ms;">
+      <h1 class="text-3xl md:text-5xl font-bold tracking-wider text-white" style="font-family: 'Bebas Neue', sans-serif; text-shadow: 0 0 40px rgba(168,85,247,0.5), 0 2px 20px rgba(0,0,0,0.8);">
+        <%= @reflection.title || "A Memflection" %>
+      </h1>
+      <% if @reflection.name_for_recap.present? %>
+        <p class="text-purple-300/80 text-sm md:text-base mt-1 italic" style="font-family: 'Crimson Text', serif; text-shadow: 0 0 20px rgba(168,85,247,0.3);">
+          a Memflection from <%= @reflection.name_for_recap %><% if @reflection.mode == "gift" && @reflection.recipient_name.present? %> for <%= @reflection.recipient_name %><% end %>
+        </p>
+      <% end %>
+    </div>
+
+    <%# ---- COVER IMAGE ---- %>
+    <div class="absolute inset-0 flex items-start justify-center" style="z-index: 10; padding-top: 15%;">
+      <% if @reflection.cover_image.attached? %>
+        <img id="memcard-image" src="<%= url_for(@reflection.cover_image) %>"
+             class="rounded-xl object-contain opacity-0 transition-opacity"
+             style="max-height: 62vh; max-width: 75vw; transition-duration: 2500ms;
+                    filter: sepia(30%) contrast(112%) brightness(90%) saturate(85%);
+                    box-shadow: 0 0 60px rgba(168,85,247,0.3), 0 0 120px rgba(0,0,0,0.9), 0 20px 60px rgba(0,0,0,0.7);">
+      <% else %>
+        <div id="memcard-image" class="rounded-xl bg-purple-950/40 border border-purple-500/20 flex items-center justify-center opacity-0 transition-opacity" style="width: 55vw; max-width: 380px; height: 45vh; max-height: 380px; transition-duration: 2500ms;">
+          <p class="text-purple-300 text-6xl">🎭</p>
+        </div>
+      <% end %>
+    </div>
+
+    <%# ---- PURPLE THEATER CURTAINS ---- %>
+    <div id="curtain-left" class="absolute top-0 left-0 h-full w-1/2" style="z-index: 20; transition: transform 4.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); background: linear-gradient(90deg, #1a0533 0%, #4c1d95 25%, #6b21a8 45%, #7e22ce 50%, #6b21a8 55%, #4c1d95 75%, #1a0533 100%); box-shadow: inset -20px 0 60px rgba(0,0,0,0.6), 5px 0 30px rgba(0,0,0,0.5);">
+      <div class="absolute inset-0" style="background: repeating-linear-gradient(90deg, transparent 0px, transparent 28px, rgba(0,0,0,0.18) 28px, rgba(0,0,0,0.18) 30px, transparent 30px, transparent 58px, rgba(255,255,255,0.03) 58px, rgba(255,255,255,0.03) 60px);"></div>
+      <%# Bottom weight / hem of curtain %>
+      <div class="absolute bottom-0 left-0 right-0 h-8" style="background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);"></div>
+    </div>
+
+    <div id="curtain-right" class="absolute top-0 right-0 h-full w-1/2" style="z-index: 20; transition: transform 4.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); background: linear-gradient(270deg, #1a0533 0%, #4c1d95 25%, #6b21a8 45%, #7e22ce 50%, #6b21a8 55%, #4c1d95 75%, #1a0533 100%); box-shadow: inset 20px 0 60px rgba(0,0,0,0.6), -5px 0 30px rgba(0,0,0,0.5);">
+      <div class="absolute inset-0" style="background: repeating-linear-gradient(90deg, transparent 0px, transparent 28px, rgba(0,0,0,0.18) 28px, rgba(0,0,0,0.18) 30px, transparent 30px, transparent 58px, rgba(255,255,255,0.03) 58px, rgba(255,255,255,0.03) 60px);"></div>
+      <div class="absolute bottom-0 left-0 right-0 h-8" style="background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);"></div>
+    </div>
+
+    <%# ---- AUTOPLAY FALLBACK ---- %>
+    <div id="autoplay-tap" class="hidden absolute inset-0 flex items-center justify-center cursor-pointer" style="z-index: 50; background: rgba(0,0,0,0.6); backdrop-filter: blur(2px);">
+      <div class="text-center">
+        <div class="text-7xl mb-6 animate-pulse" style="filter: drop-shadow(0 0 30px rgba(168,85,247,0.5));">🎭</div>
+        <p class="text-white text-3xl font-bold tracking-widest mb-2" style="font-family: 'Bebas Neue', sans-serif; text-shadow: 0 0 30px rgba(168,85,247,0.5);">Tap to Begin</p>
+        <p class="text-purple-300/70 text-sm" style="font-family: 'Crimson Text', serif;">Your Memflection awaits</p>
       </div>
-    <% end %>
-  </div>
+    </div>
 
-  <%# ========== AUDIO ELEMENT (hidden, controlled by JS) ========== %>
-  <audio id="memcard-audio" preload="auto" controls class="absolute bottom-20 left-1/2 transform -translate-x-1/2 w-11/12 max-w-md opacity-0 transition-opacity duration-1000" style="z-index: 25;">
+    <%# ---- POST-AUDIO REVEAL ---- %>
+    <div id="post-audio" class="hidden absolute inset-0 flex items-center justify-center px-4" style="z-index: 40; background: rgba(0,0,0,0.85); backdrop-filter: blur(4px);">
+      <div class="max-w-md w-full rounded-2xl border border-purple-500/20 p-8 text-center" style="background: linear-gradient(135deg, rgba(15,10,30,0.95), rgba(60,20,90,0.9), rgba(15,10,30,0.95)); box-shadow: 0 0 80px rgba(168,85,247,0.15), 0 25px 50px rgba(0,0,0,0.5);">
+        <p class="text-5xl mb-4" style="filter: drop-shadow(0 0 20px rgba(168,85,247,0.4));">🎭</p>
+        <h2 class="text-3xl font-bold tracking-widest text-white mb-2" style="font-family: 'Bebas Neue', sans-serif;">A Moment to Reflect</h2>
+        <p class="text-slate-400 text-sm mb-8" style="font-family: 'Crimson Text', serif;">
+          Thank you for experiencing this Memflection.
+        </p>
+
+        <div class="space-y-3">
+          <button onclick="replayMemcard()" class="w-full text-white font-medium tracking-wider py-3 px-6 rounded-lg transition-all hover:scale-[1.02] active:scale-[0.98]" style="background: linear-gradient(135deg, #7c3aed, #db2777); box-shadow: 0 4px 20px rgba(124,58,237,0.4);">
+            🔁 Play Again
+          </button>
+
+          <button id="install-btn" onclick="promptInstall()" class="hidden w-full text-white font-medium tracking-wider py-3 px-6 rounded-lg transition-all hover:scale-[1.02] active:scale-[0.98]" style="background: linear-gradient(135deg, #059669, #10b981); box-shadow: 0 4px 20px rgba(5,150,105,0.3);">
+            📱 Save to My Phone
+          </button>
+
+          <a href="<%= new_reflection_url(host: ENV.fetch("APP_HOST", "memflect.com")) %>" class="block w-full text-white font-medium tracking-wider py-3 px-6 rounded-lg transition-all hover:scale-[1.02] active:scale-[0.98]" style="background: linear-gradient(135deg, #0284c7, #2563eb); box-shadow: 0 4px 20px rgba(37,99,235,0.3);">
+            ✨ Create My Own Memflection
+          </a>
+
+          <a href="<%= url_for(@reflection.extended_audio) %>" download class="block w-full text-slate-300 font-medium tracking-wider py-3 px-6 rounded-lg transition-all hover:bg-white/10" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+            💾 Download MP3
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <%# ==================== END THEATER SCREEN ==================== %>
+
+
+  <%# ==================== STAGE APRON (bottom ~20%) ==================== %>
+  <div id="stage-apron" class="relative flex-shrink-0" style="z-index: 25;">
+
+    <%# ---- Stage edge lighting strip ---- %>
+    <div class="w-full h-px" style="background: linear-gradient(90deg, transparent 5%, rgba(251,191,36,0.3) 20%, rgba(168,85,247,0.5) 50%, rgba(251,191,36,0.3) 80%, transparent 95%);"></div>
+    <div class="w-full h-px" style="background: linear-gradient(90deg, transparent 10%, rgba(168,85,247,0.15) 30%, rgba(168,85,247,0.25) 50%, rgba(168,85,247,0.15) 70%, transparent 90%); filter: blur(1px);"></div>
+
+    <%# ---- Stage floor ---- %>
+    <div class="px-4 py-3 md:py-4" style="background: linear-gradient(to bottom, #0a0612 0%, #0d0a18 40%, #110e1f 100%);">
+      <div class="max-w-2xl mx-auto">
+
+        <%# ---- Custom audio player ---- %>
+        <div class="flex items-center gap-3 mb-3">
+          <%# Play/Pause button %>
+          <button id="player-playpause" onclick="togglePlayPause()" class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full transition-all hover:scale-110 active:scale-95" style="background: linear-gradient(135deg, #7c3aed, #9333ea); box-shadow: 0 0 20px rgba(124,58,237,0.3);">
+            <svg id="icon-play" class="w-4 h-4 text-white ml-0.5" fill="currentColor" viewBox="0 0 20 20"><polygon points="5,3 18,10 5,17"/></svg>
+            <svg id="icon-pause" class="w-4 h-4 text-white hidden" fill="currentColor" viewBox="0 0 20 20"><rect x="4" y="3" width="4" height="14"/><rect x="12" y="3" width="4" height="14"/></svg>
+          </button>
+
+          <%# Time display %>
+          <span id="player-time" class="flex-shrink-0 text-xs text-slate-500 font-mono w-24 text-center tabular-nums">0:00 / 0:00</span>
+
+          <%# Progress bar %>
+          <div id="player-track" class="flex-1 h-8 flex items-center cursor-pointer group relative">
+            <div class="w-full h-1 rounded-full overflow-hidden" style="background: rgba(255,255,255,0.08);">
+              <div id="player-progress" class="h-full rounded-full transition-none" style="width: 0%; background: linear-gradient(90deg, #7c3aed, #a855f7); box-shadow: 0 0 8px rgba(168,85,247,0.5);"></div>
+            </div>
+            <%# Hover scrub indicator %>
+            <div id="player-scrub" class="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-white opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" style="box-shadow: 0 0 10px rgba(168,85,247,0.6); left: 0;"></div>
+          </div>
+
+          <%# Fullscreen button %>
+          <button id="btn-fullscreen" onclick="toggleFullscreen()" class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:text-purple-400 transition-all hover:bg-white/5" title="Toggle fullscreen">
+            <svg id="icon-expand" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg>
+            <svg id="icon-compress" class="w-4 h-4 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 14h6m0 0v6m0-6L3 21M20 10h-6m0 0V4m0 6l7-7"/></svg>
+          </button>
+        </div>
+
+        <%# ---- CTA row ---- %>
+        <div class="flex items-center justify-center gap-2 md:gap-3">
+          <a href="<%= url_for(@reflection.extended_audio) %>" download class="text-slate-500 hover:text-purple-400 text-xs tracking-wider py-1.5 px-3 rounded-lg transition-all hover:bg-white/5" style="font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.1em;">
+            💾 Download
+          </a>
+          <span class="text-slate-700">·</span>
+          <a href="<%= new_reflection_url(host: ENV.fetch("APP_HOST", "memflect.com")) %>" class="text-slate-500 hover:text-purple-400 text-xs tracking-wider py-1.5 px-3 rounded-lg transition-all hover:bg-white/5" style="font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.1em;">
+            ✨ Create Your Own
+          </a>
+          <span class="text-slate-700">·</span>
+          <a href="https://memflect.com" class="text-slate-500 hover:text-purple-400 text-xs tracking-wider py-1.5 px-3 rounded-lg transition-all hover:bg-white/5" style="font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.1em;">
+            🎭 Memflect
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <%# ==================== END STAGE APRON ==================== %>
+
+  <%# ========== HIDDEN AUDIO ELEMENT (no browser controls) ========== %>
+  <audio id="memcard-audio" preload="auto">
     <source src="<%= url_for(@reflection.extended_audio) %>" type="audio/mpeg">
   </audio>
 
-  <%# ========== PURPLE THEATER CURTAINS ========== %>
-  <div id="curtain-left" class="absolute top-0 left-0 h-full w-1/2 transition-transform ease-in-out" style="z-index: 20; transition-duration: 3000ms; background: linear-gradient(90deg, #2e1065 0%, #6b21a8 30%, #7e22ce 50%, #6b21a8 70%, #2e1065 100%); box-shadow: inset -20px 0 60px rgba(0,0,0,0.6);">
-    <%# Vertical fabric pleats %>
-    <div class="absolute inset-0" style="background: repeating-linear-gradient(90deg, transparent 0px, transparent 30px, rgba(0,0,0,0.15) 30px, rgba(0,0,0,0.15) 32px, transparent 32px, transparent 62px, rgba(255,255,255,0.04) 62px, rgba(255,255,255,0.04) 64px);"></div>
-  </div>
-
-  <div id="curtain-right" class="absolute top-0 right-0 h-full w-1/2 transition-transform ease-in-out" style="z-index: 20; transition-duration: 3000ms; background: linear-gradient(270deg, #2e1065 0%, #6b21a8 30%, #7e22ce 50%, #6b21a8 70%, #2e1065 100%); box-shadow: inset 20px 0 60px rgba(0,0,0,0.6);">
-    <div class="absolute inset-0" style="background: repeating-linear-gradient(90deg, transparent 0px, transparent 30px, rgba(0,0,0,0.15) 30px, rgba(0,0,0,0.15) 32px, transparent 32px, transparent 62px, rgba(255,255,255,0.04) 62px, rgba(255,255,255,0.04) 64px);"></div>
-  </div>
-
-  <%# ========== AUTOPLAY FALLBACK (shown if browser blocks autoplay) ========== %>
-  <div id="autoplay-tap" class="hidden absolute inset-0 flex items-center justify-center cursor-pointer" style="z-index: 50; background: rgba(0,0,0,0.7);">
-    <div class="text-center">
-      <div class="text-6xl mb-4 animate-pulse">🎭</div>
-      <p class="text-white text-2xl font-bold tracking-wider mb-2" style="font-family: 'Bebas Neue', sans-serif;">Tap to Begin</p>
-      <p class="text-purple-300 text-sm" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">Your Memflection is ready</p>
-    </div>
-  </div>
-
-  <%# ========== HIDDEN CTA TASKBAR (hover desktop / scroll mobile) ========== %>
-  <div id="cta-bar" class="absolute bottom-0 left-0 right-0 transform translate-y-full transition-transform duration-500 ease-out" style="z-index: 30;">
-    <div class="bg-gradient-to-t from-black via-black/95 to-black/70 backdrop-blur-sm border-t border-purple-500/30 px-4 py-3">
-      <div class="max-w-4xl mx-auto flex flex-wrap justify-center gap-3">
-        <a href="<%= url_for(@reflection.extended_audio) %>" download class="bg-purple-600/80 hover:bg-purple-500 text-white text-xs md:text-sm font-medium tracking-wider py-2 px-4 rounded-lg transition-all">
-          💾 Download
-        </a>
-        <a href="<%= new_reflection_url(host: ENV.fetch("APP_HOST", "memflect.com")) %>" class="bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white text-xs md:text-sm font-medium tracking-wider py-2 px-4 rounded-lg shadow-lg transition-all">
-          ✨ Create My Own
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <%# ========== POST-AUDIO REVEAL (shown after audio ends) ========== %>
-  <div id="post-audio" class="hidden absolute inset-0 flex items-center justify-center px-4" style="z-index: 40; background: rgba(0,0,0,0.85);">
-    <div class="max-w-md w-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 rounded-2xl border border-purple-500/30 p-8 text-center shadow-2xl">
-      <p class="text-4xl mb-4">🎭</p>
-      <h2 class="text-2xl font-bold tracking-wider text-white mb-2" style="font-family: 'Bebas Neue', sans-serif;">A Moment to Reflect</h2>
-      <p class="text-slate-300 text-sm mb-6" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">
-        Thank you for experiencing this Memflection.
-      </p>
-
-      <div class="space-y-3">
-        <button onclick="replayMemcard()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-medium tracking-wider py-3 px-6 rounded-lg shadow-lg transition-all">
-          🔁 Play Again
-        </button>
-
-        <button id="install-btn" onclick="promptInstall()" class="hidden w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white font-medium tracking-wider py-3 px-6 rounded-lg shadow-lg transition-all">
-          📱 Save to My Phone
-        </button>
-
-        <a href="<%= new_reflection_url(host: ENV.fetch("APP_HOST", "memflect.com")) %>" class="block w-full bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-medium tracking-wider py-3 px-6 rounded-lg shadow-lg transition-all">
-          ✨ Create My Own Memflection
-        </a>
-
-        <a href="<%= url_for(@reflection.extended_audio) %>" download class="block w-full bg-slate-700 hover:bg-slate-600 text-slate-200 font-medium tracking-wider py-3 px-6 rounded-lg transition-all">
-          💾 Download MP3
-        </a>
-      </div>
-    </div>
-  </div>
-
 </div>
 
+
 <script>
-  (function() {
-    const audio = document.getElementById('memcard-audio');
-    const curtainLeft = document.getElementById('curtain-left');
-    const curtainRight = document.getElementById('curtain-right');
-    const memcardImage = document.getElementById('memcard-image');
-    const memcardTitle = document.getElementById('memcard-title');
-    const ctaBar = document.getElementById('cta-bar');
-    const postAudio = document.getElementById('post-audio');
-    const autoplayTap = document.getElementById('autoplay-tap');
-    const installBtn = document.getElementById('install-btn');
-    const filmFlicker = document.getElementById('film-flicker');
+(function() {
+  // ========== DOM REFS ==========
+  const audio         = document.getElementById('memcard-audio');
+  const curtainLeft   = document.getElementById('curtain-left');
+  const curtainRight  = document.getElementById('curtain-right');
+  const memcardImage  = document.getElementById('memcard-image');
+  const memcardTitle  = document.getElementById('memcard-title');
+  const postAudio     = document.getElementById('post-audio');
+  const autoplayTap   = document.getElementById('autoplay-tap');
+  const installBtn    = document.getElementById('install-btn');
+  const filmFlicker   = document.getElementById('film-flicker');
+  const spotlightL    = document.getElementById('spotlight-left');
+  const spotlightR    = document.getElementById('spotlight-right');
 
-    let deferredInstallPrompt = null;
-    let curtainsOpened = false;
+  // Player refs
+  const playerProgress = document.getElementById('player-progress');
+  const playerScrub    = document.getElementById('player-scrub');
+  const playerTrack    = document.getElementById('player-track');
+  const playerTime     = document.getElementById('player-time');
+  const iconPlay       = document.getElementById('icon-play');
+  const iconPause      = document.getElementById('icon-pause');
+  const iconExpand     = document.getElementById('icon-expand');
+  const iconCompress   = document.getElementById('icon-compress');
 
-    // ========== FILM FLICKER ==========
-    setInterval(() => {
-      filmFlicker.style.opacity = (0.02 + Math.random() * 0.08).toFixed(3);
-    }, 120);
+  let deferredInstallPrompt = null;
+  let curtainsOpened = false;
+  let audioReady = false;
+  let autoplayTimeout = null;
 
-    // ========== CURTAIN OPENING SEQUENCE ==========
-    function openCurtains() {
-      if (curtainsOpened) return;
-      curtainsOpened = true;
-      curtainLeft.style.transform = 'translateX(-85%)';
-      curtainRight.style.transform = 'translateX(85%)';
-      setTimeout(() => { memcardTitle.style.opacity = '1'; }, 1500);
-      setTimeout(() => { memcardImage.style.opacity = "1"; document.getElementById("memcard-audio").style.opacity = "1"; }, 2000);
+  // ========== UTILITIES ==========
+  function formatTime(sec) {
+    if (isNaN(sec) || !isFinite(sec)) return '0:00';
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60);
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  }
+
+  // ========== SPOTLIGHT FLICKER ==========
+  // Simulates two theater spotlights with subtle, independent intensity shifts
+  let flickerFrame;
+  function flickerLoop() {
+    const t = Date.now();
+    // Left spotlight: slow purple pulse + random flicker
+    const leftBase = 0.10 + 0.03 * Math.sin(t / 2000);
+    const leftFlicker = (Math.random() - 0.5) * 0.04;
+    spotlightL.style.opacity = Math.max(0.04, leftBase + leftFlicker).toFixed(3);
+    // Right spotlight: offset amber pulse + random flicker
+    const rightBase = 0.06 + 0.02 * Math.sin(t / 2500 + 1);
+    const rightFlicker = (Math.random() - 0.5) * 0.03;
+    spotlightR.style.opacity = Math.max(0.02, rightBase + rightFlicker).toFixed(3);
+    // Film flicker overlay
+    filmFlicker.style.opacity = (0.03 + Math.random() * 0.06).toFixed(3);
+
+    flickerFrame = requestAnimationFrame(flickerLoop);
+  }
+  flickerLoop();
+
+  // ========== CURTAIN OPENING SEQUENCE ==========
+  function openCurtains() {
+    if (curtainsOpened) return;
+    curtainsOpened = true;
+
+    // Curtains slide open (4.5s via CSS transition)
+    curtainLeft.style.transform = 'translateX(-88%)';
+    curtainRight.style.transform = 'translateX(88%)';
+
+    // Title fades in after curtains have started parting
+    setTimeout(function() { memcardTitle.style.opacity = '1'; }, 2000);
+
+    // Image fades in late — you LISTEN first, then SEE
+    setTimeout(function() { memcardImage.style.opacity = '1'; }, 3200);
+  }
+
+  // ========== AUTOPLAY — FIXED RACE CONDITION ==========
+  // Strategy:
+  //   1. Wait for canplaythrough (audio is buffered enough to play)
+  //   2. Attempt autoplay
+  //   3. Open curtains ONLY when `playing` event fires (audio actually started)
+  //   4. If autoplay fails → show tap fallback
+  //   5. If nothing happens within 6s → show tap fallback (timeout safety net)
+
+  audio.addEventListener('canplaythrough', function() {
+    audioReady = true;
+  }, { once: true });
+
+  // Open curtains when audio is ACTUALLY playing (not just promised)
+  audio.addEventListener('playing', function() {
+    clearTimeout(autoplayTimeout);
+    autoplayTap.classList.add('hidden');
+    autoplayTap.classList.remove('flex');
+    openCurtains();
+  }, { once: true });
+
+  function tryAutoplay() {
+    if (!audioReady) {
+      // Audio not buffered yet — wait and retry, but with a hard timeout
+      autoplayTimeout = setTimeout(function() {
+        if (!curtainsOpened) {
+          // Gave up waiting — show tap fallback
+          autoplayTap.classList.remove('hidden');
+          autoplayTap.classList.add('flex');
+        }
+      }, 6000);
+
+      // Also listen for canplaythrough then retry
+      audio.addEventListener('canplaythrough', function() {
+        audioReady = true;
+        attemptPlay();
+      }, { once: true });
+      return;
     }
+    attemptPlay();
+  }
 
-    // ========== AUTOPLAY ATTEMPT ==========
-    function tryAutoplay() {
-      const playPromise = audio.play();
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => { openCurtains(); })
-          .catch(() => {
-            autoplayTap.classList.remove('hidden');
-            autoplayTap.classList.add('flex');
-          });
-      }
-    }
-
-    autoplayTap.addEventListener('click', () => {
-      audio.play().then(() => {
-        autoplayTap.classList.add('hidden');
-        autoplayTap.classList.remove('flex');
-        openCurtains();
+  function attemptPlay() {
+    var playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(function() {
+        // Browser blocked autoplay — show tap fallback
+        curtainsOpened = false; // Reset so openCurtains works after tap
+        autoplayTap.classList.remove('hidden');
+        autoplayTap.classList.add('flex');
       });
-    });
-
-    window.addEventListener('load', () => {
-      setTimeout(tryAutoplay, 800);
-    });
-
-    // ========== POST-AUDIO REVEAL ==========
-    audio.addEventListener('ended', () => {
-      curtainLeft.style.transform = 'translateX(0)';
-      curtainRight.style.transform = 'translateX(0)';
-      setTimeout(() => {
-        postAudio.classList.remove('hidden');
-        postAudio.classList.add('flex');
-      }, 2000);
-    });
-
-    function replayMemcard() {
-      postAudio.classList.add('hidden');
-      postAudio.classList.remove('flex');
-      curtainLeft.style.transform = 'translateX(0)';
-      curtainRight.style.transform = 'translateX(0)';
-      curtainsOpened = false;
-      memcardTitle.style.opacity = '0';
-      memcardImage.style.opacity = '0';
-      audio.currentTime = 0;
-      setTimeout(tryAutoplay, 500);
     }
-    window.replayMemcard = replayMemcard;
+  }
 
-    // ========== HIDDEN CTA BAR REVEAL ==========
-    let ctaTimeout;
-    function showCtaBar() {
-      ctaBar.style.transform = 'translateY(0)';
-      clearTimeout(ctaTimeout);
-      ctaTimeout = setTimeout(() => {
-        ctaBar.style.transform = 'translateY(100%)';
-      }, 4000);
+  // Tap-to-begin handler
+  autoplayTap.addEventListener('click', function() {
+    curtainsOpened = false; // Ensure curtains can open
+    audio.play(); // `playing` event listener will handle curtains
+  });
+
+  // Kick off after page load + small delay for paint
+  window.addEventListener('load', function() {
+    setTimeout(tryAutoplay, 600);
+  });
+
+  // ========== CUSTOM AUDIO PLAYER ==========
+  // Update progress bar and time display
+  audio.addEventListener('timeupdate', function() {
+    if (!audio.duration) return;
+    var pct = (audio.currentTime / audio.duration) * 100;
+    playerProgress.style.width = pct + '%';
+    playerTime.textContent = formatTime(audio.currentTime) + ' / ' + formatTime(audio.duration);
+  });
+
+  audio.addEventListener('loadedmetadata', function() {
+    playerTime.textContent = '0:00 / ' + formatTime(audio.duration);
+  });
+
+  // Play/pause toggle
+  function togglePlayPause() {
+    if (audio.paused) {
+      audio.play();
+    } else {
+      audio.pause();
     }
+  }
+  window.togglePlayPause = togglePlayPause;
 
-    document.addEventListener('mousemove', (e) => {
-      if (e.clientY > window.innerHeight - 150) showCtaBar();
-    });
-    document.addEventListener('touchstart', () => { showCtaBar(); });
+  audio.addEventListener('play', function() {
+    iconPlay.classList.add('hidden');
+    iconPause.classList.remove('hidden');
+  });
+  audio.addEventListener('pause', function() {
+    iconPause.classList.add('hidden');
+    iconPlay.classList.remove('hidden');
+  });
 
-    // ========== PWA INSTALL PROMPT ==========
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredInstallPrompt = e;
-      installBtn.classList.remove('hidden');
-    });
+  // Seek on track click/drag
+  function seekToPosition(e) {
+    var rect = playerTrack.getBoundingClientRect();
+    var pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    if (audio.duration) {
+      audio.currentTime = pct * audio.duration;
+      playerProgress.style.width = (pct * 100) + '%';
+    }
+  }
 
-    function promptInstall() {
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-      if (isIOS) {
-        alert("To save this Memcard:\\n\\n1. Tap the Share button at the bottom\\n2. Tap 'Add to Home Screen'\\n3. Name it whatever you'd like ❤️");
-        return;
+  playerTrack.addEventListener('click', seekToPosition);
+
+  // Drag-to-seek
+  var isDragging = false;
+  playerTrack.addEventListener('mousedown', function(e) { isDragging = true; seekToPosition(e); });
+  document.addEventListener('mousemove', function(e) {
+    if (!isDragging) return;
+    seekToPosition(e);
+    // Update scrub indicator position
+    var rect = playerTrack.getBoundingClientRect();
+    var pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    playerScrub.style.left = (pct * 100) + '%';
+  });
+  document.addEventListener('mouseup', function() { isDragging = false; });
+
+  // Touch seek
+  playerTrack.addEventListener('touchstart', function(e) {
+    var touch = e.touches[0];
+    seekToPosition(touch);
+  }, { passive: true });
+  playerTrack.addEventListener('touchmove', function(e) {
+    var touch = e.touches[0];
+    seekToPosition(touch);
+  }, { passive: true });
+
+  // Hover scrub indicator
+  playerTrack.addEventListener('mousemove', function(e) {
+    if (isDragging) return;
+    var rect = playerTrack.getBoundingClientRect();
+    var pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    playerScrub.style.left = (pct * 100) + '%';
+  });
+
+  // ========== POST-AUDIO REVEAL ==========
+  audio.addEventListener('ended', function() {
+    // Close curtains gracefully
+    curtainLeft.style.transform = 'translateX(0)';
+    curtainRight.style.transform = 'translateX(0)';
+    // Fade out image and title
+    memcardImage.style.opacity = '0';
+    memcardTitle.style.opacity = '0';
+    // Show end screen after curtains close
+    setTimeout(function() {
+      postAudio.classList.remove('hidden');
+      postAudio.classList.add('flex');
+    }, 2500);
+  });
+
+  // ========== REPLAY ==========
+  function replayMemcard() {
+    postAudio.classList.add('hidden');
+    postAudio.classList.remove('flex');
+
+    // Reset everything
+    curtainLeft.style.transform = 'translateX(0)';
+    curtainRight.style.transform = 'translateX(0)';
+    curtainsOpened = false;
+    memcardTitle.style.opacity = '0';
+    memcardImage.style.opacity = '0';
+    audio.currentTime = 0;
+
+    // Re-attach the one-time playing listener for curtain open
+    audio.addEventListener('playing', function() {
+      openCurtains();
+    }, { once: true });
+
+    // Small pause then play — let the curtains be visible closed first
+    setTimeout(function() {
+      audio.play();
+    }, 800);
+  }
+  window.replayMemcard = replayMemcard;
+
+  // ========== FULLSCREEN ==========
+  function toggleFullscreen() {
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+      var el = document.documentElement;
+      if (el.requestFullscreen) {
+        el.requestFullscreen();
+      } else if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen(); // Safari
       }
-      if (deferredInstallPrompt) {
-        deferredInstallPrompt.prompt();
-        deferredInstallPrompt.userChoice.then(() => { deferredInstallPrompt = null; });
-      } else {
-        alert("Bookmark this page (Ctrl/Cmd+D) to save it for later!");
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
       }
     }
-    window.promptInstall = promptInstall;
+  }
+  window.toggleFullscreen = toggleFullscreen;
 
-    // Show install button on iOS even without beforeinstallprompt
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    if (isIOS) installBtn.classList.remove('hidden');
-  })();
+  document.addEventListener('fullscreenchange', updateFullscreenIcon);
+  document.addEventListener('webkitfullscreenchange', updateFullscreenIcon);
+  function updateFullscreenIcon() {
+    var isFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    iconExpand.classList.toggle('hidden', isFS);
+    iconCompress.classList.toggle('hidden', !isFS);
+  }
+
+  // ========== PWA INSTALL ==========
+  window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    installBtn.classList.remove('hidden');
+  });
+
+  function promptInstall() {
+    var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (isIOS) {
+      alert("To save this Memcard:\n\n1. Tap the Share button at the bottom\n2. Tap 'Add to Home Screen'\n3. Name it whatever you'd like ❤️");
+      return;
+    }
+    if (deferredInstallPrompt) {
+      deferredInstallPrompt.prompt();
+      deferredInstallPrompt.userChoice.then(function() { deferredInstallPrompt = null; });
+    } else {
+      alert("Bookmark this page (Ctrl/Cmd+D) to save it for later!");
+    }
+  }
+  window.promptInstall = promptInstall;
+
+  // Show install button on iOS
+  var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  if (isIOS) installBtn.classList.remove('hidden');
+
+})();
 </script>
