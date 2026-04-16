@@ -113,6 +113,41 @@
   @media (min-width: 640px) {
     .cta-link { font-size: 13px; }
   }
+
+  /* ===== FLOATING EMBER PARTICLES ===== */
+  .ember {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    z-index: 5;
+    animation: ember-float linear infinite;
+  }
+  @keyframes ember-float {
+    0%   { opacity: 0; transform: translateY(0) translateX(0) scale(1); }
+    10%  { opacity: 0.8; }
+    50%  { opacity: 0.4; transform: translateY(-30vh) translateX(15px) scale(0.8); }
+    90%  { opacity: 0.6; }
+    100% { opacity: 0; transform: translateY(-60vh) translateX(-10px) scale(0.3); }
+  }
+
+  /* ===== FILM DUST SPECS ===== */
+  .dust-spec {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 5;
+    opacity: 0;
+    animation: dust-blink ease-in-out infinite;
+  }
+  @keyframes dust-blink {
+    0%, 100% { opacity: 0; }
+    15% { opacity: 0.7; }
+    30% { opacity: 0; }
+    45% { opacity: 0.5; }
+    55% { opacity: 0; }
+    80% { opacity: 0.3; }
+  }
 </style>
 
 <div id="memcard-stage" class="fixed inset-0 bg-black overflow-hidden flex flex-col">
@@ -147,6 +182,24 @@
       <div class="absolute top-0 h-full w-0.5 bg-amber-100/10" style="left: 84%;"></div>
     </div>
 
+    <%# ---- FLOATING EMBERS (warm dust motes drifting upward) ---- %>
+    <div class="ember" style="width:3px;height:3px;background:rgba(251,191,36,0.7);bottom:20%;left:15%;animation-duration:12s;animation-delay:0s;"></div>
+    <div class="ember" style="width:2px;height:2px;background:rgba(251,191,36,0.5);bottom:10%;left:35%;animation-duration:16s;animation-delay:2s;"></div>
+    <div class="ember" style="width:4px;height:4px;background:rgba(168,85,247,0.5);bottom:25%;left:55%;animation-duration:14s;animation-delay:4s;"></div>
+    <div class="ember" style="width:2px;height:2px;background:rgba(251,191,36,0.6);bottom:15%;left:70%;animation-duration:18s;animation-delay:1s;"></div>
+    <div class="ember" style="width:3px;height:3px;background:rgba(168,85,247,0.4);bottom:30%;left:25%;animation-duration:20s;animation-delay:6s;"></div>
+    <div class="ember" style="width:2px;height:2px;background:rgba(251,191,36,0.5);bottom:5%;left:80%;animation-duration:15s;animation-delay:3s;"></div>
+    <div class="ember" style="width:3px;height:3px;background:rgba(251,191,36,0.4);bottom:18%;left:45%;animation-duration:22s;animation-delay:8s;"></div>
+    <div class="ember" style="width:2px;height:2px;background:rgba(168,85,247,0.6);bottom:12%;left:60%;animation-duration:13s;animation-delay:5s;"></div>
+
+    <%# ---- FILM DUST SPECS (old projector flicker) ---- %>
+    <div class="dust-spec" style="width:2px;height:2px;background:rgba(251,191,36,0.8);top:20%;left:30%;animation-duration:3s;animation-delay:0.5s;"></div>
+    <div class="dust-spec" style="width:1px;height:1px;background:rgba(255,255,255,0.6);top:45%;left:65%;animation-duration:2.5s;animation-delay:1.2s;"></div>
+    <div class="dust-spec" style="width:2px;height:2px;background:rgba(251,191,36,0.6);top:60%;left:20%;animation-duration:4s;animation-delay:0s;"></div>
+    <div class="dust-spec" style="width:1px;height:1px;background:rgba(255,220,150,0.7);top:35%;left:75%;animation-duration:3.5s;animation-delay:2s;"></div>
+    <div class="dust-spec" style="width:2px;height:2px;background:rgba(251,191,36,0.5);top:70%;left:45%;animation-duration:2.8s;animation-delay:0.8s;"></div>
+    <div class="dust-spec" style="width:1px;height:1px;background:rgba(255,255,255,0.5);top:25%;left:50%;animation-duration:3.2s;animation-delay:1.5s;"></div>
+
     <%# ---- TITLE (flexbox child — sits at top, never overlaps image) ---- %>
     <div id="memcard-title" class="relative text-center px-6 pt-5 pb-2 md:pt-8 md:pb-3 flex-shrink-0 opacity-0 transition-opacity" style="z-index: 15; transition-duration: 1500ms;">
       <h1 class="text-2xl md:text-4xl lg:text-5xl font-bold tracking-wider text-white leading-tight" style="font-family: 'Bebas Neue', sans-serif; text-shadow: 0 0 40px rgba(168,85,247,0.5), 0 2px 20px rgba(0,0,0,0.8);">
@@ -167,10 +220,16 @@
           <img id="memcard-image" src="<%= url_for(@reflection.cover_image) %>"
                class="rounded-xl object-contain opacity-0 transition-opacity"
                style="max-height: 55vh; max-width: 80vw; transition-duration: 2500ms;
-                      filter: sepia(30%) contrast(112%) brightness(90%) saturate(85%);
-                      box-shadow: 0 0 60px rgba(168,85,247,0.25), 0 20px 60px rgba(0,0,0,0.7), 0 0 120px rgba(0,0,0,0.5);">
+                      filter: sepia(12%) contrast(115%) brightness(97%) saturate(120%) hue-rotate(-3deg);
+                      border: 1px solid rgba(168,85,247,0.12);
+                      box-shadow:
+                        0 0 30px rgba(168,85,247,0.25),
+                        0 0 60px rgba(168,85,247,0.12),
+                        0 0 10px rgba(251,191,36,0.06),
+                        0 30px 60px rgba(0,0,0,0.7),
+                        0 0 150px rgba(0,0,0,0.4);">
         <% else %>
-          <div id="memcard-image" class="rounded-xl bg-purple-950/40 border border-purple-500/20 flex items-center justify-center opacity-0 transition-opacity" style="width: 55vw; max-width: 380px; height: 45vh; max-height: 380px; transition-duration: 2500ms;">
+          <div id="memcard-image" class="rounded-xl bg-purple-950/40 border border-purple-500/20 flex items-center justify-center opacity-0 transition-opacity" style="width: 55vw; max-width: 380px; height: 45vh; max-height: 380px; transition-duration: 2500ms; box-shadow: 0 0 30px rgba(168,85,247,0.25), 0 0 60px rgba(168,85,247,0.12), 0 30px 60px rgba(0,0,0,0.7);">
             <p class="text-purple-300 text-6xl">🎭</p>
           </div>
         <% end %>
