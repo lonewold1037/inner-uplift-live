@@ -48,7 +48,7 @@
   </div>
 
   <%# ========== AUDIO ELEMENT (hidden, controlled by JS) ========== %>
-  <audio id="memcard-audio" preload="auto">
+  <audio id="memcard-audio" preload="auto" controls class="absolute bottom-20 left-1/2 transform -translate-x-1/2 w-11/12 max-w-md opacity-0 transition-opacity duration-1000" style="z-index: 25;">
     <source src="<%= url_for(@reflection.extended_audio) %>" type="audio/mpeg">
   </audio>
 
@@ -144,7 +144,7 @@
       curtainLeft.style.transform = 'translateX(-85%)';
       curtainRight.style.transform = 'translateX(85%)';
       setTimeout(() => { memcardTitle.style.opacity = '1'; }, 1500);
-      setTimeout(() => { memcardImage.style.opacity = '1'; }, 2000);
+      setTimeout(() => { memcardImage.style.opacity = "1"; document.getElementById("memcard-audio").style.opacity = "1"; }, 2000);
     }
 
     // ========== AUTOPLAY ATTEMPT ==========
@@ -206,7 +206,7 @@
     }
 
     document.addEventListener('mousemove', (e) => {
-      if (e.clientY > window.innerHeight - 80) showCtaBar();
+      if (e.clientY > window.innerHeight - 150) showCtaBar();
     });
     document.addEventListener('touchstart', () => { showCtaBar(); });
 
