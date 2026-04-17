@@ -67,10 +67,10 @@ class GenerateTitleAndExtendedRecapJob < ApplicationJob
       🔥 CONTINUATION RULES:
       - Write EXACTLY 480-500 words
       - #{style_instructions(reflection.style)}
-      - Use "#{reflection.recipient_name}" naturally 2-3 times throughout
+      - IMPORTANT: Act 1 already addressed #{reflection.recipient_name} by name at the start. In Acts 2-5, do NOT use their name again until the very end — use "you" throughout. Only say "#{reflection.recipient_name}" ONE final time in Act 5's closing line for emotional impact.
       - Use "#{reflection.name_for_recap}" once near the end (e.g., signing off)
       - Pick up where Act 1 left off
-      - Build toward a powerful emotional conclusion — this is a gift, land it with love
+      - Build toward a powerful emotional conclusion — this is a gift, land it with positive & happy closure
 
       📍 THE SENDER'S ACTUAL WORDS (DO NOT ADD TO THIS):
       - Sender: #{reflection.name_for_recap}
