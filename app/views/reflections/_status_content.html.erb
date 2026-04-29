@@ -4,10 +4,6 @@
 
 <div style="max-width: 680px; margin: 0 auto; padding: 2rem 1.5rem 4rem;">
   <% case reflection.status %>
-
-  <%# ══════════════════════════════════════════════════════════
-      IN-PROGRESS STATES
-  ══════════════════════════════════════════════════════════ %>
   <% when 'generating_recap', 'processing_voice', 'generating_preview', 'mixing' %>
     <script>
       setTimeout(function() {
@@ -30,7 +26,6 @@
       <p style="font-family: 'Lora', serif; font-size: 1rem; color: #6d28d9; text-transform: none; letter-spacing: normal; opacity: 0.8; margin: 0 0 2rem;">
         <%= status_info[:sub] %>
       </p>
-      <%# Animated progress dots %>
       <div style="display: flex; justify-content: center; gap: 0.5rem;">
         <div style="width: 10px; height: 10px; background: #7c3aed; border-radius: 50%; animation: pulse 1.4s ease-in-out infinite 0s;"></div>
         <div style="width: 10px; height: 10px; background: #a78bfa; border-radius: 50%; animation: pulse 1.4s ease-in-out infinite 0.2s;"></div>
@@ -42,11 +37,7 @@
       @keyframes pulse { 0%, 100% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } }
     </style>
 
-  <%# ══════════════════════════════════════════════════════════
-      PENDING — RECAP CONFIRMATION
-  ══════════════════════════════════════════════════════════ %>
   <% when 'pending' %>
-
     <div style="text-align: center; margin-bottom: 2rem;">
       <h1 style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(2rem, 7vw, 3rem); letter-spacing: 0.04em; color: #3b0764; margin: 0 0 0.5rem;">
         Your Script is Ready ✨
@@ -87,17 +78,10 @@
                   style: "display: inline-block; background: white; color: #6d28d9; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.08em; padding: 0.875rem 2rem; border-radius: 100px; text-decoration: none; border: 1.5px solid rgba(109,40,217,0.2);" %>
     </div>
 
-  <%# ══════════════════════════════════════════════════════════
-      READY TO MIX
-  ══════════════════════════════════════════════════════════ %>
   <% when 'ready_to_mix' %>
     <%= render partial: 'reflections/mix_in_audio', locals: { reflection: reflection, soundscapes: soundscapes } %>
 
-  <%# ══════════════════════════════════════════════════════════
-      COMPLETED
-  ══════════════════════════════════════════════════════════ %>
   <% when 'completed' %>
-
     <canvas id="confetti-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
 
     <div style="text-align: center; margin-bottom: 1.5rem;">
@@ -117,8 +101,6 @@
     <% end %>
 
     <% if reflection.final_audio.attached? %>
-
-      <%# Audio player %>
       <div style="background: white; border-radius: 20px; border: 1px solid rgba(109,40,217,0.1); padding: 1.5rem; box-shadow: 0 4px 24px rgba(109,40,217,0.08); margin-bottom: 1.25rem;">
         <div id="autoplay-nudge" style="display: none; text-align: center; margin-bottom: 0.75rem;">
           <p style="font-family: 'Lora', serif; font-size: 0.85rem; color: #7c3aed; text-transform: none; letter-spacing: normal; animation: pulse 2s infinite;">🎧 Tap play to hear your Memflection</p>
@@ -128,7 +110,6 @@
         </audio>
       </div>
 
-      <%# Shuffle %>
       <div style="background: white; border-radius: 20px; border: 1px solid rgba(109,40,217,0.1); padding: 1.25rem 1.5rem; box-shadow: 0 4px 24px rgba(109,40,217,0.06); margin-bottom: 1.25rem;">
         <%= button_to "🔀 Shuffle Soundscape",
                       remix_audio_reflection_path(reflection, reflection: { soundscape_id: reflection.soundscape_id }),
@@ -140,7 +121,6 @@
         </p>
       </div>
 
-      <%# Remix soundscape category %>
       <div style="background: white; border-radius: 20px; border: 1px solid rgba(109,40,217,0.1); padding: 1.5rem; box-shadow: 0 4px 24px rgba(109,40,217,0.06); margin-bottom: 1.25rem;">
         <p style="font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: #3b0764; margin: 0 0 0.875rem; text-align: center;">Want a different soundscape?</p>
         <%= form_with(model: reflection, url: remix_audio_reflection_path(reflection), method: :post, style: "display: flex; flex-direction: column; gap: 0.75rem;") do |form| %>
@@ -167,7 +147,6 @@
         </div>
       <% end %>
 
-      <%# Upgrade pitch %>
       <div style="background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border: 1.5px solid rgba(34,197,94,0.25); border-radius: 20px; padding: 1.75rem; margin-bottom: 1.25rem;">
         <p style="font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 0.06em; color: #14532d; text-align: center; margin: 0 0 0.5rem;">
           Want the full 5-minute version?
@@ -177,20 +156,19 @@
         </p>
         <div style="display: flex; flex-direction: column; gap: 0.625rem; margin-bottom: 0.25rem;">
           <% [
-            ["Download & save to play anytime, anywhere"],
-            ["Extended narrative — deeper reflection beyond the preview"],
-            ["Perfect for morning routine, commute, or wind-down"],
-            ["Stored in your dashboard — all your Memflections in one place"]
+            "Download & save to play anytime, anywhere",
+            "Extended narrative — deeper reflection beyond the preview",
+            "Perfect for morning routine, commute, or wind-down",
+            "Stored in your dashboard — all your Memflections in one place"
           ].each do |item| %>
             <div style="display: flex; align-items: flex-start; gap: 0.625rem;">
               <span style="color: #22c55e; flex-shrink: 0; margin-top: 0.1rem;">✓</span>
-              <span style="font-family: 'Lora', serif; font-size: 0.875rem; color: #166534; text-transform: none; letter-spacing: normal; line-height: 1.5;"><%= item[0] %></span>
+              <span style="font-family: 'Lora', serif; font-size: 0.875rem; color: #166534; text-transform: none; letter-spacing: normal; line-height: 1.5;"><%= item %></span>
             </div>
           <% end %>
         </div>
       </div>
 
-      <%# Purchase form %>
       <div style="background: white; border-radius: 20px; border: 1px solid rgba(109,40,217,0.1); padding: 1.75rem; box-shadow: 0 4px 24px rgba(109,40,217,0.08); margin-bottom: 1.25rem;">
         <%= form_with url: checkout_reflection_path(reflection), method: :post, data: { turbo: false }, style: "display: flex; flex-direction: column; gap: 0.875rem;" do |f| %>
           <label style="font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.08em; color: #3b0764;">
@@ -203,7 +181,6 @@
         <% end %>
       </div>
 
-      <%# Promo code %>
       <div style="background: white; border-radius: 20px; border: 1px solid rgba(109,40,217,0.1); padding: 1.5rem; box-shadow: 0 4px 24px rgba(109,40,217,0.06); margin-bottom: 1.25rem;">
         <p style="font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.08em; color: #a78bfa; text-align: center; margin: 0 0 0.875rem;">Have a gift code?</p>
         <%= form_with url: redeem_promo_reflection_path(reflection), method: :post, data: { turbo: false }, style: "display: flex; flex-direction: column; gap: 0.75rem;" do |f| %>
@@ -280,11 +257,7 @@
       })();
     </script>
 
-  <%# ══════════════════════════════════════════════════════════
-      FAILED
-  ══════════════════════════════════════════════════════════ %>
   <% when 'failed' %>
-
     <div style="text-align: center; margin-bottom: 1.5rem;">
       <div style="font-size: 3rem; margin-bottom: 1rem;">😕</div>
       <h1 style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(2rem, 7vw, 2.8rem); letter-spacing: 0.04em; color: #dc2626; margin: 0 0 0.5rem;">
