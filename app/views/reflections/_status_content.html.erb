@@ -1,4 +1,6 @@
-<meta name="turbo-cache-control" content="no-cache">
+<% content_for :head do %>
+  <meta name="turbo-cache-control" content="no-cache">
+<% end %>
 <div class="max-w-2xl mx-auto space-y-8">
   <% case reflection.status %>
   <% when 'generating_recap', 'processing_voice', 'generating_preview', 'mixing' %>

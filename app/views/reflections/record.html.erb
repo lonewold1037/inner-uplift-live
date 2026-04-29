@@ -1,4 +1,6 @@
-<meta name="turbo-cache-control" content="no-cache">
+<% content_for :head do %>
+  <meta name="turbo-cache-control" content="no-cache">
+<% end %>
 <script>
   if (navigator.brave && navigator.brave.isBrave()) {
     window.addEventListener('DOMContentLoaded', () => {
