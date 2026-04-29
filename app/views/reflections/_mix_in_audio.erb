@@ -1,32 +1,33 @@
-<div class="text-center">
-  <h1 class="text-4xl font-medium tracking-wider text-white tracking-wide">
-    Mix in your Soundscape vibe
+<div style="text-align: center; margin-bottom: 2rem;">
+  <h1 style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(2rem, 7vw, 3rem); letter-spacing: 0.04em; color: #3b0764; margin: 0 0 0.5rem;">
+    Choose Your Soundscape 🎵
   </h1>
-  <p class="mt-2 text-lg text-slate-300">
-    Choose a soundscape to mix with your voice.
+  <p style="font-family: 'Lora', serif; font-size: 1rem; color: #6d28d9; text-transform: none; letter-spacing: normal; opacity: 0.8; margin: 0;">
+    Pick the vibe that matches the mood of your memory.
   </p>
 </div>
 
-<div class="bg-black/50 backdrop-blur-xl p-6 rounded-2xl shadow-lg border border-white/20">
-  <%= form_with(model: reflection,
-                url: mix_audio_reflection_path(reflection),
-                method: :post,
-                id: "mix-audio-form") do |form| %>
-    <div class="space-y-4">
-      
-      <%= form.label :soundscape_id, "Choose your vibe:", class: "block text-white font-medium tracking-wide text-lg" %>
-      
-      <%= form.collection_select :soundscape_id,
-                                  soundscapes,
-                                  :id,
-                                  :category,
-                                  { prompt: "Select a vibe..." },
-                                  id: "soundscape-select",
-                                  class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 focus:outline-none focus:border-sky-400 uppercase" %>
+<div style="background: white; border-radius: 24px; border: 1px solid rgba(109,40,217,0.1); padding: 2rem; box-shadow: 0 4px 32px rgba(109,40,217,0.1);">
+  <%= form_with(model: reflection, url: mix_audio_reflection_path(reflection), method: :post, id: "mix-audio-form") do |form| %>
 
-      <%= form.submit "Mix My Memflection",
-                      id: "mix-submit-button",
-                      class: "w-full bg-sky-600 hover:bg-sky-500 text-white font-medium tracking-wide py-3 px-4 rounded-lg cursor-pointer transition-all" %>
+    <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+
+      <%= form.label :soundscape_id, "Choose your vibe:",
+            style: "font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: #3b0764;" %>
+
+      <%= form.collection_select :soundscape_id,
+            soundscapes, :id, :category,
+            { prompt: "Select a vibe..." },
+            id: "soundscape-select",
+            style: "width: 100%; background: #faf8ff; color: #1e1b4b; border: 1.5px solid rgba(109,40,217,0.2); border-radius: 12px; padding: 0.875rem 1rem; font-family: 'Lora', serif; font-size: 0.95rem; text-transform: none; letter-spacing: normal; box-sizing: border-box; outline: none; cursor: pointer;" %>
+
+      <button type="submit" id="mix-submit-button"
+              style="width: 100%; background: linear-gradient(135deg, #7c3aed 0%, #be185d 100%); color: white; border: none; border-radius: 100px; padding: 1.1rem; font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 0.1em; cursor: pointer; box-shadow: 0 8px 24px rgba(124,58,237,0.3); transition: all 0.2s;"
+              onmouseover="this.style.transform='scale(1.02)'"
+              onmouseout="this.style.transform='scale(1)'">
+        Mix My Memflection 🎚️
+      </button>
+
     </div>
   <% end %>
 </div>
@@ -36,7 +37,6 @@
     const form = document.getElementById('mix-audio-form');
     const button = document.getElementById('mix-submit-button');
     const select = document.getElementById('soundscape-select');
-    
     if (form && button) {
       form.addEventListener('submit', (e) => {
         if (!select.value) {
@@ -44,10 +44,10 @@
           alert('Please select a vibe first!');
           return;
         }
-        
         button.disabled = true;
-        button.classList.add('opacity-50', 'cursor-not-allowed');
-        button.innerHTML = '🎛️ Mixing...';
+        button.style.opacity = '0.7';
+        button.style.transform = 'scale(1)';
+        button.innerHTML = '🎛️ Mixing your Memflection...';
       });
     }
   })();

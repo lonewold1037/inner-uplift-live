@@ -1,51 +1,103 @@
-<tr class="hover:bg-white/5 transition-colors" id="reflection_row_<%= reflection.id %>">
+<tr id="reflection_row_<%= reflection.id %>"
+    style="border-bottom:1px solid rgba(109,40,217,0.06);"
+    onmouseover="this.style.background='#f5f0ff'"
+    onmouseout="this.style.background='transparent'">
 
-  <!-- Cover Image Column -->
-  <td class="px-3 py-3 w-20 hidden sm:table-cell">
+  <%# Cover image %>
+  <td style="padding:0.875rem 0.75rem;width:72px;">
     <% if reflection.cover_image.attached? %>
       <img src="<%= url_for(reflection.cover_image) %>"
            alt="<%= reflection.title %>"
-           class="w-16 h-16 rounded-xl object-cover shadow-lg"
-           style="filter: sepia(30%) contrast(110%) brightness(95%) saturate(85%);">
+           style="width:56px;height:56px;border-radius:12px;object-fit:cover;filter:sepia(30%) contrast(110%) brightness(95%) saturate(85%);box-shadow:0 2px 8px rgba(109,40,217,0.15);">
     <% else %>
-      <div class="w-16 h-16 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
-        <svg class="w-6 h-6 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div style="width:56px;height:56px;border-radius:12px;background:#f5f0ff;border:1px solid rgba(109,40,217,0.1);display:flex;align-items:center;justify-content:center;">
+        <svg width="22" height="22" fill="none" stroke="#c4b5fd" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
         </svg>
       </div>
     <% end %>
   </td>
 
-  <td class="px-6 py-4">
-    <p class="text-white font-medium"><%= reflection.title || "Untitled" %></p>
+  <%# Title + processing status %>
+  <td style="padding:0.875rem 1.5rem;">
+    <p style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.06em;color:#3b0764;margin:0 0 0.2rem;">
+      <%= reflection.title || "Untitled" %>
+    </p>
     <% unless reflection.extended_audio.attached? %>
-      <p class="text-yellow-400 text-xs mt-1 animate-pulse">⏳ Processing...</p>
+      <p style="font-family:'Lora',serif;font-size:0.75rem;color:#f59e0b;text-transform:none;letter-spacing:normal;margin:0;animation:pulse 2s infinite;">
+        ⏳ Processing...
+      </p>
     <% end %>
   </td>
-  <td class="px-6 py-4 text-slate-300 text-sm hidden md:table-cell"><%= reflection.style %></td>
-  <td class="px-6 py-4 text-slate-300 text-sm hidden lg:table-cell"><%= reflection.soundscape&.category || "—" %></td>
-  <td class="px-6 py-4 text-slate-300 text-sm hidden sm:table-cell"><%= reflection.created_at.strftime("%b %d, %Y") %></td>
-  <td class="px-6 py-4 text-center">
+
+  <%# Style badge %>
+  <td style="padding:0.875rem 1.5rem;">
+    <span style="font-family:'Lora',serif;font-size:0.8rem;color:#6d28d9;text-transform:none;letter-spacing:normal;background:#f5f0ff;padding:0.25rem 0.625rem;border-radius:100px;white-space:nowrap;">
+      <%= reflection.style %>
+    </span>
+  </td>
+
+  <%# Soundscape %>
+  <td style="padding:0.875rem 1.5rem;">
+    <span style="font-family:'Lora',serif;font-size:0.85rem;color:#a78bfa;text-transform:none;letter-spacing:normal;">
+      <%= reflection.soundscape&.category || "—" %>
+    </span>
+  </td>
+
+  <%# Date %>
+  <td style="padding:0.875rem 1.5rem;">
+    <span style="font-family:'Lora',serif;font-size:0.85rem;color:#a78bfa;text-transform:none;letter-spacing:normal;">
+      <%= reflection.created_at.strftime("%b %d, %Y") %>
+    </span>
+  </td>
+
+  <%# Actions %>
+  <td style="padding:0.875rem 1.5rem;text-align:center;">
     <% if reflection.extended_audio.attached? %>
-      <div class="flex flex-col items-center gap-2">
-        <button
-          onclick="openAudioModal('<%= j(reflection.title || 'Untitled') %>', '<%= extended_audio_url(reflection, play: true) %>', '<%= extended_audio_url(reflection) %>', '<%= reflection.cover_image.attached? ? url_for(reflection.cover_image) : '' %>')"
-          class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg" style="box-shadow: 0 0 20px rgba(99,102,241,0.3);">
-          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M8 5v14l11-7z"/>
-          </svg>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0.5rem;">
+
+        <%# Play button %>
+        <button onclick="openAudioModal('<%= j(reflection.title || 'Untitled') %>', '<%= extended_audio_url(reflection, play: true) %>', '<%= extended_audio_url(reflection) %>', '<%= reflection.cover_image.attached? ? url_for(reflection.cover_image) : '' %>')"
+                style="display:inline-flex;align-items:center;gap:0.5rem;background:linear-gradient(135deg,#6366f1,#7c3aed);color:white;border:none;border-radius:100px;padding:0.625rem 1.25rem;font-family:'Bebas Neue',sans-serif;font-size:0.9rem;letter-spacing:0.08em;cursor:pointer;box-shadow:0 4px 14px rgba(99,102,241,0.3);transition:transform 0.15s;"
+                onmouseover="this.style.transform='scale(1.05)'"
+                onmouseout="this.style.transform='scale(1)'">
+          <svg width="14" height="14" fill="white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
           Play
         </button>
-        <div class="flex items-center gap-3">
-          <%= link_to "Download", extended_audio_path(reflection), class: "text-purple-400 hover:text-purple-300 font-medium text-sm", data: { turbo: false } %>
-          <span class="text-white/20">|</span>
-          <button onclick="shareReflection('<%= extended_audio_url(reflection) %>', '<%= j(reflection.title || 'Untitled') %>')" class="text-sky-400 hover:text-sky-300 font-medium text-sm transition-colors">
+
+        <%# Download + Share %>
+        <div style="display:flex;align-items:center;gap:0.75rem;">
+          <%= link_to "Download", extended_audio_path(reflection),
+                style: "font-family:'Lora',serif;font-size:0.8rem;color:#7c3aed;text-transform:none;letter-spacing:normal;text-decoration:none;",
+                data: { turbo: false } %>
+          <span style="color:#c4b5fd;font-size:0.6rem;">●</span>
+          <button onclick="shareReflection('<%= extended_audio_url(reflection) %>', '<%= j(reflection.title || 'Untitled') %>')"
+                  style="background:none;border:none;font-family:'Lora',serif;font-size:0.8rem;color:#0ea5e9;text-transform:none;letter-spacing:normal;cursor:pointer;padding:0;">
             🔗 Share
           </button>
         </div>
+
+        <%# Memcard %>
+        <% if reflection.memcard_enabled? %>
+          <button onclick="openMemcardModal('<%= reflection.id %>', '<%= j(reflection.memcard_token) %>', '<%= j(reflection.title || 'Untitled') %>', <%= reflection.memcard_view_count %>)"
+                  style="display:inline-flex;align-items:center;gap:0.4rem;background:linear-gradient(135deg,#7c3aed,#be185d);color:white;border:none;border-radius:100px;padding:0.4rem 0.875rem;font-family:'Bebas Neue',sans-serif;font-size:0.75rem;letter-spacing:0.08em;cursor:pointer;box-shadow:0 3px 10px rgba(124,58,237,0.3);">
+            ✨ Memcard Active
+          </button>
+        <% else %>
+          <%= button_to enable_memcard_reflection_path(reflection), method: :post,
+                form: { style: "display:inline;" } do %>
+            <span style="display:inline-flex;align-items:center;gap:0.4rem;background:linear-gradient(135deg,#7c3aed,#be185d);color:white;border:none;border-radius:100px;padding:0.4rem 0.875rem;font-family:'Bebas Neue',sans-serif;font-size:0.75rem;letter-spacing:0.08em;cursor:pointer;">
+              ✨ Share as Memcard
+            </span>
+          <% end %>
+        <% end %>
+
       </div>
+    <% elsif reflection.status == 'failed' %>
+      <span style="font-family:'Lora',serif;font-size:0.85rem;color:#dc2626;text-transform:none;letter-spacing:normal;">⚠️ Failed</span>
     <% else %>
-      <span class="text-slate-500 text-sm">Processing...</span>
+      <span style="font-family:'Lora',serif;font-size:0.85rem;color:#a78bfa;text-transform:none;letter-spacing:normal;animation:pulse 2s infinite;">Processing...</span>
     <% end %>
   </td>
+
 </tr>

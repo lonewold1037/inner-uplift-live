@@ -1,72 +1,86 @@
 <% content_for :head do %>
   <meta name="turbo-cache-control" content="no-cache">
 <% end %>
+
+<%# Brave browser warning %>
 <script>
   if (navigator.brave && navigator.brave.isBrave()) {
     window.addEventListener('DOMContentLoaded', () => {
       const warning = document.createElement('div');
-      warning.className = 'bg-yellow-500/20 border-2 border-yellow-500 text-white px-6 py-4 rounded-xl mb-6 max-w-2xl mx-auto mt-20';
+      warning.style.cssText = 'background:#fffbeb;border:2px solid #f59e0b;border-radius:16px;padding:1rem 1.25rem;margin:1rem auto;max-width:680px;';
       warning.innerHTML = `
-        <p class="font-semibold text-lg mb-2">⚠️ Brave Browser Detected</p>
-        <p class="text-sm">Brave's privacy settings may block microphone access. If recording doesn't work, please try Safari or Chrome instead.</p>
+        <p style="font-family:\'Bebas Neue\',sans-serif;font-size:0.95rem;letter-spacing:0.08em;color:#92400e;margin:0 0 0.3rem;">⚠️ Brave Browser Detected</p>
+        <p style="font-family:\'Lora\',serif;font-size:0.85rem;color:#78350f;text-transform:none;letter-spacing:normal;margin:0;line-height:1.5;">Brave's privacy settings may block microphone access. If recording doesn't work, try Safari or Chrome instead.</p>
       `;
       document.body.insertBefore(warning, document.body.firstChild);
     });
   }
 </script>
 
-<div class="min-h-screen flex items-center justify-center py-8 px-4 pt-16">
-  <div class="max-w-2xl w-full space-y-6">
+<div style="min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 2.5rem 1.5rem 4rem;">
+  <div style="width: 100%; max-width: 680px; display: flex; flex-direction: column; gap: 1.25rem;">
 
-    <!-- STEP 1 -->
-    <div class="text-center">
-      <p class="text-slate-400 text-sm tracking-widest mb-2">STEP 1 OF 2</p>
-      <h1 class="text-3xl md:text-4xl font-semibold tracking-wider text-white">
+    <%# ── Step 1 ── %>
+    <div style="text-align: center;">
+      <p style="font-family: 'Bebas Neue', sans-serif; font-size: 0.75rem; letter-spacing: 0.2em; color: #a78bfa; margin: 0 0 0.4rem;">STEP 1 OF 2</p>
+      <h1 style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.8rem, 6vw, 2.8rem); letter-spacing: 0.04em; color: #3b0764; margin: 0;">
         Get Your Device Ready
       </h1>
     </div>
 
-    <div class="bg-red-950/30 border border-red-700/40 text-white px-6 py-6 rounded-2xl">
-      <p class="text-slate-300 text-sm text-center mb-4 tracking-widest">🎤 FOR BEST AUDIO QUALITY</p>
-      <ul class="space-y-3 max-w-md mx-auto">
-        <li class="flex items-start gap-3">
-          <span class="text-red-400 mt-0.5 flex-shrink-0">•</span>
-          <span class="text-base" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;"><strong>Turn OFF Bluetooth</strong> — earbuds, headphones, speakers</span>
-        </li>
-        <li class="flex items-start gap-3">
-          <span class="text-red-400 mt-0.5 flex-shrink-0">•</span>
-          <span class="text-base" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">Use your device's <strong>built-in microphone</strong></span>
-        </li>
-        <li class="flex items-start gap-3">
-          <span class="text-red-400 mt-0.5 flex-shrink-0">•</span>
-          <span class="text-base" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">Find a <strong>quiet space</strong> with minimal background noise</span>
-        </li>
-      </ul>
+    <%# Audio tips card %>
+    <div style="background: #fff7ed; border: 1.5px solid rgba(251,146,60,0.3); border-radius: 20px; padding: 1.5rem;">
+      <p style="font-family: 'Bebas Neue', sans-serif; font-size: 0.8rem; letter-spacing: 0.15em; color: #ea580c; text-align: center; margin: 0 0 1rem;">🎤 For best audio quality</p>
+      <div style="display: flex; flex-direction: column; gap: 0.75rem; max-width: 480px; margin: 0 auto;">
+        <% [
+          ["Turn OFF Bluetooth", "earbuds, headphones, speakers"],
+          ["Use your built-in microphone", "not a headset or AirPods"],
+          ["Find a quiet space", "minimal background noise"]
+        ].each do |bold, detail| %>
+          <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
+            <span style="color: #f97316; flex-shrink: 0; font-size: 1.1rem; margin-top: 0.05rem;">•</span>
+            <span style="font-family: 'Lora', serif; font-size: 0.95rem; color: #7c2d12; text-transform: none; letter-spacing: normal; line-height: 1.5;">
+              <strong><%= bold %></strong> — <%= detail %>
+            </span>
+          </div>
+        <% end %>
+      </div>
     </div>
 
-    <!-- STEP 2 -->
-    <div class="text-center pt-2">
-      <p class="text-slate-400 text-sm tracking-widest mb-2">STEP 2 OF 2</p>
-      <h1 class="text-3xl md:text-4xl font-semibold tracking-wider text-white">
+    <%# ── Step 2 ── %>
+    <div style="text-align: center; padding-top: 0.5rem;">
+      <p style="font-family: 'Bebas Neue', sans-serif; font-size: 0.75rem; letter-spacing: 0.2em; color: #a78bfa; margin: 0 0 0.4rem;">STEP 2 OF 2</p>
+      <h1 style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.8rem, 6vw, 2.8rem); letter-spacing: 0.04em; color: #3b0764; margin: 0 0 0.4rem;">
         Record Your Voice
       </h1>
-      <p class="text-slate-400 text-base mt-2" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">Speak slowly, clearly and naturally 😊</p>
+      <p style="font-family: 'Lora', serif; font-size: 0.95rem; color: #6d28d9; text-transform: none; letter-spacing: normal; margin: 0; opacity: 0.8;">
+        Speak slowly, clearly and naturally 😊
+      </p>
     </div>
 
-    <!-- Script Card -->
-    <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8">
-      <p class="text-slate-400 text-xs text-center mb-5" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">✨ Read this aloud when you record</p>
-      <div class="bg-black/20 rounded-xl p-6 border-l-4 border-purple-500/50 mb-6">
-        <p class="text-white text-lg leading-relaxed" style="font-family: 'Lora', serif; text-transform: none; letter-spacing: normal;">
+    <%# Script card + record button %>
+    <div style="background: white; border-radius: 24px; border: 1px solid rgba(109,40,217,0.1); padding: 2rem; box-shadow: 0 4px 32px rgba(109,40,217,0.1);">
+
+      <p style="font-family: 'Lora', serif; font-size: 0.8rem; color: #a78bfa; text-transform: none; letter-spacing: normal; text-align: center; margin: 0 0 1.25rem;">
+        ✨ Read this aloud when you record
+      </p>
+
+      <div style="background: #faf8ff; border-radius: 14px; padding: 1.5rem; border-left: 4px solid #7c3aed; margin-bottom: 1.75rem;">
+        <p style="font-family: 'Lora', serif; font-size: 1.05rem; line-height: 1.8; color: #1e1b4b; text-transform: none; letter-spacing: normal; margin: 0; font-style: italic;">
           "<%= @reflection.recap %>"
         </p>
       </div>
-      <div class="text-center">
-        <button id="recordButton" class="inline-block bg-green-600 hover:bg-green-500 text-white font-medium tracking-wider py-5 px-12 rounded-full focus:outline-none text-lg shadow-lg hover:shadow-green-500/50 transition-all">
+
+      <div style="text-align: center;">
+        <button id="recordButton"
+                style="display: inline-block; background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; border: none; border-radius: 100px; padding: 1.1rem 3rem; font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 0.1em; cursor: pointer; box-shadow: 0 8px 24px rgba(22,163,74,0.3); transition: all 0.2s;">
           Start Recording
         </button>
-        <p class="text-slate-500 text-xs mt-4" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">Tap once to start — tap again to stop and submit</p>
+        <p style="font-family: 'Lora', serif; font-size: 0.78rem; color: #c4b5fd; text-transform: none; letter-spacing: normal; margin: 0.875rem 0 0;">
+          Tap once to start — tap again to stop and submit
+        </p>
       </div>
+
     </div>
 
   </div>
@@ -76,7 +90,7 @@
   (function() {
     const recordButton = document.getElementById('recordButton');
     if (!recordButton) return;
-    
+
     let mediaRecorder;
     let audioChunks = [];
     let mediaStream;
@@ -88,22 +102,19 @@
       if (mediaRecorder && mediaRecorder.state === 'recording') {
         mediaRecorder.stop();
         newButton.textContent = 'Start Recording';
-        newButton.classList.remove('bg-red-500', 'animate-pulse');
-        newButton.classList.add('bg-green-600');
+        newButton.style.background = 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)';
+        newButton.style.animation = '';
+        newButton.style.boxShadow = '0 8px 24px rgba(22,163,74,0.3)';
       } else {
         try {
           mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
           mediaRecorder = new MediaRecorder(mediaStream);
           audioChunks = [];
 
-          mediaRecorder.ondataavailable = event => {
-            audioChunks.push(event.data);
-          };
+          mediaRecorder.ondataavailable = event => { audioChunks.push(event.data); };
 
           mediaRecorder.onstop = async () => {
-            if (mediaStream) {
-              mediaStream.getTracks().forEach(track => track.stop());
-            }
+            if (mediaStream) mediaStream.getTracks().forEach(t => t.stop());
 
             const mimeType = MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/mp4';
             const extension = mimeType === 'audio/webm' ? 'webm' : 'mp4';
@@ -111,37 +122,46 @@
             const formData = new FormData();
             formData.append('audio', audioBlob, `recording.${extension}`);
 
-            newButton.textContent = 'Uploading & Processing...';
+            newButton.textContent = 'Uploading...';
             newButton.disabled = true;
+            newButton.style.opacity = '0.7';
+            newButton.style.background = 'linear-gradient(135deg, #7c3aed 0%, #be185d 100%)';
 
             const response = await fetch('<%= receive_audio_reflection_path(@reflection) %>', {
               method: 'POST',
               body: formData,
-              headers: {
-                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
-              }
+              headers: { 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content }
             });
 
             if (response.ok) {
               window.location.href = '<%= reflection_path(@reflection) %>';
             } else {
-              console.error('Upload failed', response);
-              newButton.textContent = 'Error - Try Again';
+              newButton.textContent = 'Error — Try Again';
               newButton.disabled = false;
+              newButton.style.opacity = '1';
+              newButton.style.background = 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)';
               alert('Upload failed. Please try again.');
             }
           };
 
           mediaRecorder.start();
           newButton.textContent = 'Stop Recording';
-          newButton.classList.remove('bg-green-600');
-          newButton.classList.add('bg-red-500', 'animate-pulse');
+          newButton.style.background = 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)';
+          newButton.style.boxShadow = '0 8px 24px rgba(220,38,38,0.4)';
+          newButton.style.animation = 'recordPulse 1.5s ease-in-out infinite';
 
         } catch (error) {
-          console.error('Error accessing microphone:', error);
+          console.error('Microphone error:', error);
           alert('Could not access the microphone. Please check your browser permissions.');
         }
       }
     });
   })();
 </script>
+
+<style>
+  @keyframes recordPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+  }
+</style>

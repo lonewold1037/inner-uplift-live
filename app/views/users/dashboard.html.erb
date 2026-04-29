@@ -1,228 +1,222 @@
 <%= turbo_stream_from "user_#{current_user.id}_dashboard" %>
 
-<!-- Audio Player Modal (Hidden by default) -->
-<div id="audioModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-  <div class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-4 sm:p-8 border border-white/20 relative my-auto">
-    <!-- Close Button -->
-    <button onclick="closeAudioModal()" class="absolute top-3 right-3 sm:top-4 sm:right-4 text-white/60 hover:text-white text-3xl z-10">&times;</button>
+<%# ══════════════════════════════════════════════════════════
+    AUDIO PLAYER MODAL — stays dark (cinema player experience)
+══════════════════════════════════════════════════════════ %>
+<div id="audioModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:50; align-items:center; justify-content:center; padding:1rem; overflow-y:auto;">
+  <div style="background:linear-gradient(135deg,#1e1b4b 0%,#2d1b69 100%); border-radius:20px; max-width:700px; width:100%; max-height:90vh; overflow-y:auto; padding:2rem; border:1px solid rgba(167,139,250,0.2); position:relative; margin:auto;">
+    <button onclick="closeAudioModal()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:rgba(255,255,255,0.5);font-size:1.8rem;cursor:pointer;line-height:1;">&times;</button>
 
-    <!-- Cover Image (above title, hidden if no image) -->
-    <div id="modalImageWrap" class="hidden flex justify-center mb-3 sm:mb-6">
-      <img id="modalCoverImage" src="" alt=""
-           class="rounded-2xl shadow-2xl object-contain max-h-36 sm:max-h-56 w-auto mx-auto border border-white/10"
-           style="filter: sepia(30%) contrast(110%) brightness(95%) saturate(85%);">
+    <div id="modalImageWrap" style="display:none; justify-content:center; margin-bottom:1.25rem;">
+      <img id="modalCoverImage" src="" alt="" style="max-height:180px;width:auto;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,0.5);filter:sepia(30%) contrast(110%) brightness(95%) saturate(85%);">
     </div>
 
-    <!-- Reflection Title -->
-    <h2 id="modalTitle" class="text-xl sm:text-3xl font-bold tracking-wider text-white text-center mb-4 sm:mb-8">Loading...</h2>
+    <h2 id="modalTitle" style="font-family:'Bebas Neue',sans-serif;font-size:1.75rem;letter-spacing:0.06em;color:white;text-align:center;margin:0 0 1.5rem;">Loading...</h2>
 
-    <!-- Large Play/Pause Button -->
-    <div class="flex justify-center mb-4 sm:mb-8">
-      <button id="modalPlayBtn" onclick="toggleModalPlay()" class="bg-indigo-600 hover:bg-indigo-500 rounded-full p-5 sm:p-8 transition-all transform hover:scale-110 shadow-2xl" style="box-shadow: 0 0 40px rgba(99,102,241,0.5);">
-        <svg class="w-10 h-10 sm:w-16 sm:h-16 text-white" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M8 5v14l11-7z"/>
-        </svg>
+    <div style="display:flex;justify-content:center;margin-bottom:1.5rem;">
+      <button id="modalPlayBtn" onclick="toggleModalPlay()" style="background:#6366f1;border:none;border-radius:50%;width:80px;height:80px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 40px rgba(99,102,241,0.5);transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+        <svg width="36" height="36" fill="white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
       </button>
     </div>
 
-    <!-- Equalizer Visualizer Canvas -->
-    <canvas id="particleCanvas" class="mb-3 sm:mb-6 rounded-lg w-full" height="120"></canvas>
+    <canvas id="particleCanvas" style="width:100%;border-radius:10px;margin-bottom:1rem;" height="100"></canvas>
 
-    <!-- Progress Bar (Seekable) -->
-    <div class="mb-2">
-      <input
-        type="range"
-        id="progressBar"
-        min="0"
-        max="100"
-        value="0"
-        class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-500"
-        style="background: linear-gradient(to right, #6366f1 0%, #334155 0%);"
-      >
-    </div>
+    <input type="range" id="progressBar" min="0" max="100" value="0"
+           style="width:100%;height:6px;border-radius:3px;outline:none;cursor:pointer;appearance:none;margin-bottom:0.5rem;background:linear-gradient(to right,#6366f1 0%,#334155 0%);">
 
-    <!-- Time Display -->
-    <div id="modalTime" class="text-center text-slate-300 text-xl mb-4">0:00 / 0:00</div>
+    <div id="modalTime" style="font-family:'Lora',serif;font-size:1rem;color:rgba(255,255,255,0.6);text-align:center;text-transform:none;letter-spacing:normal;margin-bottom:1.25rem;">0:00 / 0:00</div>
 
-    <!-- Download Button -->
-    <div class="text-center">
-      <a id="modalDownload" href="#" download class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-medium tracking-widest py-3 px-8 rounded-xl shadow-lg transition-all">
+    <div style="text-align:center;">
+      <a id="modalDownload" href="#" download style="display:inline-block;background:#7c3aed;color:white;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.08em;padding:0.75rem 2rem;border-radius:100px;text-decoration:none;">
         Download MP3
       </a>
     </div>
   </div>
 </div>
 
-<!-- ========== MEMCARD SHARE MODAL ========== -->
-<div id="memcardModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-  <div class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 rounded-2xl shadow-2xl max-w-xl w-full p-8 border border-purple-500/30 relative">
+<%# ══════════════════════════════════════════════════════════
+    MEMCARD SHARE MODAL — stays dark (gift reveal theme)
+══════════════════════════════════════════════════════════ %>
+<div id="memcardModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:50; align-items:center; justify-content:center; padding:1rem;">
+  <div style="background:linear-gradient(135deg,#1e1b4b 0%,#2d1b69 100%); border-radius:20px; max-width:520px; width:100%; padding:2rem; border:1px solid rgba(167,139,250,0.3); position:relative; margin:auto;">
+    <button onclick="closeMemcardModal()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:rgba(255,255,255,0.5);font-size:1.8rem;cursor:pointer;line-height:1;">&times;</button>
 
-    <!-- Close Button -->
-    <button onclick="closeMemcardModal()" class="absolute top-4 right-4 text-white/60 hover:text-white text-3xl">&times;</button>
-
-    <!-- Header -->
-    <div class="text-center mb-6">
-      <p class="text-4xl mb-2">✨</p>
-      <h2 class="text-2xl font-bold tracking-wider text-white mb-2">Share <span id="memcardModalTitle"></span></h2>
-      <p class="text-slate-300 text-sm" style="text-transform: none; letter-spacing: normal;">
+    <div style="text-align:center;margin-bottom:1.5rem;">
+      <p style="font-size:2.5rem;margin:0 0 0.5rem;">✨</p>
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:0.06em;color:white;margin:0 0 0.5rem;">Share <span id="memcardModalTitle"></span></h2>
+      <p style="font-family:'Lora',serif;font-size:0.85rem;color:rgba(255,255,255,0.6);text-transform:none;letter-spacing:normal;line-height:1.6;margin:0;">
         Anyone with this link can view your Memflection in the cinematic portal.<br>
-        <strong class="text-pink-300">Only share with people you trust.</strong>
+        <strong style="color:#f9a8d4;">Only share with people you trust.</strong>
       </p>
     </div>
 
-    <!-- URL Copy Field -->
-    <div class="mb-4">
-      <label class="block text-slate-400 text-xs uppercase tracking-wider mb-2">Your Memcard Link</label>
-      <div class="flex gap-2">
+    <div style="margin-bottom:1rem;">
+      <p style="font-family:'Bebas Neue',sans-serif;font-size:0.75rem;letter-spacing:0.15em;color:rgba(255,255,255,0.4);margin:0 0 0.5rem;">Your Memcard Link</p>
+      <div style="display:flex;gap:0.5rem;">
         <input type="text" id="memcardUrlField" readonly
-               class="flex-1 bg-slate-800/70 text-white border-2 border-purple-500/30 rounded-lg px-4 py-3 text-sm font-mono focus:outline-none focus:border-purple-400"
-               style="text-transform: none; letter-spacing: normal;">
+               style="flex:1;background:rgba(255,255,255,0.08);color:white;border:1px solid rgba(167,139,250,0.3);border-radius:10px;padding:0.75rem 1rem;font-family:monospace;font-size:0.85rem;text-transform:none;letter-spacing:normal;outline:none;">
         <button onclick="copyMemcardUrl()" id="memcardCopyBtn"
-                class="bg-purple-600 hover:bg-purple-500 text-white font-medium tracking-wider px-4 py-3 rounded-lg transition-all">
+                style="background:#7c3aed;color:white;border:none;border-radius:10px;padding:0.75rem 1rem;font-family:'Bebas Neue',sans-serif;font-size:0.85rem;letter-spacing:0.08em;cursor:pointer;white-space:nowrap;">
           📋 Copy
         </button>
       </div>
     </div>
 
-    <!-- View Count -->
-    <div class="mb-6 text-center">
-      <p class="text-slate-300 text-sm">
-        📊 Viewed <span id="memcardViewCount" class="text-purple-300 font-bold"></span> times
+    <div style="text-align:center;margin-bottom:1.25rem;">
+      <p style="font-family:'Lora',serif;font-size:0.85rem;color:rgba(255,255,255,0.6);text-transform:none;letter-spacing:normal;margin:0;">
+        📊 Viewed <span id="memcardViewCount" style="color:#c4b5fd;font-weight:700;"></span> times
       </p>
     </div>
 
-    <!-- Action Buttons -->
-    <div class="space-y-3">
-      <button onclick="shareMemcardNative()" class="w-full bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-medium tracking-wider py-3 px-6 rounded-lg shadow-lg transition-all">
-        📱 Share via...
-      </button>
-      <button onclick="previewMemcard()" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-medium tracking-wider py-3 px-6 rounded-lg transition-all">
-        🔗 Preview Memcard
-      </button>
-
-      <!-- Disable Form -->
-      <form id="memcardDisableForm" method="post" class="w-full">
+    <div style="display:flex;flex-direction:column;gap:0.625rem;">
+      <button onclick="shareMemcardNative()" style="background:linear-gradient(135deg,#0ea5e9,#2563eb);color:white;border:none;border-radius:12px;padding:0.875rem;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.08em;cursor:pointer;">📱 Share via...</button>
+      <button onclick="previewMemcard()" style="background:rgba(255,255,255,0.08);color:white;border:none;border-radius:12px;padding:0.875rem;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.08em;cursor:pointer;">🔗 Preview Memcard</button>
+      <form id="memcardDisableForm" method="post" style="width:100%;">
         <input type="hidden" name="_method" value="delete">
         <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
         <button type="submit"
-                onclick="return confirm('Disable this Memcard link? Anyone with the current link will lose access permanently. You can re-share later, but the URL will be different.');"
-                class="w-full bg-red-900/50 hover:bg-red-900/70 text-red-300 hover:text-red-200 border border-red-500/30 font-medium tracking-wider py-3 px-6 rounded-lg transition-all">
+                onclick="return confirm('Disable this Memcard link? Anyone with the current link will lose access permanently.');"
+                style="width:100%;background:rgba(220,38,38,0.15);color:#fca5a5;border:1px solid rgba(220,38,38,0.3);border-radius:12px;padding:0.875rem;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.08em;cursor:pointer;">
           🚫 Disable Sharing
         </button>
       </form>
     </div>
-
   </div>
 </div>
 
-<div class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 px-4 py-16">
-  <div class="container mx-auto max-w-6xl">
-    <div class="text-center mb-12">
-      <h1 class="text-5xl font-bold tracking-wider text-white tracking-wide mb-2">My Memflections</h1>
-      <p class="text-slate-300 text-lg">Your personalized audio reflections</p>
+<%# ══════════════════════════════════════════════════════════
+    MAIN DASHBOARD
+══════════════════════════════════════════════════════════ %>
+<div style="min-height:100vh;padding:3rem 1.5rem 4rem;">
+  <div style="max-width:1000px;margin:0 auto;">
+
+    <%# Header %>
+    <div style="text-align:center;margin-bottom:2.5rem;">
+      <h1 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,8vw,4rem);letter-spacing:0.04em;color:#3b0764;margin:0 0 0.5rem;">My Memflections</h1>
+      <p style="font-family:'Lora',serif;font-size:1rem;color:#6d28d9;text-transform:none;letter-spacing:normal;opacity:0.8;margin:0;">Your personalised audio reflections</p>
     </div>
 
-    <%# ========== FLASH MESSAGES ========== %>
+    <%# Flash messages %>
     <% if flash[:notice] %>
-      <div class="bg-green-500/20 border border-green-500/50 text-white px-6 py-4 rounded-lg mb-8 text-center">
-        <p class="text-sm"><%= flash[:notice] %></p>
+      <div style="background:#f0fdf4;border:1.5px solid rgba(34,197,94,0.3);border-radius:14px;padding:1rem 1.25rem;margin-bottom:1.5rem;text-align:center;">
+        <p style="font-family:'Lora',serif;font-size:0.9rem;color:#166534;text-transform:none;letter-spacing:normal;margin:0;"><%= flash[:notice] %></p>
       </div>
     <% end %>
     <% if flash[:alert] %>
-      <div class="bg-red-500/20 border border-red-500/50 text-white px-6 py-4 rounded-lg mb-8 text-center">
-        <p class="text-sm"><%= flash[:alert] %></p>
+      <div style="background:#fef2f2;border:1.5px solid rgba(220,38,38,0.3);border-radius:14px;padding:1rem 1.25rem;margin-bottom:1.5rem;text-align:center;">
+        <p style="font-family:'Lora',serif;font-size:0.9rem;color:#dc2626;text-transform:none;letter-spacing:normal;margin:0;"><%= flash[:alert] %></p>
       </div>
     <% end %>
-
     <% if params[:purchased] == 'true' %>
-      <div class="bg-green-500/20 border border-green-500/50 text-white px-6 py-4 rounded-lg mb-8 text-center">
-        <p class="font-bold text-lg">🎉 Payment Successful!</p>
-        <p class="text-sm mt-1">Your extended Memflection is being generated. Refresh in a few minutes to download it!</p>
+      <div style="background:linear-gradient(135deg,#f0fdf4,#ecfdf5);border:1.5px solid rgba(34,197,94,0.3);border-radius:14px;padding:1.25rem;margin-bottom:1.5rem;text-align:center;">
+        <p style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:0.08em;color:#16a34a;margin:0 0 0.3rem;">🎉 Payment Successful!</p>
+        <p style="font-family:'Lora',serif;font-size:0.875rem;color:#166534;text-transform:none;letter-spacing:normal;margin:0;">Your extended Memflection is being generated. Refresh in a few minutes to download it!</p>
       </div>
     <% end %>
 
     <% if @reflections.where(purchased: true).any? %>
-      <div class="bg-black/50 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 overflow-hidden">
-        <div class="overflow-x-auto">
-          <table class="w-full">
+
+      <%# Table card %>
+      <div style="background:white;border-radius:20px;border:1px solid rgba(109,40,217,0.1);box-shadow:0 4px 32px rgba(109,40,217,0.08);overflow:hidden;margin-bottom:2rem;">
+        <div style="overflow-x:auto;">
+          <table style="width:100%;border-collapse:collapse;">
             <thead>
-              <tr class="bg-white/5 border-b border-white/10">
-                <th class="px-3 py-4 hidden sm:table-cell w-20"></th>
-                <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Name</th>
-                <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider hidden md:table-cell">Style</th>
-                <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider hidden sm:table-cell">Date</th>
-                <th class="px-6 py-4 text-center text-xs font-semibold text-slate-300 uppercase tracking-wider">Play</th>
+              <tr style="background:#faf8ff;border-bottom:1px solid rgba(109,40,217,0.08);">
+                <th style="padding:1rem 0.75rem;width:72px;display:none;" class="sm-show"></th>
+                <th style="padding:1rem 1.5rem;text-align:left;font-family:'Bebas Neue',sans-serif;font-size:0.75rem;letter-spacing:0.15em;color:#a78bfa;">Name</th>
+                <th style="padding:1rem 1.5rem;text-align:left;font-family:'Bebas Neue',sans-serif;font-size:0.75rem;letter-spacing:0.15em;color:#a78bfa;" class="md-show">Style</th>
+                <th style="padding:1rem 1.5rem;text-align:left;font-family:'Bebas Neue',sans-serif;font-size:0.75rem;letter-spacing:0.15em;color:#a78bfa;" class="sm-show">Date</th>
+                <th style="padding:1rem 1.5rem;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:0.75rem;letter-spacing:0.15em;color:#a78bfa;">Actions</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-white/10">
-              <% @reflections.where(purchased: true).each do |reflection| %>
-                <tr class="hover:bg-white/5 transition-colors" id="reflection_row_<%= reflection.id %>">
+            <tbody>
+              <% @reflections.where(purchased: true).each_with_index do |reflection, idx| %>
+                <tr id="reflection_row_<%= reflection.id %>"
+                    style="border-bottom:1px solid rgba(109,40,217,0.06);<%= idx.odd? ? 'background:#fdfbff;' : '' %>"
+                    onmouseover="this.style.background='#f5f0ff'"
+                    onmouseout="this.style.background='<%= idx.odd? ? '#fdfbff' : 'white' %>'">
 
-                  <!-- Cover Image -->
-                  <td class="px-3 py-3 w-20 hidden sm:table-cell">
+                  <%# Cover image %>
+                  <td style="padding:0.875rem 0.75rem;width:72px;">
                     <% if reflection.cover_image.attached? %>
                       <img src="<%= url_for(reflection.cover_image) %>"
                            alt="<%= reflection.title %>"
-                           class="w-16 h-16 rounded-xl object-cover shadow-lg"
-                           style="filter: sepia(30%) contrast(110%) brightness(95%) saturate(85%);">
+                           style="width:56px;height:56px;border-radius:12px;object-fit:cover;filter:sepia(30%) contrast(110%) brightness(95%) saturate(85%);box-shadow:0 2px 8px rgba(109,40,217,0.15);">
                     <% else %>
-                      <div class="w-16 h-16 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
-                        <svg class="w-6 h-6 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div style="width:56px;height:56px;border-radius:12px;background:#f5f0ff;border:1px solid rgba(109,40,217,0.1);display:flex;align-items:center;justify-content:center;">
+                        <svg width="22" height="22" fill="none" stroke="#c4b5fd" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                         </svg>
                       </div>
                     <% end %>
                   </td>
 
-                  <td class="px-6 py-4">
-                    <p class="text-white font-medium"><%= reflection.title || "Untitled" %></p>
+                  <%# Title %>
+                  <td style="padding:0.875rem 1.5rem;">
+                    <p style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.06em;color:#3b0764;margin:0 0 0.2rem;"><%= reflection.title || "Untitled" %></p>
                     <% unless reflection.extended_audio.attached? %>
-                      <p class="text-yellow-400 text-xs mt-1 animate-pulse">⏳ Processing...</p>
+                      <p style="font-family:'Lora',serif;font-size:0.75rem;color:#f59e0b;text-transform:none;letter-spacing:normal;margin:0;animation:pulse 2s infinite;">⏳ Processing...</p>
                     <% end %>
                   </td>
-                  <td class="px-6 py-4 text-slate-300 text-sm hidden md:table-cell"><%= reflection.style %></td>
-                  <td class="px-6 py-4 text-slate-300 text-sm hidden sm:table-cell"><%= reflection.created_at.strftime("%b %d, %Y") %></td>
-                  <td class="px-6 py-4 text-center">
+
+                  <%# Style %>
+                  <td style="padding:0.875rem 1.5rem;">
+                    <span style="font-family:'Lora',serif;font-size:0.85rem;color:#6d28d9;text-transform:none;letter-spacing:normal;background:#f5f0ff;padding:0.25rem 0.625rem;border-radius:100px;"><%= reflection.style %></span>
+                  </td>
+
+                  <%# Date %>
+                  <td style="padding:0.875rem 1.5rem;">
+                    <span style="font-family:'Lora',serif;font-size:0.85rem;color:#a78bfa;text-transform:none;letter-spacing:normal;"><%= reflection.created_at.strftime("%b %d, %Y") %></span>
+                  </td>
+
+                  <%# Actions %>
+                  <td style="padding:0.875rem 1.5rem;text-align:center;">
                     <% if reflection.extended_audio.attached? %>
-                      <div class="flex flex-col items-center gap-2">
-                        <button
-                          onclick="openAudioModal('<%= j(reflection.title || 'Untitled') %>', '<%= extended_audio_url(reflection, play: true) %>', '<%= extended_audio_url(reflection) %>', '<%= reflection.cover_image.attached? ? url_for(reflection.cover_image) : '' %>')"
-                          class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg" style="box-shadow: 0 0 20px rgba(99,102,241,0.3);">
-                          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z"/>
-                          </svg>
+                      <div style="display:flex;flex-direction:column;align-items:center;gap:0.5rem;">
+
+                        <%# Play button %>
+                        <button onclick="openAudioModal('<%= j(reflection.title || 'Untitled') %>', '<%= extended_audio_url(reflection, play: true) %>', '<%= extended_audio_url(reflection) %>', '<%= reflection.cover_image.attached? ? url_for(reflection.cover_image) : '' %>')"
+                                style="display:inline-flex;align-items:center;gap:0.5rem;background:linear-gradient(135deg,#6366f1,#7c3aed);color:white;border:none;border-radius:100px;padding:0.625rem 1.25rem;font-family:'Bebas Neue',sans-serif;font-size:0.9rem;letter-spacing:0.08em;cursor:pointer;box-shadow:0 4px 14px rgba(99,102,241,0.3);transition:transform 0.15s;"
+                                onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                          <svg width="14" height="14" fill="white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                           Play
                         </button>
-                        <div class="flex items-center gap-3">
-                          <%= link_to "Download", extended_audio_path(reflection), class: "text-purple-400 hover:text-purple-300 font-medium text-sm" %>
-                          <span class="text-white/20">|</span>
-                          <button onclick="shareReflection('<%= extended_audio_url(reflection) %>', '<%= j(reflection.title || 'Untitled') %>')" class="text-sky-400 hover:text-sky-300 font-medium text-sm transition-colors">
-                            📎 Share File
+
+                        <%# Download + Share %>
+                        <div style="display:flex;align-items:center;gap:0.75rem;">
+                          <%= link_to "Download", extended_audio_path(reflection),
+                                style: "font-family:'Lora',serif;font-size:0.8rem;color:#7c3aed;text-transform:none;letter-spacing:normal;text-decoration:none;",
+                                data: { turbo: false } %>
+                          <span style="color:#c4b5fd;font-size:0.6rem;">●</span>
+                          <button onclick="shareReflection('<%= extended_audio_url(reflection) %>', '<%= j(reflection.title || 'Untitled') %>')"
+                                  style="background:none;border:none;font-family:'Lora',serif;font-size:0.8rem;color:#0ea5e9;text-transform:none;letter-spacing:normal;cursor:pointer;padding:0;">
+                            🔗 Share
                           </button>
                         </div>
 
-                        <%# ========== SHARE AS MEMCARD BUTTON ========== %>
-                        <div class="mt-1">
-                          <% if reflection.memcard_enabled? %>
-                            <button onclick="openMemcardModal('<%= reflection.id %>', '<%= j(reflection.memcard_token) %>', '<%= j(reflection.title || 'Untitled') %>', <%= reflection.memcard_view_count %>)"
-                                    class="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-medium tracking-wider text-xs py-2 px-4 rounded-lg shadow-lg transition-all transform hover:scale-105"
-                                    style="box-shadow: 0 0 15px rgba(168,85,247,0.4);">
-                              ✨ Memcard Active — Manage
-                            </button>
-                          <% else %>
-                            <%= button_to enable_memcard_reflection_path(reflection), method: :post, form: { class: "inline" }, class: "inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-medium tracking-wider text-xs py-2 px-4 rounded-lg shadow-lg transition-all transform hover:scale-105 cursor-pointer", style: "box-shadow: 0 0 15px rgba(168,85,247,0.4);" do %>
+                        <%# Memcard %>
+                        <% if reflection.memcard_enabled? %>
+                          <button onclick="openMemcardModal('<%= reflection.id %>', '<%= j(reflection.memcard_token) %>', '<%= j(reflection.title || 'Untitled') %>', <%= reflection.memcard_view_count %>)"
+                                  style="display:inline-flex;align-items:center;gap:0.4rem;background:linear-gradient(135deg,#7c3aed,#be185d);color:white;border:none;border-radius:100px;padding:0.4rem 0.875rem;font-family:'Bebas Neue',sans-serif;font-size:0.75rem;letter-spacing:0.08em;cursor:pointer;box-shadow:0 3px 10px rgba(124,58,237,0.3);">
+                            ✨ Memcard Active
+                          </button>
+                        <% else %>
+                          <%= button_to enable_memcard_reflection_path(reflection), method: :post,
+                                form: { style: "display:inline;" } do %>
+                            <span style="display:inline-flex;align-items:center;gap:0.4rem;background:linear-gradient(135deg,#7c3aed,#be185d);color:white;border:none;border-radius:100px;padding:0.4rem 0.875rem;font-family:'Bebas Neue',sans-serif;font-size:0.75rem;letter-spacing:0.08em;cursor:pointer;">
                               ✨ Share as Memcard
-                            <% end %>
+                            </span>
                           <% end %>
-                        </div>
+                        <% end %>
 
                       </div>
                     <% elsif reflection.status == 'failed' %>
-                      <span class="text-red-400 text-sm">⚠️ Generation failed</span>
+                      <span style="font-family:'Lora',serif;font-size:0.85rem;color:#dc2626;text-transform:none;letter-spacing:normal;">⚠️ Failed</span>
                     <% else %>
-                      <span class="text-slate-500 text-sm">Processing...</span>
+                      <span style="font-family:'Lora',serif;font-size:0.85rem;color:#a78bfa;text-transform:none;letter-spacing:normal;animation:pulse 2s infinite;">Processing...</span>
                     <% end %>
                   </td>
+
                 </tr>
               <% end %>
             </tbody>
@@ -230,212 +224,168 @@
         </div>
       </div>
 
-      <div class="text-center mt-8">
-        <%= link_to "Create New Memflection", new_reflection_path, class: "bg-sky-600 hover:bg-sky-500 text-white font-semibold py-3 px-8 rounded-lg shadow-lg inline-block" %>
+      <div style="text-align:center;">
+        <%= link_to "Create New Memflection →", new_reflection_path,
+              style: "display:inline-block;background:linear-gradient(135deg,#7c3aed 0%,#be185d 100%);color:white;font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:0.1em;padding:1rem 2.5rem;border-radius:100px;text-decoration:none;box-shadow:0 8px 24px rgba(124,58,237,0.3);" %>
       </div>
+
     <% else %>
-      <div class="text-center py-16">
-        <p class="text-slate-300 text-xl mb-8">You haven't purchased any Memflections yet.</p>
-        <%= link_to "Create Your First Memflection", new_reflection_path, class: "bg-sky-600 hover:bg-sky-500 text-white font-bold py-4 px-8 rounded-lg shadow-lg inline-block text-lg" %>
+      <%# Empty state %>
+      <div style="text-align:center;padding:4rem 1rem;">
+        <div style="font-size:4rem;margin-bottom:1.5rem;">🎁</div>
+        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:0.04em;color:#3b0764;margin:0 0 0.75rem;">No Memflections yet</h2>
+        <p style="font-family:'Lora',serif;font-size:1rem;color:#6d28d9;text-transform:none;letter-spacing:normal;margin:0 0 2rem;opacity:0.8;">Create your first gift — it takes about 5 minutes.</p>
+        <%= link_to "Create Your First Memflection →", new_reflection_path,
+              style: "display:inline-block;background:linear-gradient(135deg,#7c3aed 0%,#be185d 100%);color:white;font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:0.1em;padding:1rem 2.5rem;border-radius:100px;text-decoration:none;box-shadow:0 8px 24px rgba(124,58,237,0.3);" %>
       </div>
     <% end %>
+
+    <%# Account deletion %>
+    <div style="text-align:center;margin-top:4rem;padding-top:2rem;border-top:1px solid rgba(109,40,217,0.08);">
+      <p style="font-family:'Lora',serif;font-size:0.8rem;color:#c4b5fd;text-transform:none;letter-spacing:normal;margin:0 0 0.75rem;">Need to delete your account?</p>
+      <%= button_to "Delete My Account & All Data", delete_account_path, method: :delete,
+            data: { turbo_confirm: "⚠️ Are you sure? This will permanently delete all your reflections and cannot be undone." },
+            style: "background:none;border:none;font-family:'Lora',serif;font-size:0.8rem;color:#f87171;text-transform:none;letter-spacing:normal;cursor:pointer;text-decoration:underline;padding:0;" %>
+    </div>
+
   </div>
 </div>
 
 <script>
   let audioContext, analyser, dataArray, audioElement, animationId;
   const canvas = document.getElementById('particleCanvas');
-  const ctx = canvas.getContext('2d');
-
+  const ctx = canvas ? canvas.getContext('2d') : null;
   const BAR_COUNT = 48;
   let barHeights = new Array(BAR_COUNT).fill(0);
   let barTargets = new Array(BAR_COUNT).fill(0);
 
-  function initParticles() {
-    barHeights = new Array(BAR_COUNT).fill(0);
-    barTargets = new Array(BAR_COUNT).fill(0);
-  }
-
   function animate() {
+    if (!canvas || !ctx) return;
     canvas.width = canvas.offsetWidth;
-    const W = canvas.width;
-    const H = canvas.height;
+    const W = canvas.width, H = canvas.height;
     ctx.clearRect(0, 0, W, H);
-
-    ctx.fillStyle = 'rgba(10, 10, 30, 0.95)';
+    ctx.fillStyle = 'rgba(10,10,30,0.95)';
     ctx.fillRect(0, 0, W, H);
-
     const barWidth = (W / BAR_COUNT) * 0.7;
     const gap = (W / BAR_COUNT) * 0.3;
-
-    if (analyser) {
-      analyser.getByteFrequencyData(dataArray);
-    }
-
+    if (analyser) analyser.getByteFrequencyData(dataArray);
     for (let i = 0; i < BAR_COUNT; i++) {
-      let value;
-      if (analyser && audioElement && !audioElement.paused) {
-        value = dataArray[Math.floor(i * dataArray.length / BAR_COUNT)] / 255;
-      } else {
-        value = 0.05 + 0.04 * Math.sin(Date.now() / 800 + i * 0.4);
-      }
-
+      const value = (analyser && audioElement && !audioElement.paused)
+        ? dataArray[Math.floor(i * dataArray.length / BAR_COUNT)] / 255
+        : 0.05 + 0.04 * Math.sin(Date.now() / 800 + i * 0.4);
       barTargets[i] = value;
       barHeights[i] += (barTargets[i] - barHeights[i]) * 0.15;
-
       const barH = Math.max(4, barHeights[i] * H * 0.85);
       const x = i * (barWidth + gap) + gap / 2;
       const y = H - barH;
-
       const grad = ctx.createLinearGradient(x, y, x, H);
-      grad.addColorStop(0, `hsla(${240 + i * 1.5}, 80%, 75%, 0.9)`);
-      grad.addColorStop(0.5, `hsla(${260 + i * 1.2}, 70%, 60%, 0.8)`);
-      grad.addColorStop(1, `hsla(${280 + i}, 60%, 40%, 0.6)`);
-
+      grad.addColorStop(0, `hsla(${240 + i * 1.5},80%,75%,0.9)`);
+      grad.addColorStop(0.5, `hsla(${260 + i * 1.2},70%,60%,0.8)`);
+      grad.addColorStop(1, `hsla(${280 + i},60%,40%,0.6)`);
       ctx.fillStyle = grad;
       ctx.beginPath();
       ctx.roundRect(x, y, barWidth, barH, [3, 3, 0, 0]);
       ctx.fill();
-
-      if (barHeights[i] > 0.5) {
-        ctx.shadowColor = `hsla(${250 + i}, 80%, 70%, 0.6)`;
-        ctx.shadowBlur = 8;
-        ctx.fill();
-        ctx.shadowBlur = 0;
-      }
     }
-
     animationId = requestAnimationFrame(animate);
   }
 
   async function openAudioModal(title, audioUrl, downloadUrl, imageUrl) {
-    document.getElementById('audioModal').classList.remove('hidden');
+    const modal = document.getElementById('audioModal');
+    modal.style.display = 'flex';
     document.getElementById('modalTitle').textContent = title;
     document.getElementById('modalDownload').href = downloadUrl;
-
-    // Handle cover image
     const imageWrap = document.getElementById('modalImageWrap');
     const coverImage = document.getElementById('modalCoverImage');
     if (imageUrl && imageUrl.trim() !== '') {
       coverImage.src = imageUrl;
-      imageWrap.classList.remove('hidden');
-      imageWrap.classList.add('flex');
+      imageWrap.style.display = 'flex';
     } else {
-      imageWrap.classList.add('hidden');
-      imageWrap.classList.remove('flex');
+      imageWrap.style.display = 'none';
       coverImage.src = '';
     }
-
-    canvas.width = canvas.offsetWidth;
-    initParticles();
+    barHeights = new Array(BAR_COUNT).fill(0);
+    barTargets = new Array(BAR_COUNT).fill(0);
     animate();
-
     const response = await fetch(audioUrl);
     const finalUrl = response.url;
-
-    if (!audioElement) {
-      audioElement = new Audio();
-    }
-
+    if (!audioElement) audioElement = new Audio();
     audioElement.src = finalUrl;
-
     audioElement.addEventListener('play', () => {
-      document.getElementById('modalPlayBtn').innerHTML = '<svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/></svg>';
+      document.getElementById('modalPlayBtn').innerHTML = '<svg width="36" height="36" fill="white" viewBox="0 0 24 24"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/></svg>';
     });
-
     audioElement.addEventListener('pause', () => {
-      document.getElementById('modalPlayBtn').innerHTML = '<svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+      document.getElementById('modalPlayBtn').innerHTML = '<svg width="36" height="36" fill="white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
     });
-
     audioElement.addEventListener('timeupdate', () => {
-      const current = audioElement.currentTime;
-      const duration = audioElement.duration || 0;
-      document.getElementById('modalTime').textContent = formatTime(current) + ' / ' + formatTime(duration);
+      const c = audioElement.currentTime, d = audioElement.duration || 0;
+      document.getElementById('modalTime').textContent = formatTime(c) + ' / ' + formatTime(d);
       updateProgressBar();
     });
-
     audioElement.addEventListener('loadedmetadata', () => {
       document.getElementById('modalTime').textContent = '0:00 / ' + formatTime(audioElement.duration);
     });
   }
 
   function closeAudioModal() {
-    document.getElementById('audioModal').classList.add('hidden');
+    document.getElementById('audioModal').style.display = 'none';
     if (audioElement) audioElement.pause();
     cancelAnimationFrame(animationId);
   }
 
   function toggleModalPlay() {
-    if (audioElement) {
-      if (audioElement.paused) {
-        audioElement.play();
-      } else {
-        audioElement.pause();
-      }
-    }
+    if (audioElement) audioElement.paused ? audioElement.play() : audioElement.pause();
   }
 
-  function formatTime(seconds) {
-    const minutes = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return minutes + ':' + (secs < 10 ? '0' : '') + secs;
+  function formatTime(s) {
+    const m = Math.floor(s / 60);
+    const sec = Math.floor(s % 60);
+    return m + ':' + (sec < 10 ? '0' : '') + sec;
   }
 
   document.getElementById('progressBar').addEventListener('input', function(e) {
     if (audioElement && audioElement.duration) {
-      const seekTime = (e.target.value / 100) * audioElement.duration;
-      audioElement.currentTime = seekTime;
+      audioElement.currentTime = (e.target.value / 100) * audioElement.duration;
     }
   });
 
   function updateProgressBar() {
     if (audioElement && audioElement.duration) {
-      const progress = (audioElement.currentTime / audioElement.duration) * 100;
-      const progressBar = document.getElementById('progressBar');
-      progressBar.value = progress;
-      progressBar.style.background = `linear-gradient(to right, #6366f1 ${progress}%, #334155 ${progress}%)`;
+      const p = (audioElement.currentTime / audioElement.duration) * 100;
+      const bar = document.getElementById('progressBar');
+      bar.value = p;
+      bar.style.background = `linear-gradient(to right, #6366f1 ${p}%, #334155 ${p}%)`;
     }
   }
 
   async function shareReflection(audioUrl, title) {
     try {
       const response = await fetch(audioUrl);
-      const finalUrl = response.url;
       const blob = await response.blob();
       const file = new File([blob], `memflect.app - ${title}.mp3`, { type: 'audio/mpeg' });
-
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          files: [file],
-          title: title,
-          text: `🎧 "${title}" — a therapeutic audio reflection I created at memflect.com`
-        });
+        await navigator.share({ files: [file], title, text: `🎧 "${title}" — a personalised audio reflection from memflect.com` });
       } else {
-        await navigator.clipboard.writeText(`🎧 "${title}" — a therapeutic audio reflection I created at memflect.com`);
+        await navigator.clipboard.writeText(`🎧 "${title}" — a personalised audio reflection from memflect.com`);
         alert('Copied to clipboard! Paste into WhatsApp or email.');
       }
-    } catch (err) {
-      console.error('Share failed:', err);
-    }
+    } catch (err) { console.error('Share failed:', err); }
   }
 
-  // ========== MEMCARD MODAL ==========
   let currentMemcardToken = null;
 
   function openMemcardModal(reflectionId, token, title, viewCount) {
     currentMemcardToken = token;
     const url = `${window.location.origin}/m/${token}`;
-
     document.getElementById('memcardModalTitle').textContent = title;
     document.getElementById('memcardUrlField').value = url;
     document.getElementById('memcardViewCount').textContent = viewCount;
     document.getElementById('memcardDisableForm').action = `/reflections/${reflectionId}/disable_memcard`;
-
-    document.getElementById('memcardModal').classList.remove('hidden');
+    document.getElementById('memcardModal').style.display = 'flex';
   }
 
   function closeMemcardModal() {
-    document.getElementById('memcardModal').classList.add('hidden');
+    document.getElementById('memcardModal').style.display = 'none';
     currentMemcardToken = null;
   }
 
@@ -444,18 +394,12 @@
     const btn = document.getElementById('memcardCopyBtn');
     try {
       await navigator.clipboard.writeText(field.value);
-      const originalText = btn.innerHTML;
+      const orig = btn.innerHTML;
       btn.innerHTML = '✓ Copied!';
-      btn.classList.add('bg-green-600');
-      btn.classList.remove('bg-purple-600', 'hover:bg-purple-500');
-      setTimeout(() => {
-        btn.innerHTML = originalText;
-        btn.classList.remove('bg-green-600');
-        btn.classList.add('bg-purple-600', 'hover:bg-purple-500');
-      }, 2000);
-    } catch (err) {
-      field.select();
-      document.execCommand('copy');
+      btn.style.background = '#16a34a';
+      setTimeout(() => { btn.innerHTML = orig; btn.style.background = '#7c3aed'; }, 2000);
+    } catch {
+      field.select(); document.execCommand('copy');
       btn.innerHTML = '✓ Copied!';
       setTimeout(() => { btn.innerHTML = '📋 Copy'; }, 2000);
     }
@@ -464,54 +408,28 @@
   async function shareMemcardNative() {
     const url = document.getElementById('memcardUrlField').value;
     const title = document.getElementById('memcardModalTitle').textContent;
-    const shareText = `🎭 "${title}" — a personal Memflection I want to share with you. Tap to open the cinematic portal.`;
-
+    const text = `🎭 "${title}" — a personal Memflection I want to share with you.`;
     if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `Memcard: ${title}`,
-          text: shareText,
-          url: url
-        });
-      } catch (err) {
-        if (err.name !== 'AbortError') console.error('Share failed:', err);
-      }
+      try { await navigator.share({ title: `Memcard: ${title}`, text, url }); } catch {}
     } else {
-      try {
-        await navigator.clipboard.writeText(`${shareText}\n\n${url}`);
-        alert('Share text copied to clipboard! Paste into any app to share.');
-      } catch (err) {
-        alert(`Share this link:\n\n${url}`);
-      }
+      try { await navigator.clipboard.writeText(`${text}\n\n${url}`); alert('Copied to clipboard!'); }
+      catch { alert(`Share this link:\n\n${url}`); }
     }
   }
 
   function previewMemcard() {
-    if (currentMemcardToken) {
-      window.open(`/m/${currentMemcardToken}`, '_blank');
-    }
+    if (currentMemcardToken) window.open(`/m/${currentMemcardToken}`, '_blank');
   }
 
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      closeAudioModal();
-      closeMemcardModal();
-    }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeAudioModal(); closeMemcardModal(); }
   });
+
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 </script>
 
-<!-- Account Deletion Section -->
-<div class="container mx-auto max-w-6xl mt-16 pt-8 border-t border-white/10">
-  <div class="text-center">
-    <p class="text-slate-500 text-sm mb-3">Need to delete your account?</p>
-    <%= button_to "Delete My Account & All Data",
-        delete_account_path,
-        method: :delete,
-        data: {
-          turbo_confirm: "⚠️ Are you sure? This will permanently delete all your reflections and cannot be undone."
-        },
-        class: "text-red-400 hover:text-red-300 text-sm underline cursor-pointer" %>
-  </div>
-</div>
-
-</div>
+<style>
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  @media (min-width: 640px) { .sm-show { display: table-cell !important; } }
+  @media (min-width: 768px) { .md-show { display: table-cell !important; } }
+</style>

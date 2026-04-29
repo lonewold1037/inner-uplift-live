@@ -1,16 +1,12 @@
 <% if resource.errors.any? %>
-  <div id="error_explanation" data-turbo-cache="false">
-      <h2>
-            <%= I18n.t("errors.messages.not_saved",
-                             count: resource.errors.count,
-                                              resource: resource.class.model_name.human.downcase)
-                                                     %>
-                                                         </h2>
-                                                             <ul>
-                                                                   <% resource.errors.full_messages.each do |message| %>
-                                                                           <li><%= message %></li>
-                                                                                 <% end %>
-                                                                                     </ul>
-                                                                                       </div>
-                                                                                       <% end %>
-                                                                                       %>
+  <div style="background: #fef2f2; border: 1.5px solid rgba(220,38,38,0.25); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1.25rem;">
+    <p style="font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; letter-spacing: 0.08em; color: #dc2626; margin: 0 0 0.5rem;">
+      <%= pluralize(resource.errors.count, "error") %> prevented this from saving:
+    </p>
+    <ul style="margin: 0; padding-left: 1.25rem;">
+      <% resource.errors.full_messages.each do |message| %>
+        <li style="font-family: 'Lora', serif; font-size: 0.875rem; color: #dc2626; text-transform: none; letter-spacing: normal; line-height: 1.6;"><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

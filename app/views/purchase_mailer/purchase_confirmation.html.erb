@@ -4,72 +4,97 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body style="margin: 0; padding: 0; background-color: #1a1a2e; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #1a1a2e; padding: 40px 20px;">
+<body style="margin: 0; padding: 0; background-color: #fdf6ff; font-family: Georgia, serif;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #fdf6ff; padding: 40px 20px;">
     <tr>
       <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" style="max-width: 600px; background: linear-gradient(180deg, #2d2d44 0%, #1a1a2e 100%); border-radius: 24px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
-          
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 520px;">
+
+          <%# Logo %>
           <tr>
-            <td style="padding: 50px 40px 30px 40px; text-align: center;">
-              <h1 style="margin: 0; font-size: 48px; font-weight: 700; color: #fcd34d; text-transform: uppercase; letter-spacing: 0.05em;">MEMFLECT</h1>
+            <td align="center" style="padding-bottom: 24px;">
+              <span style="font-family: Arial, sans-serif; font-size: 28px; font-weight: bold; letter-spacing: 6px; color: #6d28d9;">MEMFLECT</span>
             </td>
           </tr>
-          
+
+          <%# Card %>
           <tr>
-            <td style="padding: 20px 40px 40px 40px; text-align: center;">
-              <p style="color: #e2e8f0; font-size: 28px; font-weight: 600; margin: 0 0 20px 0;">Hey there! 🎉</p>
-              
-              <p style="color: #cbd5e1; font-size: 18px; line-height: 1.7; margin: 0 0 15px 0;">Your Memflection is in the works – give it about 2-3 minutes.</p>
-              
-              <p style="color: #94a3b8; font-size: 16px; line-height: 1.7; margin: 0 0 35px 0;">We're taking your voice, your memory, and your chosen soundscape and weaving them into something that's completely yours.</p>
-              
-              <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
+            <td style="background-color: #ffffff; border-radius: 16px; padding: 40px 36px; border: 1px solid rgba(109,40,217,0.12); box-shadow: 0 4px 24px rgba(109,40,217,0.08);">
+
+              <p style="font-size: 26px; margin: 0 0 4px; text-align: center;">🎉</p>
+              <p style="font-size: 22px; font-weight: bold; color: #3b0764; margin: 0 0 8px; font-family: Arial, sans-serif; letter-spacing: 1px; text-align: center;">
+                Payment Successful!
+              </p>
+
+              <p style="font-size: 15px; color: #6d28d9; margin: 0 0 20px; line-height: 1.7; text-align: center;">
+                Your Memflection is being created right now. This usually takes 2–3 minutes. We'll have it waiting in your dashboard.
+              </p>
+
+              <%# Reflection title if available %>
+              <% if @reflection.title.present? %>
+                <div style="background: #faf8ff; border-left: 4px solid #7c3aed; border-radius: 0 12px 12px 0; padding: 14px 18px; margin-bottom: 24px;">
+                  <p style="font-family: Arial, sans-serif; font-size: 11px; letter-spacing: 2px; color: #a78bfa; margin: 0 0 4px;">YOUR MEMFLECTION</p>
+                  <p style="font-family: Georgia, serif; font-size: 17px; color: #3b0764; margin: 0; font-style: italic;">"<%= @reflection.title %>"</p>
+                </div>
+              <% end %>
+
+              <%# What happens next %>
+              <div style="background: #f0fdf4; border-radius: 12px; padding: 18px 20px; margin-bottom: 28px; border: 1px solid rgba(34,197,94,0.2);">
+                <p style="font-family: Arial, sans-serif; font-size: 11px; letter-spacing: 2px; color: #16a34a; margin: 0 0 12px;">WHAT HAPPENS NEXT</p>
+                <table cellpadding="0" cellspacing="0" width="100%">
+                  <% [
+                    ["🎤", "Your voice is being cloned by ElevenLabs"],
+                    ["🎵", "Your reflection is being mixed with your chosen soundscape"],
+                    ["📥", "Your full 5-minute Memflection will appear in your dashboard"]
+                  ].each do |emoji, text| %>
+                    <tr>
+                      <td style="width: 28px; vertical-align: top; padding-bottom: 8px;">
+                        <span style="font-size: 14px;"><%= emoji %></span>
+                      </td>
+                      <td style="vertical-align: top; padding-bottom: 8px; padding-left: 8px;">
+                        <span style="font-family: Georgia, serif; font-size: 14px; color: #166534; line-height: 1.5;"><%= text %></span>
+                      </td>
+                    </tr>
+                  <% end %>
+                </table>
+              </div>
+
+              <%# CTA button %>
+              <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 24px;">
                 <tr>
-                  <td style="background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); border-radius: 50px; box-shadow: 0 8px 30px rgba(139, 92, 246, 0.4); border: 2px solid rgba(255,255,255,0.3);">
-                    <a href="<%= @dashboard_url %>" style="display: inline-block; padding: 18px 45px; color: #ffffff; font-size: 18px; font-weight: 600; text-decoration: none;">View Your Memflection ✨</a>
+                  <td align="center">
+                    <a href="<%= @dashboard_url %>"
+                       style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #be185d 100%); color: #ffffff; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; letter-spacing: 2px; text-decoration: none; padding: 16px 40px; border-radius: 100px;">
+                      GO TO MY DASHBOARD
+                    </a>
                   </td>
                 </tr>
               </table>
-            </td>
-          </tr>
-          
-          <tr>
-            <td style="padding: 0 40px 40px 40px;">
-              <table width="100%" cellpadding="0" cellspacing="0" style="background: rgba(255,255,255,0.05); border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);">
-                <tr>
-                  <td style="padding: 25px 30px;">
-                    <p style="color: #e2e8f0; font-size: 16px; font-weight: 600; margin: 0 0 15px 0; text-align: center;">What's happening right now:</p>
-                    <p style="color: #94a3b8; font-size: 15px; line-height: 2; margin: 0;">
-                      → Your personalized script is being crafted<br>
-                      → Your own voice is narrating the reflection<br>
-                      → Everything's getting mixed with your soundscape<br>
-                      → Soon you'll be able to download and replay anytime
-                    </p>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-          
-          <tr>
-            <td style="padding: 25px 40px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
-              <p style="color: #64748b; font-size: 12px; margin: 0 0 10px 0;">
-                Questions? Reply to this email or contact <%= mail_to "support@memflect.com", "support@memflect.com", style: "color: #38bdf8; text-decoration: none;" %>
+
+              <p style="font-size: 12px; color: #c4b5fd; line-height: 1.6; margin: 0; border-top: 1px solid rgba(109,40,217,0.08); padding-top: 16px; text-align: center;">
+                Questions? Reply to this email or reach us at <a href="mailto:ryan@memflect.com" style="color: #a78bfa;">ryan@memflect.com</a>
               </p>
-              <p style="color: #64748b; font-size: 11px; margin: 10px 0 0 0; line-height: 1.6;">
-                Memflect<br>
-                1090 Lower Delta Road<br>
-                #04-16<br>
-                Singapore 169201
-              </p>
-              <p style="color: #64748b; font-size: 13px; margin: 10px 0 0 0;">© <%= Date.current.year %> Memflect. All rights reserved.</p>
+
             </td>
           </tr>
-          
+
+          <%# Footer %>
+          <tr>
+            <td align="center" style="padding-top: 24px;">
+              <p style="font-size: 11px; color: #c4b5fd; margin: 0 0 6px; font-family: Arial, sans-serif; letter-spacing: 1px;">
+                © <%= Date.current.year %> MEMFLECT · <a href="https://memflect.com" style="color: #a78bfa; text-decoration: none;">memflect.com</a>
+              </p>
+              <p style="font-size: 11px; color: #c4b5fd; margin: 0; font-family: Arial, sans-serif; line-height: 1.6;">
+                1090 Lower Delta Road, #04-16, Singapore 169201
+              </p>
+            </td>
+          </tr>
+
         </table>
       </td>
     </tr>
   </table>
+
 </body>
 </html>

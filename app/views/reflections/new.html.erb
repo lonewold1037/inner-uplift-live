@@ -1,16 +1,19 @@
-<div class="min-h-screen flex items-center justify-center py-12 px-4 pt-16">
-  <div class="max-w-2xl w-full space-y-8">
+<div style="min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 3rem 1.5rem 4rem;">
+  <div style="width: 100%; max-width: 680px;">
 
-    <div>
-      <h1 class="text-center text-4xl font-medium tracking-wide text-white tracking-wide">
-        Create Your Memflection
+    <div style="text-align: center; margin-bottom: 2.5rem;">
+      <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: white; border: 1.5px solid rgba(244,114,182,0.4); border-radius: 100px; padding: 0.4rem 1rem; margin-bottom: 1.5rem; box-shadow: 0 2px 12px rgba(244,114,182,0.12);">
+        <span>🎁</span>
+        <span style="font-family: 'Lora', serif; font-size: 0.8rem; color: #be185d; text-transform: none; letter-spacing: 0.05em;">Creating a gift? Toggle Gift Mode below</span>
+      </div>
+      <h1 style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.2rem, 7vw, 3.5rem); letter-spacing: 0.04em; color: #3b0764; margin: 0 0 0.75rem;">
+        Tell Us The Memory
       </h1>
-      <p class="mt-2 text-center text-lg text-slate-300">
-        What memory do you want to reflect on? Let's craft something meaningful for you or a friend.
+      <p style="font-family: 'Lora', serif; font-size: 1rem; color: #6d28d9; text-transform: none; letter-spacing: normal; line-height: 1.7; margin: 0; opacity: 0.8;">
+        Four questions. Two minutes. Something they'll never forget.
       </p>
     </div>
 
-    <%# This now simply renders the form partial, which has its own styling %>
     <%= render 'form', reflection: @reflection %>
 
   </div>

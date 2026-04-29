@@ -1,186 +1,229 @@
-<div class="bg-black/50 backdrop-blur-xl p-8 rounded-2xl shadow-lg border border-white/20">
+<%# ── Input + Label helpers (inline styles only, no Tailwind dependency) ── %>
+
+<div style="background: white; border-radius: 24px; padding: 2.5rem; box-shadow: 0 4px 32px rgba(109,40,217,0.1); border: 1px solid rgba(109,40,217,0.08);">
 
   <%= form_with(model: reflection, url: reflections_path, multipart: true) do |form| %>
+
+    <%# ── Errors ── %>
     <% if form.object.errors.any? %>
-      <div class="bg-red-500/20 text-red-300 p-3 rounded-lg mb-6">
-        <h2 class="font-semibold tracking-wide"><%= pluralize(form.object.errors.count, "error") %> prohibited this reflection from being saved:</h2>
-        <ul>
+      <div style="background: #fef2f2; border: 1.5px solid #fca5a5; border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1.5rem;">
+        <p style="font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.08em; color: #dc2626; margin: 0 0 0.5rem;">
+          <%= pluralize(form.object.errors.count, "error") %> to fix:
+        </p>
+        <ul style="margin: 0; padding-left: 1.25rem;">
           <% form.object.errors.full_messages.each do |message| %>
-            <li><%= message %></li>
+            <li style="font-family: 'Lora', serif; font-size: 0.875rem; color: #dc2626; text-transform: none; letter-spacing: normal;"><%= message %></li>
           <% end %>
         </ul>
       </div>
     <% end %>
 
-    <!-- Gift Mode Toggle -->
-    <div class="mb-4">
-      <label class="flex items-center cursor-pointer gap-3">
+    <%# ── Gift Mode Toggle ── %>
+    <div style="background: linear-gradient(135deg, #fdf4ff 0%, #fff0f6 100%); border: 1.5px solid rgba(244,114,182,0.3); border-radius: 16px; padding: 1.25rem 1.5rem; margin-bottom: 2rem;">
+      <label style="display: flex; align-items: center; gap: 0.875rem; cursor: pointer;">
         <input type="checkbox" id="gift-mode-toggle" name="reflection[mode]" value="gift"
-               class="w-5 h-5 rounded border-white/20 bg-slate-800/50 text-sky-500 focus:ring-sky-400"
-               onchange="toggleGiftMode(this.checked)">
-        <span class="text-white font-medium tracking-wide text-lg">🎁 This is for someone else</span>
+               onchange="toggleGiftMode(this.checked)"
+               style="width: 20px; height: 20px; accent-color: #7c3aed; cursor: pointer; flex-shrink: 0;">
+        <div>
+          <span style="font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.06em; color: #3b0764;">🎁 This is a gift for someone else</span>
+          <p style="font-family: 'Lora', serif; font-size: 0.8rem; color: #be185d; text-transform: none; letter-spacing: normal; margin: 0.2rem 0 0; opacity: 0.8;">Toggle this on to create a Memflection for someone you love</p>
+        </div>
       </label>
       <input type="hidden" name="reflection[mode]" value="self" id="gift-mode-hidden">
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-      <div class="col-span-1 md:col-span-2">
-        <label id="name-label" class="block text-white font-medium tracking-wide text-lg mb-2">
-          How do you call yourself?
-        </label>
-        <%= form.text_field :name_for_recap, placeholder: "e.g. \"Ryan\" or \"Mom\" or \"Coach K\"", class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 focus:outline-none focus:border-sky-400" %>
-      </div>
+    <%# ── Your Name ── %>
+    <div style="margin-bottom: 1.5rem;">
+      <label id="name-label" style="display: block; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: #3b0764; margin-bottom: 0.5rem;">
+        Your name
+      </label>
+      <%= form.text_field :name_for_recap,
+            placeholder: "e.g. Ryan or Mum or Coach K",
+            style: "width: 100%; background: #faf8ff; color: #1e1b4b; border: 1.5px solid rgba(109,40,217,0.2); border-radius: 12px; padding: 0.875rem 1rem; font-family: 'Lora', serif; font-size: 1rem; text-transform: none; letter-spacing: normal; box-sizing: border-box; outline: none; transition: border-color 0.2s;",
+            onfocus: "this.style.borderColor='#7c3aed'",
+            onblur: "this.style.borderColor='rgba(109,40,217,0.2)'" %>
+    </div>
 
-      <!-- Recipient Name (hidden by default, shown in gift mode) -->
-      <div class="col-span-1 md:col-span-2 hidden" id="recipient-name-field">
-        <label class="block text-white font-medium tracking-wide text-lg mb-2">
-          🎁 Who is this memflection for?
-        </label>
-        <%= form.text_field :recipient_name, placeholder: "e.g. \"Sarah\" or \"Dad\" or \"My Best Friend\"", class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 focus:outline-none focus:border-sky-400" %>
-      </div>
+    <%# ── Recipient Name (gift mode only) ── %>
+    <div id="recipient-name-field" style="display: none; margin-bottom: 1.5rem;">
+      <label style="display: block; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: #be185d; margin-bottom: 0.5rem;">
+        🎁 Who is this gift for?
+      </label>
+      <%= form.text_field :recipient_name,
+            placeholder: "e.g. Sarah or Dad or My Best Friend",
+            style: "width: 100%; background: #fff0f6; color: #1e1b4b; border: 1.5px solid rgba(244,114,182,0.3); border-radius: 12px; padding: 0.875rem 1rem; font-family: 'Lora', serif; font-size: 1rem; text-transform: none; letter-spacing: normal; box-sizing: border-box; outline: none; transition: border-color 0.2s;",
+            onfocus: "this.style.borderColor='#be185d'",
+            onblur: "this.style.borderColor='rgba(244,114,182,0.3)'" %>
+    </div>
+
+    <%# ── 4 Memory Fields ── %>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-bottom: 1.5rem;">
 
       <div>
-        <label id="remember-label" class="block text-white font-medium tracking-wide text-lg mb-2">
+        <label id="remember-label" style="display: block; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: #3b0764; margin-bottom: 0.5rem;">
           I remember...
         </label>
-        <%= form.text_area :remember_when, rows: 4, id: "remember-field", placeholder: "e.g. \"I finally got over that major hurdle that had been weighing on me for months\"", class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 focus:outline-none focus:border-sky-400" %>
+        <p style="font-family: 'Lora', serif; font-size: 0.78rem; color: #7c3aed; text-transform: none; letter-spacing: normal; margin: 0 0 0.5rem; opacity: 0.8;">The moment or memory itself</p>
+        <%= form.text_area :remember_when, rows: 4, id: "remember-field",
+              placeholder: "e.g. I finally got over that major hurdle that had been weighing on me for months",
+              style: "width: 100%; background: #faf8ff; color: #1e1b4b; border: 1.5px solid rgba(109,40,217,0.2); border-radius: 12px; padding: 0.875rem 1rem; font-family: 'Lora', serif; font-size: 0.95rem; text-transform: none; letter-spacing: normal; box-sizing: border-box; outline: none; resize: vertical; transition: border-color 0.2s; line-height: 1.6;",
+              onfocus: "this.style.borderColor='#7c3aed'",
+              onblur: "this.style.borderColor='rgba(109,40,217,0.2)'" %>
       </div>
 
       <div>
-        <label id="felt-label" class="block text-white font-medium tracking-wide text-lg mb-2">
+        <label id="felt-label" style="display: block; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: #3b0764; margin-bottom: 0.5rem;">
           It made me feel...
         </label>
-        <%= form.text_area :felt_like, rows: 4, id: "felt-field", placeholder: "e.g. \"Like I could take on anything — lighter, proud, and genuinely surprised at my own strength\"", class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 focus:outline-none focus:border-sky-400" %>
+        <p style="font-family: 'Lora', serif; font-size: 0.78rem; color: #7c3aed; text-transform: none; letter-spacing: normal; margin: 0 0 0.5rem; opacity: 0.8;">The emotion it brought up</p>
+        <%= form.text_area :felt_like, rows: 4, id: "felt-field",
+              placeholder: "e.g. Like I could take on anything — lighter, proud, genuinely surprised at my own strength",
+              style: "width: 100%; background: #faf8ff; color: #1e1b4b; border: 1.5px solid rgba(109,40,217,0.2); border-radius: 12px; padding: 0.875rem 1rem; font-family: 'Lora', serif; font-size: 0.95rem; text-transform: none; letter-spacing: normal; box-sizing: border-box; outline: none; resize: vertical; transition: border-color 0.2s; line-height: 1.6;",
+              onfocus: "this.style.borderColor='#7c3aed'",
+              onblur: "this.style.borderColor='rgba(109,40,217,0.2)'" %>
       </div>
 
       <div>
-        <label id="because-label" class="block text-white font-medium tracking-wide text-lg mb-2">
+        <label id="because-label" style="display: block; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: #3b0764; margin-bottom: 0.5rem;">
           But/And because...
         </label>
-        <%= form.text_area :because_of, rows: 4, id: "because-field", placeholder: "e.g. \"I almost gave up so many times, but something kept pulling me forward\"", class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 focus:outline-none focus:border-sky-400" %>
+        <p style="font-family: 'Lora', serif; font-size: 0.78rem; color: #7c3aed; text-transform: none; letter-spacing: normal; margin: 0 0 0.5rem; opacity: 0.8;">The context or backstory</p>
+        <%= form.text_area :because_of, rows: 4, id: "because-field",
+              placeholder: "e.g. I almost gave up so many times, but something kept pulling me forward",
+              style: "width: 100%; background: #faf8ff; color: #1e1b4b; border: 1.5px solid rgba(109,40,217,0.2); border-radius: 12px; padding: 0.875rem 1rem; font-family: 'Lora', serif; font-size: 0.95rem; text-transform: none; letter-spacing: normal; box-sizing: border-box; outline: none; resize: vertical; transition: border-color 0.2s; line-height: 1.6;",
+              onfocus: "this.style.borderColor='#7c3aed'",
+              onblur: "this.style.borderColor='rgba(109,40,217,0.2)'" %>
       </div>
 
       <div>
-        <label id="remind-label" class="block text-white font-medium tracking-wide text-lg mb-2">
+        <label id="remind-label" style="display: block; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: #3b0764; margin-bottom: 0.5rem;">
           I want to be reminded that...
         </label>
-        <%= form.text_area :lift_up_request, rows: 4, id: "remind-field", placeholder: "e.g. \"I am capable of hard things, and the struggle is what makes the victory real\"", class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 focus:outline-none focus:border-sky-400" %>
+        <p style="font-family: 'Lora', serif; font-size: 0.78rem; color: #7c3aed; text-transform: none; letter-spacing: normal; margin: 0 0 0.5rem; opacity: 0.8;">The takeaway or affirmation</p>
+        <%= form.text_area :lift_up_request, rows: 4, id: "remind-field",
+              placeholder: "e.g. I am capable of hard things, and the struggle is what makes the victory real",
+              style: "width: 100%; background: #faf8ff; color: #1e1b4b; border: 1.5px solid rgba(109,40,217,0.2); border-radius: 12px; padding: 0.875rem 1rem; font-family: 'Lora', serif; font-size: 0.95rem; text-transform: none; letter-spacing: normal; box-sizing: border-box; outline: none; resize: vertical; transition: border-color 0.2s; line-height: 1.6;",
+              onfocus: "this.style.borderColor='#7c3aed'",
+              onblur: "this.style.borderColor='rgba(109,40,217,0.2)'" %>
       </div>
 
-      <div class="col-span-1 md:col-span-2 mt-4">
-        <%= form.label :style, "Choose a Style for your Memflection:", class: "block text-white font-medium tracking-wide text-lg mb-2" %>
-        <%= form.select :style,
-                        Reflection::STYLES,
-                        { prompt: "Select a style" },
-                        { class: "w-full bg-slate-800/50 text-white border-2 border-white/20 rounded-lg p-3 focus:outline-none focus:border-sky-400" } %>
-      </div>
+    </div>
 
-      <!-- Optional Cover Photo Upload -->
-      <div class="col-span-1 md:col-span-2 mt-2">
-        <label class="block text-white font-medium tracking-wide text-lg mb-2">
-          📷 Add a photo to your Memflection <span class="text-slate-400 text-sm font-normal">(optional)</span>
-        </label>
-        <p class="text-slate-400 text-sm mb-3" style="text-transform: none; letter-spacing: normal;">
-          A photo of the person, place, or moment this memory is about. It will appear in your player with a warm nostalgic filter.
-        </p>
-        <div class="relative">
-          <label for="cover-image-input" class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/20 rounded-xl cursor-pointer bg-slate-800/30 hover:bg-slate-800/50 hover:border-white/40 transition-all" id="cover-image-label">
-            <div id="cover-image-placeholder" class="flex flex-col items-center justify-center gap-2">
-              <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-              </svg>
-              <span class="text-slate-400 text-sm" style="text-transform: none;">Click to upload a photo</span>
-              <span class="text-slate-500 text-xs" style="text-transform: none;">JPG, PNG up to 10MB</span>
-            </div>
-            <img id="cover-image-preview" src="" alt="" class="hidden max-h-28 rounded-lg object-cover" style="filter: sepia(30%) contrast(110%) brightness(95%) saturate(85%);">
-          </label>
-          <%= form.file_field :cover_image, id: "cover-image-input", accept: "image/jpeg,image/png,image/webp", class: "hidden" %>
+    <%# ── Style Selector ── %>
+    <div style="margin-bottom: 1.5rem;">
+      <%= form.label :style, "Choose a style for your Memflection:",
+            style: "display: block; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: #3b0764; margin-bottom: 0.5rem;" %>
+      <%= form.select :style,
+            Reflection::STYLES,
+            { prompt: "Select a style..." },
+            style: "width: 100%; background: #faf8ff; color: #1e1b4b; border: 1.5px solid rgba(109,40,217,0.2); border-radius: 12px; padding: 0.875rem 1rem; font-family: 'Lora', serif; font-size: 0.95rem; text-transform: none; letter-spacing: normal; box-sizing: border-box; outline: none; appearance: none; cursor: pointer;" %>
+    </div>
+
+    <%# ── Photo Upload ── %>
+    <div style="margin-bottom: 2rem;">
+      <label style="display: block; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: #3b0764; margin-bottom: 0.35rem;">
+        📷 Add a photo <span style="font-family: 'Lora', serif; font-size: 0.8rem; color: #a78bfa; text-transform: none; letter-spacing: normal; font-weight: 400;">(optional)</span>
+      </label>
+      <p style="font-family: 'Lora', serif; font-size: 0.82rem; color: #6d28d9; text-transform: none; letter-spacing: normal; margin: 0 0 0.75rem; opacity: 0.8; line-height: 1.5;">
+        A photo of the person, place, or moment. It will appear in the gift reveal with a warm nostalgic filter.
+      </p>
+      <label for="cover-image-input" id="cover-image-label"
+             style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; min-height: 120px; border: 2px dashed rgba(109,40,217,0.25); border-radius: 16px; cursor: pointer; background: #faf8ff; transition: all 0.2s; box-sizing: border-box;"
+             onmouseover="this.style.borderColor='#7c3aed'; this.style.background='#f5f0ff';"
+             onmouseout="this.style.borderColor='rgba(109,40,217,0.25)'; this.style.background='#faf8ff';">
+        <div id="cover-image-placeholder" style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 1.5rem;">
+          <svg width="32" height="32" fill="none" stroke="#a78bfa" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+          <span style="font-family: 'Lora', serif; font-size: 0.875rem; color: #7c3aed; text-transform: none; letter-spacing: normal;">Click to upload a photo</span>
+          <span style="font-family: 'Lora', serif; font-size: 0.75rem; color: #c4b5fd; text-transform: none; letter-spacing: normal;">JPG, PNG up to 10MB</span>
         </div>
-      </div>
+        <img id="cover-image-preview" src="" alt="" style="display: none; max-height: 120px; border-radius: 12px; object-fit: cover; filter: sepia(30%) contrast(110%) brightness(95%) saturate(85%);">
+      </label>
+      <%= form.file_field :cover_image, id: "cover-image-input", accept: "image/jpeg,image/png,image/webp", style: "display: none;" %>
     </div>
 
-    <script>
-      document.getElementById('cover-image-input').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function(ev) {
-          const preview = document.getElementById('cover-image-preview');
-          const placeholder = document.getElementById('cover-image-placeholder');
-          preview.src = ev.target.result;
-          preview.classList.remove('hidden');
-          placeholder.classList.add('hidden');
-        };
-        reader.readAsDataURL(file);
-      });
+    <%# ── Submit ── %>
+    <button type="submit" id="generate-recap"
+            style="width: 100%; background: linear-gradient(135deg, #7c3aed 0%, #be185d 100%); color: white; border: none; border-radius: 100px; padding: 1.1rem 2rem; font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 0.1em; cursor: pointer; box-shadow: 0 8px 24px rgba(124,58,237,0.3); transition: all 0.2s;"
+            onmouseover="this.style.transform='scale(1.02)'; this.style.boxShadow='0 12px 30px rgba(124,58,237,0.4)';"
+            onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 8px 24px rgba(124,58,237,0.3)';">
+      Generate My Preview ✨
+    </button>
 
-      function toggleGiftMode(isGift) {
-        const recipientField = document.getElementById('recipient-name-field');
-        const hiddenMode = document.getElementById('gift-mode-hidden');
-        
-        const nameLabel = document.getElementById('name-label');
-        const rememberLabel = document.getElementById('remember-label');
-        const feltLabel = document.getElementById('felt-label');
-        const becauseLabel = document.getElementById('because-label');
-        const remindLabel = document.getElementById('remind-label');
-        
-        const rememberField = document.getElementById('remember-field');
-        const feltField = document.getElementById('felt-field');
-        const becauseField = document.getElementById('because-field');
-        const remindField = document.getElementById('remind-field');
-
-        if (isGift) {
-          hiddenMode.disabled = true;
-          recipientField.classList.remove('hidden');
-          
-          nameLabel.textContent = 'Your name';
-          rememberLabel.textContent = 'I remember when you...';
-          feltLabel.textContent = 'It made me feel...';
-          becauseLabel.textContent = 'But/And because...';
-          remindLabel.textContent = 'I want you to know that...';
-          
-          rememberField.placeholder = 'e.g. "helped me through the hardest year of my life"';
-          feltField.placeholder = 'e.g. "like I finally had someone in my corner who truly understood"';
-          becauseField.placeholder = 'e.g. "I never told you how much that meant to me at the time"';
-          remindField.placeholder = 'e.g. "you are one of the most important people in my world"';
-        } else {
-          hiddenMode.disabled = false;
-          recipientField.classList.add('hidden');
-          
-          nameLabel.textContent = 'How do you call yourself?';
-          rememberLabel.textContent = 'I remember...';
-          feltLabel.textContent = 'It made me feel...';
-          becauseLabel.textContent = 'But/And because...';
-          remindLabel.textContent = 'I want to be reminded that...';
-          
-          rememberField.placeholder = 'e.g. "I finally got over that major hurdle that had been weighing on me for months"';
-          feltField.placeholder = 'e.g. "Like I could take on anything — lighter, proud, and genuinely surprised at my own strength"';
-          becauseField.placeholder = 'e.g. "I almost gave up so many times, but something kept pulling me forward"';
-          remindField.placeholder = 'e.g. "I am capable of hard things, and the struggle is what makes the victory real"';
-        }
-      }
-    </script>
-
-    <div class="flex items-center justify-center mt-8">
-      <%= form.submit "Generate My Preview ✨",
-                      id: "generate-recap",
-                      class: "w-full bg-sky-600 hover:bg-sky-500 text-white font-medium tracking-wide py-4 px-4 rounded-lg text-lg focus:outline-none focus:shadow-outline cursor-pointer transition-colors" %>
-    </div>
   <% end %>
 </div>
 
 <script>
-  const recapButton = document.getElementById("generate-recap");
+  <%# ── Photo preview ── %>
+  document.getElementById('cover-image-input').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      const preview = document.getElementById('cover-image-preview');
+      const placeholder = document.getElementById('cover-image-placeholder');
+      preview.src = ev.target.result;
+      preview.style.display = 'block';
+      placeholder.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  <%# ── Gift mode toggle ── %>
+  function toggleGiftMode(isGift) {
+    const recipientField = document.getElementById('recipient-name-field');
+    const hiddenMode = document.getElementById('gift-mode-hidden');
+    const nameLabel = document.getElementById('name-label');
+    const rememberLabel = document.getElementById('remember-label');
+    const feltLabel = document.getElementById('felt-label');
+    const becauseLabel = document.getElementById('because-label');
+    const remindLabel = document.getElementById('remind-label');
+    const rememberField = document.getElementById('remember-field');
+    const feltField = document.getElementById('felt-field');
+    const becauseField = document.getElementById('because-field');
+    const remindField = document.getElementById('remind-field');
+
+    if (isGift) {
+      hiddenMode.disabled = true;
+      recipientField.style.display = 'block';
+      nameLabel.textContent = 'Your name';
+      rememberLabel.textContent = 'I remember when you...';
+      feltLabel.textContent = 'It made me feel...';
+      becauseLabel.textContent = 'But/And because...';
+      remindLabel.textContent = 'I want you to know that...';
+      rememberField.placeholder = 'e.g. helped me through the hardest year of my life';
+      feltField.placeholder = 'e.g. like I finally had someone in my corner who truly understood';
+      becauseField.placeholder = 'e.g. I never told you how much that meant to me at the time';
+      remindField.placeholder = 'e.g. you are one of the most important people in my world';
+    } else {
+      hiddenMode.disabled = false;
+      recipientField.style.display = 'none';
+      nameLabel.textContent = 'Your name';
+      rememberLabel.textContent = 'I remember...';
+      feltLabel.textContent = 'It made me feel...';
+      becauseLabel.textContent = 'But/And because...';
+      remindLabel.textContent = 'I want to be reminded that...';
+      rememberField.placeholder = 'e.g. I finally got over that major hurdle that had been weighing on me for months';
+      feltField.placeholder = 'e.g. Like I could take on anything — lighter, proud, genuinely surprised at my own strength';
+      becauseField.placeholder = 'e.g. I almost gave up so many times, but something kept pulling me forward';
+      remindField.placeholder = 'e.g. I am capable of hard things, and the struggle is what makes the victory real';
+    }
+  }
+
+  <%# ── Submit loading state ── %>
+  const recapButton = document.getElementById('generate-recap');
   if (recapButton) {
-    const form = recapButton.closest("form");
-    form?.addEventListener("submit", (event) => {
+    const form = recapButton.closest('form');
+    form?.addEventListener('submit', () => {
       recapButton.disabled = true;
+      recapButton.style.opacity = '0.7';
       recapButton.innerHTML = `
-        <svg class="animate-spin h-5 w-5 inline-block mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        <svg style="display:inline-block;width:20px;height:20px;margin-right:8px;vertical-align:middle;animation:spin 1s linear infinite;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle style="opacity:0.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path style="opacity:0.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
-        Generating...
+        Generating Your Preview...
       `;
     });
   }

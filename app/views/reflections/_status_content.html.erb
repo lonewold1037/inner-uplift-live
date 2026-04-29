@@ -1,364 +1,322 @@
 <% content_for :head do %>
   <meta name="turbo-cache-control" content="no-cache">
 <% end %>
-<div class="max-w-2xl mx-auto space-y-8">
+
+<div style="max-width: 680px; margin: 0 auto; padding: 2rem 1.5rem 4rem;">
   <% case reflection.status %>
+
+  <%# ══════════════════════════════════════════════════════════
+      IN-PROGRESS STATES
+  ══════════════════════════════════════════════════════════ %>
   <% when 'generating_recap', 'processing_voice', 'generating_preview', 'mixing' %>
-    <%# ----- All IN-PROGRESS States ----- %>
     <script>
       setTimeout(function() {
-        if (document.querySelector('.animate-pulse')) {
-          window.location.reload();
-        }
+        if (document.querySelector('[data-pulse]')) window.location.reload();
       }, 30000);
     </script>
     <%
-      title = case reflection.status
-              when 'generating_recap'   then 'Generating Your Recap...'
-              when 'processing_voice'   then 'Analyzing Your Voice...'
-              when 'generating_preview' then 'Generating Audio Preview...'
-              when 'mixing'             then 'Mixing Your Final Audio...'
-              end
+      status_info = case reflection.status
+        when 'generating_recap'   then { emoji: '✍️', title: 'Writing Your Script...', sub: 'GPT-4 is crafting your personalised narrative.' }
+        when 'processing_voice'   then { emoji: '🎤', title: 'Cloning Your Voice...', sub: 'ElevenLabs is learning the sound of you.' }
+        when 'generating_preview' then { emoji: '🎵', title: 'Generating Audio...', sub: 'Your voice is being rendered into the narration.' }
+        when 'mixing'             then { emoji: '🎚️', title: 'Mixing the Final Track...', sub: 'Blending your voice with the perfect soundscape.' }
+      end
     %>
-    <div class="text-center">
-      <h1 class="text-4xl font-bold tracking-wider text-white tracking-wide animate-pulse"><%= title %></h1>
-      <p class="text-lg text-slate-300 mt-2">This may take a moment. Please wait.</p>
-    </div>
-
-  <% when 'pending' %>
-    <%# ----- STATE: PENDING (Recap Confirmation) ----- %>
-    <div class="text-center">
-      <h1 class="text-4xl font-medium tracking-wider text-white tracking-wide">
-        Your Memflection Content Preview
+    <div style="text-align: center; padding: 4rem 1rem;">
+      <div style="font-size: 3.5rem; margin-bottom: 1.5rem;" data-pulse><%= status_info[:emoji] %></div>
+      <h1 style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(2rem, 7vw, 3rem); letter-spacing: 0.04em; color: #3b0764; margin: 0 0 0.75rem;">
+        <%= status_info[:title] %>
       </h1>
+      <p style="font-family: 'Lora', serif; font-size: 1rem; color: #6d28d9; text-transform: none; letter-spacing: normal; opacity: 0.8; margin: 0 0 2rem;">
+        <%= status_info[:sub] %>
+      </p>
+      <%# Animated progress dots %>
+      <div style="display: flex; justify-content: center; gap: 0.5rem;">
+        <div style="width: 10px; height: 10px; background: #7c3aed; border-radius: 50%; animation: pulse 1.4s ease-in-out infinite 0s;"></div>
+        <div style="width: 10px; height: 10px; background: #a78bfa; border-radius: 50%; animation: pulse 1.4s ease-in-out infinite 0.2s;"></div>
+        <div style="width: 10px; height: 10px; background: #c4b5fd; border-radius: 50%; animation: pulse 1.4s ease-in-out infinite 0.4s;"></div>
+      </div>
+      <p style="font-family: 'Lora', serif; font-size: 0.8rem; color: #a78bfa; text-transform: none; letter-spacing: normal; margin-top: 1.5rem;">This usually takes 30–60 seconds</p>
+    </div>
+    <style>
+      @keyframes pulse { 0%, 100% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } }
+    </style>
+
+  <%# ══════════════════════════════════════════════════════════
+      PENDING — RECAP CONFIRMATION
+  ══════════════════════════════════════════════════════════ %>
+  <% when 'pending' %>
+
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <h1 style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(2rem, 7vw, 3rem); letter-spacing: 0.04em; color: #3b0764; margin: 0 0 0.5rem;">
+        Your Script is Ready ✨
+      </h1>
+      <p style="font-family: 'Lora', serif; font-size: 0.95rem; color: #6d28d9; text-transform: none; letter-spacing: normal; opacity: 0.8; margin: 0;">
+        Read it over — then record your voice on the next page.
+      </p>
     </div>
 
     <% if reflection.cover_image.attached? %>
-      <div class="flex justify-center">
+      <div style="display: flex; justify-content: center; margin-bottom: 1.5rem;">
         <img src="<%= url_for(reflection.cover_image) %>"
-             class="rounded-2xl max-h-48 w-auto shadow-2xl border border-white/10"
-             style="filter: sepia(30%) contrast(110%) brightness(95%) saturate(85%);">
+             style="max-height: 180px; width: auto; border-radius: 16px; box-shadow: 0 8px 32px rgba(109,40,217,0.15); border: 1px solid rgba(109,40,217,0.1); filter: sepia(30%) contrast(110%) brightness(95%) saturate(85%);">
       </div>
     <% end %>
 
-    <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8">
-      <p class="text-slate-400 text-sm text-center mb-6" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">
-        ✨ Your opening script — you will read this aloud when you record your voice on the next page.
+    <div style="background: white; border-radius: 20px; border: 1px solid rgba(109,40,217,0.1); padding: 2rem; box-shadow: 0 4px 24px rgba(109,40,217,0.08); margin-bottom: 1.5rem;">
+      <p style="font-family: 'Lora', serif; font-size: 0.8rem; color: #a78bfa; text-transform: none; letter-spacing: normal; text-align: center; margin: 0 0 1.25rem;">
+        ✨ Your opening script — read this aloud when you record your voice
       </p>
-      <div class="bg-black/20 rounded-xl p-6 border-l-4 border-purple-500/50">
-        <p class="text-white text-lg leading-relaxed" style="font-family: 'Lora', serif; text-transform: none; letter-spacing: normal;">
+      <div style="background: #faf8ff; border-radius: 14px; padding: 1.5rem; border-left: 4px solid #7c3aed;">
+        <p style="font-family: 'Lora', serif; font-size: 1.05rem; line-height: 1.8; color: #1e1b4b; text-transform: none; letter-spacing: normal; margin: 0; font-style: italic;">
           "<%= reflection.recap %>"
         </p>
       </div>
-      <p class="text-slate-500 text-xs text-center mt-4" style="font-family: 'Crimson Text', serif; text-transform: none; letter-spacing: normal;">
-        Happy with this? Proceed below — or start over if you'd like a different angle.
+      <p style="font-family: 'Lora', serif; font-size: 0.78rem; color: #c4b5fd; text-transform: none; letter-spacing: normal; text-align: center; margin: 1rem 0 0;">
+        Happy with this? Proceed below — or start over for a different angle.
       </p>
     </div>
-    <div class="flex justify-center space-x-4">
-      <%= link_to "Yep! Proceed to Voice Recording →",
+
+    <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center;">
+      <%= link_to "Yep! Record My Voice →",
                   record_reflection_path(reflection),
-                  class: "bg-sky-600 hover:bg-sky-500 text-white font-medium tracking-wider py-3 px-5 rounded-lg",
+                  style: "display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #be185d 100%); color: white; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.08em; padding: 0.875rem 2rem; border-radius: 100px; text-decoration: none; box-shadow: 0 6px 20px rgba(124,58,237,0.3);",
                   data: { turbo_frame: "_top" } %>
-      <%= link_to "No, let me try that again.",
+      <%= link_to "Try a Different Angle",
                   new_reflection_path(from: reflection.id),
-                  class: "bg-slate-600 hover:bg-slate-500 text-white font-medium tracking-wider py-3 px-5 rounded-lg" %>
+                  style: "display: inline-block; background: white; color: #6d28d9; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.08em; padding: 0.875rem 2rem; border-radius: 100px; text-decoration: none; border: 1.5px solid rgba(109,40,217,0.2);" %>
     </div>
 
+  <%# ══════════════════════════════════════════════════════════
+      READY TO MIX
+  ══════════════════════════════════════════════════════════ %>
   <% when 'ready_to_mix' %>
-    <%# ----- STATE: READY TO MIX (Soundscape Form) ----- %>
     <%= render partial: 'reflections/mix_in_audio', locals: { reflection: reflection, soundscapes: soundscapes } %>
 
+  <%# ══════════════════════════════════════════════════════════
+      COMPLETED
+  ══════════════════════════════════════════════════════════ %>
   <% when 'completed' %>
-    <%# ----- STATE: COMPLETED (Final Audio Player) ----- %>
 
-    <%# Confetti Canvas %>
     <canvas id="confetti-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
 
-    <div class="text-center">
-      <h1 class="text-3xl md:text-4xl font-medium tracking-wider text-white tracking-wide">
-        Your Memflection Sample is Ready! ✨
+    <div style="text-align: center; margin-bottom: 1.5rem;">
+      <h1 style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(2rem, 7vw, 3rem); letter-spacing: 0.04em; color: #3b0764; margin: 0 0 0.5rem;">
+        Your Preview is Ready! 🎉
       </h1>
-      <p class="text-base md:text-lg text-slate-300 mt-4">Listen to your personalized audio reflection below.</p>
+      <p style="font-family: 'Lora', serif; font-size: 0.95rem; color: #6d28d9; text-transform: none; letter-spacing: normal; opacity: 0.8; margin: 0;">
+        Listen below — then unlock the full 5-minute version.
+      </p>
     </div>
 
     <% if reflection.cover_image.attached? %>
-      <div class="flex justify-center">
+      <div style="display: flex; justify-content: center; margin-bottom: 1.5rem;">
         <img src="<%= url_for(reflection.cover_image) %>"
-             class="rounded-2xl max-h-56 w-auto shadow-2xl border border-white/10"
-             style="filter: sepia(30%) contrast(110%) brightness(95%) saturate(85%);">
+             style="max-height: 200px; width: auto; border-radius: 16px; box-shadow: 0 8px 32px rgba(109,40,217,0.15); filter: sepia(30%) contrast(110%) brightness(95%) saturate(85%);">
       </div>
     <% end %>
 
-    <div class="bg-black/50 backdrop-blur-xl p-6 rounded-2xl shadow-lg border border-white/20">
-      <% if reflection.final_audio.attached? %>
-        <div class="flex flex-col items-center justify-center space-y-6">
+    <% if reflection.final_audio.attached? %>
 
-          <%# Autoplay nudge (hidden unless browser blocks) %>
-          <div id="autoplay-nudge" class="hidden w-full max-w-md text-center">
-            <p class="text-indigo-300 text-sm animate-pulse">🎧 Tap play to hear your Memflection</p>
-          </div>
+      <%# Audio player %>
+      <div style="background: white; border-radius: 20px; border: 1px solid rgba(109,40,217,0.1); padding: 1.5rem; box-shadow: 0 4px 24px rgba(109,40,217,0.08); margin-bottom: 1.25rem;">
+        <div id="autoplay-nudge" style="display: none; text-align: center; margin-bottom: 0.75rem;">
+          <p style="font-family: 'Lora', serif; font-size: 0.85rem; color: #7c3aed; text-transform: none; letter-spacing: normal; animation: pulse 2s infinite;">🎧 Tap play to hear your Memflection</p>
+        </div>
+        <audio id="preview-audio" controls style="width: 100%; border-radius: 10px;">
+          <source src="<%= preview_audio_path(reflection) %>" type="audio/mpeg">
+        </audio>
+      </div>
 
-          <audio id="preview-audio" controls class="w-full max-w-md rounded-lg">
-            <source src="<%= preview_audio_path(reflection) %>" type="audio/mpeg">
-            Your browser does not support the audio element.
-          </audio>
+      <%# Shuffle %>
+      <div style="background: white; border-radius: 20px; border: 1px solid rgba(109,40,217,0.1); padding: 1.25rem 1.5rem; box-shadow: 0 4px 24px rgba(109,40,217,0.06); margin-bottom: 1.25rem;">
+        <%= button_to "🔀 Shuffle Soundscape",
+                      remix_audio_reflection_path(reflection, reflection: { soundscape_id: reflection.soundscape_id }),
+                      method: :post,
+                      style: "width: 100%; background: #f5f0ff; color: #6d28d9; border: 1.5px solid rgba(109,40,217,0.2); border-radius: 12px; padding: 0.875rem; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; cursor: pointer;",
+                      form: { data: { turbo_frame: "_top" } } %>
+        <p style="font-family: 'Lora', serif; font-size: 0.78rem; color: #a78bfa; text-transform: none; letter-spacing: normal; text-align: center; margin: 0.5rem 0 0;">
+          Get a different <%= reflection.soundscape.category %> track
+        </p>
+      </div>
 
-          <%# Shuffle Button %>
-          <div class="w-full">
-            <%= button_to "🔀 Shuffle Soundscape",
-                          remix_audio_reflection_path(reflection, reflection: { soundscape_id: reflection.soundscape_id }),
-                          method: :post,
-                          class: "w-full bg-lime-600 hover:bg-lime-500 text-white font-medium tracking-wider px-6 py-3 rounded-lg text-base transition-all shadow-lg hover:shadow-lime-500/50",
-                          form: { data: { turbo_frame: "_top" } } %>
-            <p class="text-slate-400 text-sm text-center mt-2">Get a different <%= reflection.soundscape.category %> track</p>
-          </div>
+      <%# Remix soundscape category %>
+      <div style="background: white; border-radius: 20px; border: 1px solid rgba(109,40,217,0.1); padding: 1.5rem; box-shadow: 0 4px 24px rgba(109,40,217,0.06); margin-bottom: 1.25rem;">
+        <p style="font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: #3b0764; margin: 0 0 0.875rem; text-align: center;">Want a different soundscape?</p>
+        <%= form_with(model: reflection, url: remix_audio_reflection_path(reflection), method: :post, style: "display: flex; flex-direction: column; gap: 0.75rem;") do |form| %>
+          <%= form.select :soundscape_category,
+                          options_for_select(soundscapes.map { |s| [s.category, s.category] }.uniq, selected: reflection.soundscape&.category),
+                          {},
+                          style: "width: 100%; background: #faf8ff; color: #1e1b4b; border: 1.5px solid rgba(109,40,217,0.2); border-radius: 12px; padding: 0.875rem 1rem; font-family: 'Lora', serif; font-size: 0.95rem; text-transform: none; letter-spacing: normal; outline: none; cursor: pointer;" %>
+          <%= form.submit "Remix Audio",
+                          style: "width: 100%; background: #7c3aed; color: white; border: none; border-radius: 12px; padding: 0.875rem; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; cursor: pointer;" %>
+        <% end %>
+      </div>
 
-          <%# Remix Soundscape %>
-          <div class="w-full max-w-md pt-6 border-t border-white/20">
-            <p class="text-lg font-medium tracking-wider text-white mb-4 text-center">Want a different soundscape?</p>
-            <%= form_with(model: reflection,
-                          url: remix_audio_reflection_path(reflection),
-                          method: :post,
-                          class: "flex flex-col gap-3 items-center") do |form| %>
-              <%= form.select :soundscape_category,
-                              options_for_select(
-                                soundscapes.map { |s| [s.category, s.category] }.uniq,
-                                selected: reflection.soundscape&.category
-                              ),
-                              {},
-                              { class: "w-full bg-slate-800/70 text-white border-2 border-white/30 rounded-lg px-4 py-3 text-base focus:outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-400/50 uppercase", style: "color-scheme: dark;" } %>
-              <%= form.submit "Remix Audio",
-                              class: "w-full bg-purple-600 hover:bg-purple-500 text-white font-medium tracking-wider px-6 py-3 rounded-lg text-base cursor-pointer transition-all shadow-lg hover:shadow-purple-500/50" %>
-            <% end %>
-          </div>
+      <% if Features::EQ_PRESETS_ENABLED %>
+        <div style="background: white; border-radius: 20px; border: 1px solid rgba(109,40,217,0.1); padding: 1.5rem; box-shadow: 0 4px 24px rgba(109,40,217,0.06); margin-bottom: 1.25rem;">
+          <p style="font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: #3b0764; margin: 0 0 0.875rem; text-align: center;">Adjust Mix Balance</p>
+          <%= form_with(url: apply_eq_preset_reflection_path(reflection), method: :post, style: "display: flex; flex-direction: column; gap: 0.75rem;") do |form| %>
+            <%= form.select :eq_preset,
+                            options_for_select([["Balanced (Default)", nil], ["Voice Prominent", "voice_prominent"], ["Music Forward", "music_forward"], ["Ambient Blend", "ambient_blend"]], selected: reflection.eq_preset),
+                            {},
+                            style: "width: 100%; background: #faf8ff; color: #1e1b4b; border: 1.5px solid rgba(109,40,217,0.2); border-radius: 12px; padding: 0.875rem 1rem; font-family: 'Lora', serif; font-size: 0.95rem; text-transform: none; letter-spacing: normal; outline: none; cursor: pointer;" %>
+            <%= form.submit "Apply Mix",
+                            style: "width: 100%; background: #0ea5e9; color: white; border: none; border-radius: 12px; padding: 0.875rem; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; cursor: pointer;" %>
+          <% end %>
+        </div>
+      <% end %>
 
-          <% if Features::EQ_PRESETS_ENABLED %>
-            <div class="w-full max-w-md pt-6 border-t border-white/20">
-              <p class="text-lg font-medium tracking-wider text-white mb-4 text-center">Adjust Mix Balance</p>
-              <%= form_with(url: apply_eq_preset_reflection_path(reflection),
-                            method: :post,
-                            class: "flex flex-col gap-3 items-center") do |form| %>
-                <%= form.select :eq_preset,
-                                options_for_select([
-                                  ["Balanced (Default)", nil],
-                                  ["Voice Prominent", "voice_prominent"],
-                                  ["Music Forward", "music_forward"],
-                                  ["Ambient Blend", "ambient_blend"]
-                                ], selected: reflection.eq_preset),
-                                {},
-                                { class: "w-full bg-slate-800/70 text-white border-2 border-white/30 rounded-lg px-4 py-3 text-base focus:outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-400/50", style: "color-scheme: dark;" } %>
-                <%= form.submit "Apply Mix",
-                                class: "w-full bg-sky-600 hover:bg-sky-500 text-white font-medium tracking-wider px-6 py-3 rounded-lg text-base cursor-pointer transition-all shadow-lg hover:shadow-sky-500/50" %>
-              <% end %>
+      <%# Upgrade pitch %>
+      <div style="background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border: 1.5px solid rgba(34,197,94,0.25); border-radius: 20px; padding: 1.75rem; margin-bottom: 1.25rem;">
+        <p style="font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 0.06em; color: #14532d; text-align: center; margin: 0 0 0.5rem;">
+          Want the full 5-minute version?
+        </p>
+        <p style="font-family: 'Lora', serif; font-size: 0.9rem; color: #166534; text-transform: none; letter-spacing: normal; text-align: center; margin: 0 0 1.25rem; opacity: 0.85;">
+          Unlock a deeper narrative, download to keep forever, and share as a gift.
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 0.625rem; margin-bottom: 0.25rem;">
+          <% [
+            ["Download & save to play anytime, anywhere"],
+            ["Extended narrative — deeper reflection beyond the preview"],
+            ["Perfect for morning routine, commute, or wind-down"],
+            ["Stored in your dashboard — all your Memflections in one place"]
+          ].each do |item| %>
+            <div style="display: flex; align-items: flex-start; gap: 0.625rem;">
+              <span style="color: #22c55e; flex-shrink: 0; margin-top: 0.1rem;">✓</span>
+              <span style="font-family: 'Lora', serif; font-size: 0.875rem; color: #166534; text-transform: none; letter-spacing: normal; line-height: 1.5;"><%= item[0] %></span>
             </div>
           <% end %>
-
-          <%# Upgrade Pitch %>
-          <div class="w-full max-w-md pt-8 pb-4">
-            <div class="bg-gradient-to-br from-green-900/30 to-emerald-900/30 backdrop-blur-sm border border-green-500/30 rounded-xl p-6">
-              <p class="text-white text-lg font-normal tracking-wider mb-3 text-center">
-                Want your Memflection extended to use in your daily life?
-              </p>
-              <p class="text-slate-200 text-sm mb-4 text-center">
-                Unlock the full 5-minute version to use as your personal reflection tool:
-              </p>
-              <ul class="text-slate-200 text-sm space-y-2 mb-1">
-                <li class="flex items-start">
-                  <span class="text-green-400 mr-2 mt-0.5">✓</span>
-                  <span><strong>Download & save</strong> to play anytime, anywhere</span>
-                </li>
-                <li class="flex items-start">
-                  <span class="text-green-400 mr-2 mt-0.5">✓</span>
-                  <span><strong>Extended narrative</strong> — keeps your 30-second intro, expands with deeper reflection</span>
-                </li>
-                <li class="flex items-start">
-                  <span class="text-green-400 mr-2 mt-0.5">✓</span>
-                  <span><strong>Perfect for daily rituals</strong> — morning routine, commute, meditation, or wind-down</span>
-                </li>
-                <li class="flex items-start">
-                  <span class="text-green-400 mr-2 mt-0.5">✓</span>
-                  <span><strong>Stored in your dashboard</strong> — access all your Memflections in one place</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <%# Action Buttons %>
-          <div class="flex flex-col justify-center items-center gap-4 pt-1 w-full max-w-md">
-            <%= form_with url: checkout_reflection_path(reflection), method: :post, data: { turbo: false }, class: "w-full flex flex-col gap-3" do |f| %>
-              <div class="w-full">
-                <label for="customer_email" class="block text-slate-300 text-sm mb-2">Email for your receipt & dashboard access:</label>
-                <input type="email" name="customer_email" id="customer_email" required placeholder="you@example.com"
-                       class="w-full bg-slate-800/70 text-white border-2 border-white/30 rounded-lg px-4 py-3 text-base focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-400/50"
-                       style="color-scheme: dark;">
-              </div>
-              <%= f.submit "Purchase My 5-Min Version! ($3.99 USD)",
-                  class: "w-full bg-green-600 hover:bg-green-500 text-white font-medium tracking-wider py-3 px-6 rounded-lg shadow-lg text-center cursor-pointer" %>
-            <% end %>
-
-            <div class="w-full border-t border-white/20 pt-4 mt-2">
-              <p class="text-slate-400 text-sm text-center mb-3">Have a gift code?</p>
-              <%= form_with url: redeem_promo_reflection_path(reflection), method: :post, data: { turbo: false }, class: "w-full flex flex-col gap-3" do |f| %>
-                <input type="email" name="customer_email" required placeholder="Your email"
-                       class="w-full bg-slate-800/70 text-white border-2 border-white/30 rounded-lg px-4 py-3 text-base focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-400/50"
-                       style="color-scheme: dark;">
-                <input type="text" name="promo_code" required placeholder="Enter gift code"
-                       class="w-full bg-slate-800/70 text-white border-2 border-white/30 rounded-lg px-4 py-3 text-base focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-400/50 uppercase"
-                       style="color-scheme: dark;">
-                <%= f.submit "Redeem Gift Code",
-                    class: "w-full bg-purple-600 hover:bg-purple-500 text-white font-medium tracking-wider py-3 px-6 rounded-lg shadow-lg text-center cursor-pointer" %>
-              <% end %>
-            </div>
-
-            <%= link_to "Start Over", new_reflection_path,
-                class: "bg-slate-600 hover:bg-slate-500 text-white font-medium tracking-wider py-3 px-6 rounded-lg shadow text-center w-full" %>
-          </div>
         </div>
-      <% else %>
-        <p class="text-center text-red-400">⚠️ Error: Final audio not found.</p>
-      <% end %>
-    </div>
+      </div>
+
+      <%# Purchase form %>
+      <div style="background: white; border-radius: 20px; border: 1px solid rgba(109,40,217,0.1); padding: 1.75rem; box-shadow: 0 4px 24px rgba(109,40,217,0.08); margin-bottom: 1.25rem;">
+        <%= form_with url: checkout_reflection_path(reflection), method: :post, data: { turbo: false }, style: "display: flex; flex-direction: column; gap: 0.875rem;" do |f| %>
+          <label style="font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.08em; color: #3b0764;">
+            Your email — for receipt & dashboard access:
+          </label>
+          <input type="email" name="customer_email" id="customer_email" required placeholder="you@example.com"
+                 style="width: 100%; background: #faf8ff; color: #1e1b4b; border: 1.5px solid rgba(109,40,217,0.2); border-radius: 12px; padding: 0.875rem 1rem; font-family: 'Lora', serif; font-size: 1rem; text-transform: none; letter-spacing: normal; box-sizing: border-box; outline: none;">
+          <%= f.submit "Purchase Full Version — $3.99 USD",
+                style: "width: 100%; background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; border: none; border-radius: 100px; padding: 1.1rem; font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 0.1em; cursor: pointer; box-shadow: 0 6px 20px rgba(22,163,74,0.3);" %>
+        <% end %>
+      </div>
+
+      <%# Promo code %>
+      <div style="background: white; border-radius: 20px; border: 1px solid rgba(109,40,217,0.1); padding: 1.5rem; box-shadow: 0 4px 24px rgba(109,40,217,0.06); margin-bottom: 1.25rem;">
+        <p style="font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.08em; color: #a78bfa; text-align: center; margin: 0 0 0.875rem;">Have a gift code?</p>
+        <%= form_with url: redeem_promo_reflection_path(reflection), method: :post, data: { turbo: false }, style: "display: flex; flex-direction: column; gap: 0.75rem;" do |f| %>
+          <input type="email" name="customer_email" required placeholder="Your email"
+                 style="width: 100%; background: #faf8ff; color: #1e1b4b; border: 1.5px solid rgba(109,40,217,0.2); border-radius: 12px; padding: 0.875rem 1rem; font-family: 'Lora', serif; font-size: 1rem; text-transform: none; letter-spacing: normal; box-sizing: border-box; outline: none;">
+          <input type="text" name="promo_code" required placeholder="Enter gift code"
+                 style="width: 100%; background: #faf8ff; color: #1e1b4b; border: 1.5px solid rgba(109,40,217,0.2); border-radius: 12px; padding: 0.875rem 1rem; font-family: 'Lora', serif; font-size: 1rem; text-transform: none; letter-spacing: normal; box-sizing: border-box; outline: none;">
+          <%= f.submit "Redeem Gift Code",
+                style: "width: 100%; background: #7c3aed; color: white; border: none; border-radius: 100px; padding: 0.875rem; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; cursor: pointer;" %>
+        <% end %>
+      </div>
+
+      <%= link_to "Start Over", new_reflection_path,
+            style: "display: block; text-align: center; font-family: 'Lora', serif; font-size: 0.875rem; color: #a78bfa; text-transform: none; letter-spacing: normal; text-decoration: none; padding: 0.75rem;" %>
+
+    <% else %>
+      <div style="background: #fef2f2; border: 1.5px solid #fca5a5; border-radius: 16px; padding: 2rem; text-align: center;">
+        <p style="font-family: 'Lora', serif; color: #dc2626; text-transform: none; letter-spacing: normal;">⚠️ Error: Final audio not found. Please start over.</p>
+        <%= link_to "Start Over", new_reflection_path, style: "color: #7c3aed;" %>
+      </div>
+    <% end %>
 
     <script>
-      // ─── CONFETTI ──────────────────────────────────────────────────────────
       (function() {
-              if (window.confettiFired) return;
-              window.confettiFired = true;
-              const canvas = document.getElementById('confetti-canvas');
-              if (!canvas) return;
-              const ctx = canvas.getContext('2d');
-              canvas.width = window.innerWidth;
-              canvas.height = window.innerHeight;
-
-        const COLORS = [
-          '#7c3aed', // purple
-          '#6366f1', // indigo
-          '#4ade80', // green
-          '#a78bfa', // violet
-          '#34d399', // emerald
-          '#818cf8', // indigo light
-          '#86efac', // green light
-        ];
-
+        if (window.confettiFired) return;
+        window.confettiFired = true;
+        const canvas = document.getElementById('confetti-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const COLORS = ['#7c3aed','#6366f1','#f472b6','#a78bfa','#fb7185','#818cf8','#fbcfe8'];
         const pieces = [];
         for (let i = 0; i < 120; i++) {
           pieces.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height * -1,
-            w: Math.random() * 10 + 5,
-            h: Math.random() * 5 + 3,
+            x: Math.random() * canvas.width, y: Math.random() * canvas.height * -1,
+            w: Math.random() * 10 + 5, h: Math.random() * 5 + 3,
             color: COLORS[Math.floor(Math.random() * COLORS.length)],
-            rotation: Math.random() * 360,
-            rotationSpeed: (Math.random() - 0.5) * 3,
-            speedX: (Math.random() - 0.5) * 2,
-            speedY: Math.random() * 2.5 + 1.2,
+            rotation: Math.random() * 360, rotationSpeed: (Math.random() - 0.5) * 3,
+            speedX: (Math.random() - 0.5) * 2, speedY: Math.random() * 2.5 + 1.2,
             isEllipse: Math.random() > 0.5
           });
         }
-
         let startTime = null;
-        const DURATION = 3200;
-
-        function drawConfetti(timestamp) {
-          if (!startTime) startTime = timestamp;
-          const elapsed = timestamp - startTime;
-          const progress = Math.min(elapsed / DURATION, 1);
-          const globalOpacity = progress > 0.7 ? 1 - ((progress - 0.7) / 0.3) : 1;
-
+        function drawConfetti(ts) {
+          if (!startTime) startTime = ts;
+          const progress = Math.min((ts - startTime) / 3200, 1);
+          const opacity = progress > 0.7 ? 1 - ((progress - 0.7) / 0.3) : 1;
           ctx.clearRect(0, 0, canvas.width, canvas.height);
-
           pieces.forEach(p => {
-            p.x += p.speedX;
-            p.y += p.speedY;
-            p.rotation += p.rotationSpeed;
-
-            ctx.save();
-            ctx.globalAlpha = globalOpacity;
-            ctx.translate(p.x + p.w / 2, p.y + p.h / 2);
-            ctx.rotate((p.rotation * Math.PI) / 180);
-            ctx.fillStyle = p.color;
-            ctx.beginPath();
-            if (p.isEllipse) {
-              ctx.ellipse(0, 0, p.w / 2, p.h / 4, 0, 0, Math.PI * 2);
-            } else {
-              ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
-            }
-            ctx.fill();
-            ctx.restore();
+            p.x += p.speedX; p.y += p.speedY; p.rotation += p.rotationSpeed;
+            ctx.save(); ctx.globalAlpha = opacity;
+            ctx.translate(p.x + p.w/2, p.y + p.h/2);
+            ctx.rotate(p.rotation * Math.PI / 180);
+            ctx.fillStyle = p.color; ctx.beginPath();
+            p.isEllipse ? ctx.ellipse(0,0,p.w/2,p.h/4,0,0,Math.PI*2) : ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+            ctx.fill(); ctx.restore();
           });
-
-          if (progress < 1) {
-            requestAnimationFrame(drawConfetti);
-          } else {
-            canvas.style.display = 'none';
-          }
+          progress < 1 ? requestAnimationFrame(drawConfetti) : canvas.style.display = 'none';
         }
-
         requestAnimationFrame(drawConfetti);
       })();
 
-      // ─── AUTOPLAY ──────────────────────────────────────────────────────────
       (function() {
-              if (window.autoplayFired) return;
-              window.autoplayFired = true;
-              function tryAutoplay() {
-              const audio = document.getElementById('preview-audio');
-              const nudge = document.getElementById('autoplay-nudge');
-              if (!audio) return;
-              const playPromise = audio.play();
-              if (playPromise !== undefined) {
-                playPromise.catch(function() {
-                  if (nudge) nudge.classList.remove('hidden');
-            });
-          }
+        if (window.autoplayFired) return;
+        window.autoplayFired = true;
+        function tryAutoplay() {
+          const audio = document.getElementById('preview-audio');
+          const nudge = document.getElementById('autoplay-nudge');
+          if (!audio) return;
+          audio.play().catch(() => { if (nudge) nudge.style.display = 'block'; });
         }
-        // Works whether page loaded fresh OR via Turbo Stream
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', tryAutoplay);
-        } else {
-          tryAutoplay();
-        }
+        document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', tryAutoplay) : tryAutoplay();
       })();
     </script>
 
+  <%# ══════════════════════════════════════════════════════════
+      FAILED
+  ══════════════════════════════════════════════════════════ %>
   <% when 'failed' %>
-    <%# ----- STATE: FAILED ----- %>
-    <div class="text-center">
-      <h1 class="text-4xl font-bold tracking-wider text-red-400 tracking-wide">Something Went Wrong</h1>
-      <% if reflection.voice_recording.blank? %>
-        <p class="text-lg text-slate-300 mt-4">We couldn't record your audio.</p>
-      <% else %>
-        <p class="text-lg text-slate-300 mt-4">We couldn't process your audio.</p>
-      <% end %>
+
+    <div style="text-align: center; margin-bottom: 1.5rem;">
+      <div style="font-size: 3rem; margin-bottom: 1rem;">😕</div>
+      <h1 style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(2rem, 7vw, 2.8rem); letter-spacing: 0.04em; color: #dc2626; margin: 0 0 0.5rem;">
+        Something Went Wrong
+      </h1>
+      <p style="font-family: 'Lora', serif; font-size: 0.95rem; color: #6d28d9; text-transform: none; letter-spacing: normal; opacity: 0.8; margin: 0;">
+        <%= reflection.voice_recording.blank? ? "We couldn't record your audio." : "We couldn't process your audio." %>
+      </p>
     </div>
 
-    <div class="bg-black/50 backdrop-blur-xl p-6 rounded-2xl shadow-lg border border-white/20">
+    <div style="background: white; border-radius: 20px; border: 1px solid rgba(109,40,217,0.1); padding: 2rem; box-shadow: 0 4px 24px rgba(109,40,217,0.08);">
       <% if reflection.voice_recording.blank? %>
-        <p class="text-white mb-4">This is usually caused by:</p>
-        <ul class="text-white/80 mb-6 text-left max-w-md mx-auto space-y-2">
-          <li>• Browser blocking microphone access</li>
-          <li>• Privacy settings preventing recording</li>
-          <li>• Network connection issues</li>
+        <p style="font-family: 'Lora', serif; font-size: 0.95rem; color: #3b0764; text-transform: none; letter-spacing: normal; margin: 0 0 1rem;">This is usually caused by:</p>
+        <ul style="font-family: 'Lora', serif; font-size: 0.9rem; color: #6d28d9; text-transform: none; letter-spacing: normal; line-height: 1.8; margin: 0 0 1.5rem; padding-left: 1.25rem;">
+          <li>Browser blocking microphone access</li>
+          <li>Privacy settings preventing recording</li>
+          <li>Network connection issues</li>
         </ul>
-        <div class="bg-green-900/20 border border-green-500/30 rounded-lg p-4 mb-6">
-          <p class="text-green-300 font-semibold mb-2">✅ Good news: Your memory was saved!</p>
-          <p class="text-slate-300 text-sm">You won't lose the story you wrote. Just try recording again in a different browser.</p>
+        <div style="background: #f0fdf4; border: 1.5px solid rgba(34,197,94,0.3); border-radius: 14px; padding: 1.25rem; margin-bottom: 1.5rem;">
+          <p style="font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.08em; color: #16a34a; margin: 0 0 0.4rem;">✅ Good news: Your memory was saved!</p>
+          <p style="font-family: 'Lora', serif; font-size: 0.85rem; color: #166534; text-transform: none; letter-spacing: normal; margin: 0; line-height: 1.5;">You won't lose your story. Try recording again in Safari or Chrome.</p>
         </div>
-        <div class="flex flex-col gap-3">
-          <p class="text-white font-medium mb-2">Try one of these browsers:</p>
-          <ul class="text-white/80 text-sm mb-4">
-            <li>• <strong>Safari</strong> (recommended for iPhone/Mac)</li>
-            <li>• <strong>Chrome</strong> (recommended for Android/PC)</li>
-          </ul>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
           <%= link_to "Try Recording Again", record_reflection_path(reflection),
-              class: "bg-green-600 hover:bg-green-500 text-white font-medium py-3 px-5 rounded-lg block text-center" %>
+                style: "display: block; text-align: center; background: linear-gradient(135deg, #7c3aed 0%, #be185d 100%); color: white; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.08em; padding: 0.875rem 2rem; border-radius: 100px; text-decoration: none; box-shadow: 0 6px 20px rgba(124,58,237,0.3);" %>
           <%= link_to "Start Over", new_reflection_path,
-              class: "bg-slate-600 hover:bg-slate-500 text-white font-medium py-3 px-5 rounded-lg block text-center" %>
+                style: "display: block; text-align: center; font-family: 'Lora', serif; font-size: 0.875rem; color: #a78bfa; text-transform: none; letter-spacing: normal; text-decoration: none; padding: 0.75rem;" %>
         </div>
       <% else %>
-        <p class="text-white mb-4">Something went wrong during audio processing. Please try creating a new reflection or contact support.</p>
+        <p style="font-family: 'Lora', serif; font-size: 0.95rem; color: #3b0764; text-transform: none; letter-spacing: normal; margin: 0 0 1.25rem;">Something went wrong during audio processing. Please try creating a new reflection or contact support.</p>
         <%= link_to "Start Over", new_reflection_path,
-            class: "bg-sky-600 hover:bg-sky-500 text-white font-medium py-3 px-5 rounded-lg" %>
+              style: "display: block; text-align: center; background: linear-gradient(135deg, #7c3aed 0%, #be185d 100%); color: white; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.08em; padding: 0.875rem 2rem; border-radius: 100px; text-decoration: none;" %>
       <% end %>
     </div>
 

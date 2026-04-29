@@ -1,31 +1,42 @@
-<div class="min-h-screen flex items-center justify-center px-4 py-12">
-  <div class="max-w-md w-full space-y-8 bg-black/50 backdrop-blur-xl p-8 rounded-2xl shadow-lg border border-white/20">
-    
-    <div class="text-center">
-      <h2 class="text-3xl font-bold tracking-tight text-white">Welcome Back</h2>
-      <p class="mt-2 text-sm text-slate-400">Enter your email to sign in.</p>
+<div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1.5rem;">
+  <div style="width: 100%; max-width: 440px;">
+
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">✨</div>
+      <h1 style="font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; letter-spacing: 0.04em; color: #3b0764; margin: 0 0 0.5rem;">
+        Welcome Back
+      </h1>
+      <p style="font-family: 'Lora', serif; font-size: 0.95rem; color: #6d28d9; text-transform: none; letter-spacing: normal; opacity: 0.8; margin: 0;">
+        Enter your email and we'll send you a magic login link.
+      </p>
     </div>
 
-    <%= form_with(scope: resource_name, url: session_path(resource_name), local: true, class: "mt-8 space-y-6") do |f| %>
-      
-      <div>
-        <%= f.label :email, class: "sr-only" %>
-        <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "you@example.com", 
-            class: "appearance-none relative block w-full px-3 py-3 border border-white/20 bg-white/5 placeholder-slate-500 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 focus:z-10 sm:text-sm" %>
-      </div>
+    <div style="background: white; border-radius: 24px; border: 1px solid rgba(109,40,217,0.1); padding: 2rem; box-shadow: 0 4px 32px rgba(109,40,217,0.1);">
 
-      <div>
-        <%= f.submit "✨ Send Me a Login Link", 
-            class: "cursor-pointer group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-lg text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 transition-colors" %>
-      </div>
-      
-    <% end %>
+      <%= form_with(scope: resource_name, url: session_path(resource_name), local: true) do |f| %>
 
-    <div class="text-center mt-6 space-y-2">
-       <p class="text-sm text-slate-400">
-         New here? <%= link_to "Create an account", new_registration_path(resource_name), class: "text-sky-400 hover:text-sky-300 font-medium" %>
-       </p>
-       <%= link_to "← Back Home", root_path, class: "text-xs text-slate-500 hover:text-white" %>
+        <div style="margin-bottom: 1.25rem;">
+          <%= f.label :email, "Your email address",
+                style: "display: block; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: #3b0764; margin-bottom: 0.5rem;" %>
+          <%= f.email_field :email,
+                autofocus: true,
+                autocomplete: "email",
+                placeholder: "you@example.com",
+                style: "width: 100%; background: #faf8ff; color: #1e1b4b; border: 1.5px solid rgba(109,40,217,0.2); border-radius: 12px; padding: 0.875rem 1rem; font-family: 'Lora', serif; font-size: 1rem; text-transform: none; letter-spacing: normal; box-sizing: border-box; outline: none;",
+                onfocus: "this.style.borderColor='#7c3aed'",
+                onblur: "this.style.borderColor='rgba(109,40,217,0.2)'" %>
+        </div>
+
+        <%= f.submit "✨ Send Me a Login Link",
+              style: "width: 100%; background: linear-gradient(135deg, #7c3aed 0%, #be185d 100%); color: white; border: none; border-radius: 100px; padding: 1rem; font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 0.1em; cursor: pointer; box-shadow: 0 8px 24px rgba(124,58,237,0.3);" %>
+
+      <% end %>
+
+    </div>
+
+    <div style="text-align: center; margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+      <%= link_to "← Back to Home", root_path,
+            style: "font-family: 'Lora', serif; font-size: 0.85rem; color: #a78bfa; text-transform: none; letter-spacing: normal; text-decoration: none;" %>
     </div>
 
   </div>

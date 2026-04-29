@@ -1,118 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <title>Memflect</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="turbo-cache-control" content="no-cache">
   <%= csrf_meta_tags %>
-  
+  <%= csp_meta_tag %>
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Spectral:wght@300;400&family=Lora:wght@400;500&family=Merriweather:wght@300&family=EB+Garamond&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lora:ital,wght@0,400;0,500;1,400&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 
-  <!-- PWA Meta Tags -->
-  <%= csrf_meta_tags %>
-  <%= csp_meta_tag %>
-
-  <!-- PWA Meta Tags -->
-  <meta name="theme-color" content="#0ea5e9">
+  <!-- PWA -->
+  <meta name="theme-color" content="#7c3aed">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Memflect">
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/icon-512.png">
 
-  <!-- Pinterest Domain Verification -->
+  <!-- Pinterest -->
   <meta name="p:domain_verify" content="246a99348b7c3d39e7b6e4e8393baae0"/>
 
-  <!-- Vite Asset Tags -->
+  <!-- Vite -->
   <%= vite_client_tag %>
   <%= vite_javascript_tag 'application' %>
   <%= vite_stylesheet_tag 'application' %>
   <%= yield :head %>
 </head>
 
-<body class="font-sans">
-  <!-- Gradient Mesh Background - GLOBAL -->
-  <div class="fixed inset-0 -z-10 overflow-hidden" style="background: linear-gradient(135deg, #2e1065 0%, #4c1d95 40%, #831843 100%);">
-    <div class="absolute top-0 -left-4 w-72 h-72 rounded-full filter blur-xl opacity-40 animate-blob" style="background: #c026d3;"></div>
-    <div class="absolute top-0 -right-4 w-72 h-72 rounded-full filter blur-xl opacity-30 animate-blob animation-delay-2000" style="background: #f43f5e;"></div>
-    <div class="absolute -bottom-8 left-20 w-72 h-72 rounded-full filter blur-xl opacity-30 animate-blob animation-delay-4000" style="background: #7c3aed;"></div>
+<body style="margin: 0; padding: 0; font-family: 'Lora', serif; color: #1e1b4b; min-height: 100vh;">
+
+  <%# ── Global background ── %>
+  <div style="position: fixed; inset: 0; z-index: -10; background: linear-gradient(135deg, #fdf6ff 0%, #fce7f3 50%, #ede9fe 100%);">
+    <div style="position: absolute; top: -80px; left: -80px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(249,168,212,0.4) 0%, transparent 70%); animation: blob 7s infinite;"></div>
+    <div style="position: absolute; top: -40px; right: -80px; width: 350px; height: 350px; background: radial-gradient(circle, rgba(196,181,253,0.35) 0%, transparent 70%); animation: blob 7s infinite 2s;"></div>
+    <div style="position: absolute; bottom: -60px; left: 10%; width: 300px; height: 300px; background: radial-gradient(circle, rgba(251,207,232,0.35) 0%, transparent 70%); animation: blob 7s infinite 4s;"></div>
   </div>
 
-  <header class="bg-white/10 backdrop-blur-sm shadow relative z-50">
-    <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-      
-      <div>
-        <%= link_to "Memflect", root_path, class: "text-2xl font-bold tracking-wider text-white" %>
-      </div>
-      
-      <div class="flex items-center gap-4">
+  <%# ── Header ── %>
+  <header style="position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,0.88); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(109,40,217,0.1); box-shadow: 0 1px 16px rgba(109,40,217,0.07);">
+    <nav style="max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; height: 56px; display: flex; align-items: center; justify-content: space-between;">
+
+      <%= link_to root_path, style: "text-decoration: none;" do %>
+        <span style="font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.12em; color: #6d28d9;">Memflect</span>
+      <% end %>
+
+      <div style="display: flex; align-items: center; gap: 1.5rem;">
         <% if user_signed_in? %>
-          <%= link_to "Dashboard", dashboard_path, class: "text-white hover:text-sky-400 font-medium transition-colors text-sm uppercase tracking-wide" %>
-          <%= button_to "Log Out", destroy_user_session_path, method: :delete, data: { turbo: false }, class: "text-slate-400 hover:text-white text-sm uppercase tracking-wide cursor-pointer" %>
+          <%= link_to "Dashboard", dashboard_path, style: "font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.1em; color: #6d28d9; text-decoration: none;" %>
+          <%= button_to "Log Out", destroy_user_session_path, method: :delete, data: { turbo: false }, style: "background: none; border: none; padding: 0; font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.1em; color: #a78bfa; cursor: pointer;" %>
         <% else %>
-          <%= link_to "Log In", new_user_session_path, class: "text-white hover:text-sky-400 font-medium text-sm uppercase tracking-wide" %>
+          <%= link_to "Log In", new_user_session_path, style: "font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.1em; color: #6d28d9; text-decoration: none;" %>
         <% end %>
       </div>
 
     </nav>
   </header>
 
+  <%# ── Main content ── %>
   <main>
     <%= yield %>
   </main>
 
-  <footer class="bg-white/10 backdrop-blur-sm mt-4 py-6 relative z-10">
-    <div class="container mx-auto px-6 text-center">
-      <div class="flex justify-center space-x-6 text-sm text-white/80">
-        <%= link_to "Privacy Policy", privacy_path, class: "hover:text-white" %>
-        <span>•</span>
-        <%= link_to "Terms of Service", terms_path, class: "hover:text-white" %>
-        <span>•</span>
-        <a href="mailto:ryan@memflect.com" class="hover:text-white">Contact</a>
+  <%# ── Footer ── %>
+  <footer style="background: rgba(109,40,217,0.05); border-top: 1px solid rgba(109,40,217,0.1); padding: 2rem 1.5rem; margin-top: 2rem;">
+    <div style="max-width: 1100px; margin: 0 auto; text-align: center;">
+      <div style="display: flex; justify-content: center; align-items: center; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
+        <%= link_to "Privacy Policy", privacy_path, style: "font-family: 'Bebas Neue', sans-serif; font-size: 0.8rem; letter-spacing: 0.08em; color: #7c3aed; text-decoration: none;" %>
+        <span style="color: #c4b5fd; font-size: 0.6rem;">●</span>
+        <%= link_to "Terms of Service", terms_path, style: "font-family: 'Bebas Neue', sans-serif; font-size: 0.8rem; letter-spacing: 0.08em; color: #7c3aed; text-decoration: none;" %>
+        <span style="color: #c4b5fd; font-size: 0.6rem;">●</span>
+        <a href="mailto:ryan@memflect.com" style="font-family: 'Bebas Neue', sans-serif; font-size: 0.8rem; letter-spacing: 0.08em; color: #7c3aed; text-decoration: none;">Contact</a>
       </div>
-      <p class="mt-2 text-xs text-white/60">© <%= Date.current.year %> Memflect. All rights reserved.</p>
+      <p style="font-family: 'Bebas Neue', sans-serif; font-size: 0.7rem; letter-spacing: 0.08em; color: #c4b5fd; margin: 0;">© <%= Date.current.year %> Memflect. All rights reserved.</p>
     </div>
   </footer>
 
-  <!-- Gradient Mesh Animation Styles -->
-  <style>
-    @keyframes blob {
-      0%, 100% { 
-        transform: translate(0px, 0px) scale(1); 
-      }
-      33% { 
-        transform: translate(30px, -50px) scale(1.1); 
-      }
-      66% { 
-        transform: translate(-20px, 20px) scale(0.9); 
-      }
-    }
-    
-    .animate-blob {
-      animation: blob 7s infinite;
-    }
-    
-    .animation-delay-2000 {
-      animation-delay: 2s;
-    }
-    
-    .animation-delay-4000 {
-      animation-delay: 4s;
-    }
-  </style>
-
+  <%# ── Cookie banner ── %>
   <% unless cookies[:cookie_consent] %>
-    <div id="cookie-banner" style="position: fixed; bottom: 0; left: 0; right: 0; background: rgba(26, 26, 46, 0.98); backdrop-filter: blur(10px); color: white; padding: 20px; text-align: center; z-index: 9999; border-top: 2px solid rgba(139, 92, 246, 0.5); box-shadow: 0 -4px 20px rgba(0,0,0,0.3);">
-      <div style="max-width: 800px; margin: 0 auto;">
-        <p style="margin: 0 0 15px 0; font-size: 14px; color: #cbd5e1;">
-          We use essential cookies to make Memflect work. By continuing, you accept our 
-          <%= link_to "Privacy Policy", privacy_path, style: "color: #38bdf8; text-decoration: underline; font-weight: 600;" %>.
+    <div id="cookie-banner" style="position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.97); backdrop-filter: blur(12px); border-top: 1px solid rgba(109,40,217,0.15); padding: 1.25rem 1.5rem; text-align: center; z-index: 9999; box-shadow: 0 -4px 24px rgba(109,40,217,0.1);">
+      <div style="max-width: 700px; margin: 0 auto;">
+        <p style="margin: 0 0 0.875rem; font-family: 'Lora', serif; font-size: 0.875rem; color: #4c1d95; text-transform: none; letter-spacing: normal; line-height: 1.6;">
+          We use essential cookies to make Memflect work. By continuing, you accept our
+          <%= link_to "Privacy Policy", privacy_path, style: "color: #7c3aed; font-weight: 600; text-decoration: underline;" %>.
         </p>
-        <%= button_to "Accept & Continue", accept_cookies_path, method: :post, style: "background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); color: white; border: none; padding: 12px 40px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 14px; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);" %>
+        <%= button_to "Accept & Continue", accept_cookies_path, method: :post, style: "background: linear-gradient(135deg, #7c3aed 0%, #be185d 100%); color: white; border: none; padding: 0.75rem 2.5rem; border-radius: 100px; cursor: pointer; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.1em; box-shadow: 0 4px 15px rgba(124,58,237,0.3);" %>
       </div>
     </div>
   <% end %>
+
+  <%# ── Blob animation ── %>
+  <style>
+    @keyframes blob {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33%       { transform: translate(20px, -30px) scale(1.05); }
+      66%       { transform: translate(-15px, 15px) scale(0.97); }
+    }
+  </style>
 
 </body>
 </html>

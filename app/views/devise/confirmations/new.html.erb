@@ -1,16 +1,40 @@
-<h2>Resend confirmation instructions</h2>
+<div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1.5rem;">
+  <div style="width: 100%; max-width: 440px;">
 
-<%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <h1 style="font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; letter-spacing: 0.04em; color: #3b0764; margin: 0 0 0.5rem;">
+        Resend Confirmation
+      </h1>
+      <p style="font-family: 'Lora', serif; font-size: 0.95rem; color: #6d28d9; text-transform: none; letter-spacing: normal; opacity: 0.8; margin: 0;">
+        Enter your email and we'll resend your confirmation instructions.
+      </p>
+    </div>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email", value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email) %>
+    <div style="background: white; border-radius: 24px; border: 1px solid rgba(109,40,217,0.1); padding: 2rem; box-shadow: 0 4px 32px rgba(109,40,217,0.1);">
+
+      <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
+        <%= render "devise/shared/error_messages", resource: resource %>
+
+        <div style="margin-bottom: 1.5rem;">
+          <%= f.label :email, style: "display: block; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: #3b0764; margin-bottom: 0.5rem;" %>
+          <%= f.email_field :email,
+                autofocus: true,
+                autocomplete: "email",
+                value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email),
+                style: "width: 100%; background: #faf8ff; color: #1e1b4b; border: 1.5px solid rgba(109,40,217,0.2); border-radius: 12px; padding: 0.875rem 1rem; font-family: 'Lora', serif; font-size: 1rem; text-transform: none; letter-spacing: normal; box-sizing: border-box; outline: none;",
+                onfocus: "this.style.borderColor='#7c3aed'",
+                onblur: "this.style.borderColor='rgba(109,40,217,0.2)'" %>
+        </div>
+
+        <%= f.submit "Resend Confirmation Instructions",
+              style: "width: 100%; background: linear-gradient(135deg, #7c3aed 0%, #be185d 100%); color: white; border: none; border-radius: 100px; padding: 1rem; font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 0.1em; cursor: pointer; box-shadow: 0 8px 24px rgba(124,58,237,0.3);" %>
+      <% end %>
+
+    </div>
+
+    <div style="margin-top: 1.5rem; text-align: center;">
+      <%= render "devise/shared/links" %>
+    </div>
+
   </div>
-
-  <div class="actions">
-    <%= f.submit "Resend confirmation instructions" %>
-  </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</div>
