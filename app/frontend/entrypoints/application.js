@@ -2,7 +2,10 @@
 import './application.css'
 
 // Import and start Turbo
-import '@hotwired/turbo-rails'
+import { Turbo } from '@hotwired/turbo-rails'
+document.addEventListener('turbo:before-cache', () => {
+  document.documentElement.setAttribute('data-turbo-cache', 'false')
+})
 
 // Import Action Cable
 import * as ActionCable from '@rails/actioncable'
