@@ -1,16 +1,13 @@
+<%# FULL SWAP for record.html.erb %>
+
 <script>
-  // Detect Brave browser and warn user
   if (navigator.brave && navigator.brave.isBrave()) {
     window.addEventListener('DOMContentLoaded', () => {
       const warning = document.createElement('div');
       warning.className = 'bg-yellow-500/20 border-2 border-yellow-500 text-white px-6 py-4 rounded-xl mb-6 max-w-2xl mx-auto mt-20';
       warning.innerHTML = `
         <p class="font-semibold text-lg mb-2">⚠️ Brave Browser Detected</p>
-        <p class="text-sm">Brave's privacy settings may block microphone access. If recording doesn't work, please:</p>
-        <ul class="text-sm mt-2 ml-4 list-disc">
-          <li>Allow microphone access in Brave Settings → Site Settings → Microphone, or</li>
-          <li>Try Safari or Chrome instead</li>
-        </ul>
+        <p class="text-sm">Brave's privacy settings may block microphone access. If recording doesn't work, please try Safari or Chrome instead.</p>
       `;
       document.body.insertBefore(warning, document.body.firstChild);
     });
@@ -19,50 +16,58 @@
 
 <div class="min-h-screen flex items-center justify-center py-8 px-4 pt-16">
   <div class="max-w-2xl w-full space-y-6">
-    
-    <!-- STEP 1 Header -->
-    <div>
-      <h1 class="text-center text-4xl font-semibold tracking-wider text-white">
-        Step 1: Get Your Device Ready
+
+    <!-- STEP 1 -->
+    <div class="text-center">
+      <p class="text-slate-400 text-sm tracking-widest mb-2">STEP 1 OF 2</p>
+      <h1 class="text-3xl md:text-4xl font-semibold tracking-wider text-white">
+        Get Your Device Ready
       </h1>
     </div>
-    
-    <!-- Audio Quality Warning Banner - DARK CRIMSON -->
-    <div class="bg-red-950/40 border-2 border-red-700/60 text-white px-8 py-8 rounded-xl max-w-2xl mx-auto">
-      <p class="font-semibold tracking-wide text-2xl mb-6 text-center">🎤 For Best Audio Quality:</p>
-      <ul class="text-lg space-y-3 text-left mx-auto" style="max-width: 36rem;">
-        <li class="flex items-start">
-          <span class="mr-2 flex-shrink-0 mt-0.5">•</span>
-          <span><strong>Turn OFF Bluetooth</strong> (earbuds, headphones, speakers)</span>
+
+    <div class="bg-red-950/30 border border-red-700/40 text-white px-6 py-6 rounded-2xl">
+      <p class="text-slate-300 text-sm text-center mb-4 tracking-widest">🎤 FOR BEST AUDIO QUALITY</p>
+      <ul class="space-y-3 max-w-md mx-auto">
+        <li class="flex items-start gap-3">
+          <span class="text-red-400 mt-0.5 flex-shrink-0">•</span>
+          <span class="recap-elegant text-base"><strong>Turn OFF Bluetooth</strong> — earbuds, headphones, speakers</span>
         </li>
-        <li class="flex items-start">
-          <span class="mr-2 flex-shrink-0 mt-0.5">•</span>
-          <span>Use your device's <strong>built-in microphone</strong></span>
+        <li class="flex items-start gap-3">
+          <span class="text-red-400 mt-0.5 flex-shrink-0">•</span>
+          <span class="recap-elegant text-base">Use your device's <strong>built-in microphone</strong></span>
         </li>
-        <li class="flex items-start">
-          <span class="mr-2 flex-shrink-0 mt-0.5">•</span>
-          <span>Find a <strong>quiet space</strong> with minimal background noise</span>
+        <li class="flex items-start gap-3">
+          <span class="text-red-400 mt-0.5 flex-shrink-0">•</span>
+          <span class="recap-elegant text-base">Find a <strong>quiet space</strong> with minimal background noise</span>
         </li>
       </ul>
     </div>
 
-    <!-- STEP 2 Header -->
-    <div class="pt-4">
-      <h1 class="text-center text-4xl font-semibold tracking-wider text-white">
-        Step 2: Click Start Recording and Speak the Memflect Mantra
+    <!-- STEP 2 -->
+    <div class="text-center pt-2">
+      <p class="text-slate-400 text-sm tracking-widest mb-2">STEP 2 OF 2</p>
+      <h1 class="text-3xl md:text-4xl font-semibold tracking-wider text-white">
+        Record Your Voice
       </h1>
-      <p class="text-center text-slate-300 text-lg mt-2 italic">(slowly, clearly & happy 😊)</p>
+      <p class="recap-elegant text-slate-400 text-base mt-2">Speak slowly, clearly and naturally 😊</p>
     </div>
 
-    <!-- Recording Section -->
-    <div class="bg-black/50 backdrop-blur-xl p-8 rounded-2xl shadow-lg border border-white/20 text-center">
-      <p class="mb-6 text-lg text-white font-medium tracking-wide leading-relaxed">
-        <%= @reflection.recap %>
-      </p>
-      <button id="recordButton" class="inline-block bg-green-600 hover:bg-green-500 text-white font-medium tracking-wider py-5 px-10 rounded-full focus:outline-none focus:shadow-outline text-lg shadow-lg hover:shadow-green-500/50 transition-all">
-        Start Recording
-      </button>
+    <!-- Script Card -->
+    <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8">
+      <p class="text-slate-400 text-xs text-center tracking-widest mb-5">✨ READ THIS ALOUD WHEN YOU RECORD</p>
+      <div class="bg-black/20 rounded-xl p-6 border-l-4 border-purple-500/50 mb-6">
+        <p class="recap-elegant text-white text-lg leading-relaxed">
+          "<%= @reflection.recap %>"
+        </p>
+      </div>
+      <div class="text-center">
+        <button id="recordButton" class="inline-block bg-green-600 hover:bg-green-500 text-white font-medium tracking-wider py-5 px-12 rounded-full focus:outline-none text-lg shadow-lg hover:shadow-green-500/50 transition-all">
+          Start Recording
+        </button>
+        <p class="recap-elegant text-slate-500 text-xs mt-4">Tap once to start — tap again to stop and submit</p>
+      </div>
     </div>
+
   </div>
 </div>
 
@@ -75,7 +80,6 @@
     let audioChunks = [];
     let mediaStream;
 
-    // Remove any existing listeners
     const newButton = recordButton.cloneNode(true);
     recordButton.parentNode.replaceChild(newButton, recordButton);
 
@@ -96,12 +100,10 @@
           };
 
           mediaRecorder.onstop = async () => {
-            // CRITICAL: Stop all media tracks immediately
             if (mediaStream) {
               mediaStream.getTracks().forEach(track => track.stop());
             }
 
-            // iOS Safari uses mp4, others use webm
             const mimeType = MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/mp4';
             const extension = mimeType === 'audio/webm' ? 'webm' : 'mp4';
             const audioBlob = new Blob(audioChunks, { type: mimeType });
