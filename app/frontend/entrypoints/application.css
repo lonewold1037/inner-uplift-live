@@ -25,6 +25,14 @@ input, textarea {
   text-transform: none;
 }
 
+/* Homepage light theme — only applies when homepage div is present */
+body.page-home > div.fixed { display: none !important; }
+body.page-home { background: #fdf6ff; }
+body.page-home header { background: rgba(255,255,255,0.85) !important; backdrop-filter: blur(12px); border-bottom: 1px solid rgba(109,40,217,0.1) !important; }
+body.page-home header a, body.page-home header button { color: #6d28d9 !important; }
+body.page-home footer { background: rgba(109,40,217,0.08) !important; border-top: 1px solid rgba(109,40,217,0.12); }
+body.page-home footer a, body.page-home footer p, body.page-home footer span { color: #6d28d9 !important; opacity: 0.7; }
+
 /* Override uppercase for science banner headers and text */
 #science-banner h3,
 #science-banner p,

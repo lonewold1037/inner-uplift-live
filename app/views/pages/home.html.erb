@@ -6,18 +6,13 @@
 <%# Override the dark global background for this page only %>
 <% content_for :head do %>
   <meta name="turbo-cache-control" content="no-cache">
-  <style>
-    /* Light warm background override for homepage only */
-    body > div.fixed { display: none !important; }
-    body { background: #fdf6ff; }
-    footer { background: rgba(109,40,217,0.08) !important; border-top: 1px solid rgba(109,40,217,0.12); }
-    footer a, footer p, footer span { color: #6d28d9 !important; opacity: 0.7; }
-    footer a:hover { opacity: 1 !important; }
-    header { background: rgba(255,255,255,0.85) !important; backdrop-filter: blur(12px); border-bottom: 1px solid rgba(109,40,217,0.1); }
-    header a, header button { color: #6d28d9 !important; }
-    header a:hover { color: #be185d !important; }
-  </style>
 <% end %>
+<script>
+  document.body.classList.add('page-home');
+  document.addEventListener('turbo:before-visit', () => {
+    document.body.classList.remove('page-home');
+  });
+</script>
 
 <%# ── iOS Install Banner ─────────────────────────────────────── %>
 <div id="ios-install-banner" class="hidden fixed top-0 left-0 right-0 z-50" style="background: #6d28d9; color: white; padding: 1rem; box-shadow: 0 2px 20px rgba(109,40,217,0.3);">
