@@ -1,46 +1,25 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Text:ital,wght@0,400;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Text:ital,wght@0,400;1,400&family=Lora:wght@400;500&display=swap');
 
-/* Force dark dropdown styling */
-select option {
-  background-color: #1e293b !important;
-  color: white !important;
-}
+/* Dark dropdown styling */
+select option { background-color: #1e293b !important; color: white !important; }
+select option:checked, select option:hover { background-color: #0ea5e9 !important; color: white !important; }
 
-select option:checked,
-select option:hover {
-  background-color: #0ea5e9 !important;
-  color: white !important;
-}
-
-/* Apply Bebas Neue globally */
+/* Global base */
 body {
   font-family: 'Bebas Neue', sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.025em;
 }
+input, textarea { text-transform: none; }
 
-/* Keep form inputs normal case for better UX */
-input, textarea {
-  text-transform: none;
-}
-
-/* Homepage light theme — only applies when homepage div is present */
+/* Homepage light theme */
 body.page-home > div.fixed { display: none !important; }
 body.page-home { background: #fdf6ff; }
-body.page-home header { background: rgba(255,255,255,0.85) !important; backdrop-filter: blur(12px); border-bottom: 1px solid rgba(109,40,217,0.1) !important; }
+body.page-home header { background: rgba(255,255,255,0.85) !important; border-bottom: 1px solid rgba(109,40,217,0.1) !important; }
 body.page-home header a, body.page-home header button { color: #6d28d9 !important; }
-body.page-home footer { background: rgba(109,40,217,0.08) !important; border-top: 1px solid rgba(109,40,217,0.12); }
+body.page-home footer { background: rgba(109,40,217,0.08) !important; }
 body.page-home footer a, body.page-home footer p, body.page-home footer span { color: #6d28d9 !important; opacity: 0.7; }
 
-/* Override uppercase for science banner headers and text */
-#science-banner h3,
-#science-banner p,
-#science-banner .text-sm {
-  text-transform: none !important;
-}
-
-/* Override uppercase for rotating text banner */
-#rotating-text {
-  text-transform: none !important;
-}
+/* ID overrides */
+#science-banner h3, #science-banner p, #science-banner .text-sm, #rotating-text { text-transform: none !important; }

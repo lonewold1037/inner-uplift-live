@@ -1,6 +1,7 @@
 <head>
   <title>Memflect</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="turbo-cache-control" content="no-cache">
   <%= csrf_meta_tags %>
   
   <!-- Google Fonts -->
@@ -32,10 +33,10 @@
 
 <body class="font-sans">
   <!-- Gradient Mesh Background - GLOBAL -->
-  <div class="fixed inset-0 -z-10 overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-    <div class="absolute top-0 -left-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-    <div class="absolute top-0 -right-4 w-72 h-72 bg-yellow-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-    <div class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+  <div class="fixed inset-0 -z-10 overflow-hidden" style="background: linear-gradient(135deg, #2e1065 0%, #4c1d95 40%, #831843 100%);">
+    <div class="absolute top-0 -left-4 w-72 h-72 rounded-full filter blur-xl opacity-40 animate-blob" style="background: #c026d3;"></div>
+    <div class="absolute top-0 -right-4 w-72 h-72 rounded-full filter blur-xl opacity-30 animate-blob animation-delay-2000" style="background: #f43f5e;"></div>
+    <div class="absolute -bottom-8 left-20 w-72 h-72 rounded-full filter blur-xl opacity-30 animate-blob animation-delay-4000" style="background: #7c3aed;"></div>
   </div>
 
   <header class="bg-white/10 backdrop-blur-sm shadow relative z-50">
