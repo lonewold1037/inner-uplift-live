@@ -38,11 +38,18 @@
       </div>
     <% end %>
 
-    <div class="bg-black/50 backdrop-blur-xl p-6 rounded-2xl shadow-lg border border-white/20 text-left">
-      <p class="text-white font-medium text-lg mb-4">
-        Is this a good start, friend? We'll use this base script for your personalized audio reflection.
+    <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8">
+      <p class="recap-elegant text-slate-400 text-sm text-center mb-6">
+        ✨ Your opening script — read this aloud when you record your voice
       </p>
-      <p class="text-slate-300 italic">"<%= reflection.recap %>"</p>
+      <div class="bg-black/20 rounded-xl p-6 border-l-4 border-purple-500/50">
+        <p class="recap-elegant text-white text-lg">
+          "<%= reflection.recap %>"
+        </p>
+      </div>
+      <p class="recap-elegant text-slate-500 text-xs text-center mt-4">
+        Happy with this? Proceed below — or start over if you'd like a different angle.
+      </p>
     </div>
     <div class="flex justify-center space-x-4">
       <%= link_to "Yep! Proceed to Voice Recording →",

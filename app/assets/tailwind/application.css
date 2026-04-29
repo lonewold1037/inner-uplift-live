@@ -24,8 +24,16 @@
     animation: reveal 3s steps(var(--n,40)) forwards !important;
   }
 
+  .recap-elegant {
+    font-family: 'Crimson Text', serif !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    line-height: 1.8 !important;
+    font-style: italic;
+  }
+
   @keyframes reveal {
-    from { clip-path: inset(0 100% 0 0); }  /* hide all text */
-    to   { clip-path: inset(0 0 0 0); }     /* reveal all text */
+    from { clip-path: inset(0 100% 0 0); }
+    to   { clip-path: inset(0 0 0 0); }
   }
 }
