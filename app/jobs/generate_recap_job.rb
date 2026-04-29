@@ -113,7 +113,7 @@ class GenerateRecapJob < ApplicationJob
       body = {
         model: "gpt-4-turbo",
         messages: [{ role: "user", content: prompt }],
-        temperature: 0.65,
+        temperature: 0.45,
         max_tokens: 210
       }.to_json
 

@@ -31,6 +31,8 @@ class MixAudioJob < ApplicationJob
       return handle_failure(reflection, "Soundscape not found or missing audio.")
     end
 
+    reflection.update!(soundscape_id: soundscape.id)
+
     voice_temp = nil
     soundscape_temp = nil
     mixed_file = nil
