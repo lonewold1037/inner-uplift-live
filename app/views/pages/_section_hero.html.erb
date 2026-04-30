@@ -73,7 +73,7 @@
       if (i <= word.length) {
         el.textContent = word.slice(0, i);
         i++;
-        setTimeout(type, i === word.length ? 0 : 60);
+        setTimeout(type, i === word.length ? 0 : 180);
       } else {
         // Hide cursor after typing finishes
         setTimeout(() => { if (cur) cur.style.display = 'none'; }, 1200);
