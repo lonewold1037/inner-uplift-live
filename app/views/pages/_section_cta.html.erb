@@ -1,0 +1,27 @@
+<%# ============================================================
+    SECTION: FINAL CTA
+    File: app/views/pages/_section_cta.html.erb
+    ============================================================ %>
+
+<section style="background: #1a0a2e; padding: 5rem 1.5rem; text-align: center;">
+  <div style="max-width: 580px; margin: 0 auto;">
+
+    <h2 style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem, 8vw, 4.5rem); letter-spacing: 0.03em; color: white; margin: 0 0 1rem; line-height: 1.0;">
+      Your memory.<br>
+      Your voice.<br>
+      <span class="gold-shimmer">Your Memflection.</span>
+    </h2>
+
+    <p style="font-family: 'Lora', serif; font-size: 1rem; color: rgba(255,255,255,0.55); text-transform: none; letter-spacing: normal; margin: 0 0 2.5rem; font-style: italic; line-height: 1.7;">
+      Five minutes. One take. Something they'll come back to for the rest of their life.
+    </p>
+
+    <%= link_to "Create a Memflection — Try Free", new_reflection_path,
+          style: "display: inline-block; background: linear-gradient(135deg, #c9a84c 0%, #f0d080 50%, #c9a84c 100%); color: #1a0a2e; font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 0.1em; padding: 1.1rem 3rem; border-radius: 100px; text-decoration: none;" %>
+
+    <p style="font-family: 'Lora', serif; font-size: 0.8rem; color: rgba(255,255,255,0.25); text-transform: none; letter-spacing: normal; margin: 1rem 0 0; font-style: italic;">
+      Free preview. No account required. $3.99 only if you love it.
+    </p>
+
+  </div>
+</section>

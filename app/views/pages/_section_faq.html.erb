@@ -1,0 +1,69 @@
+<%# ============================================================
+    SECTION: FAQ
+    File: app/views/pages/_section_faq.html.erb
+
+    TO ADD A QUESTION: copy one <details> block and update the
+    <summary> and <p> content. That's it.
+    ============================================================ %>
+
+<section class="scroll-reveal" style="background: #faf7f2; padding: 5rem 1.5rem;">
+  <div style="max-width: 720px; margin: 0 auto;">
+
+    <div style="text-align: center; margin-bottom: 3rem;">
+      <p style="font-family: 'Bebas Neue', sans-serif; font-size: 0.8rem; letter-spacing: 0.2em; color: #c9a84c; margin: 0 0 0.75rem;">GOT QUESTIONS?</p>
+      <h2 style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(2rem, 6vw, 3rem); letter-spacing: 0.03em; color: #1a0a2e; margin: 0;">
+        We've got answers.
+      </h2>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+
+      <% [
+        [
+          "What is a Memflection?",
+          "A Memflection is a personalised 5-minute cinematic audio reflection — narrated in your own cloned voice, set to music you choose, tied to a memory or feeling you describe. It's the first tool of its kind that lets you mix your voice and feelings to your memories in a meaningful, audio-visual way. You can create one for yourself or send it as a gift to someone you care about."
+        ],
+        [
+          "What's included when I create a Memflection?",
+          "You get a full 5-minute audio reflection narrated in your own AI-cloned voice, mixed with a soundscape you choose, tied to a photo you upload. It's downloadable, shareable via a private link, and stored in your dashboard forever. No subscription required — one creation, one payment."
+        ],
+        [
+          "How much information should I put into the form?",
+          "The more the better! Memflect is built to extrapolate on your memory and the feelings it brought — but also to include specific details you mention. So if you remember it was raining the day you made that big life decision, tell it! The more personal the input, the more powerful the output. 😊"
+        ],
+        [
+          "How do I install the Memflect app on my phone?",
+          "Memflect is a Progressive Web App (PWA) — no app store needed. On iPhone: open memflect.com in Safari, tap the Share button, then 'Add to Home Screen'. On Android: open in Chrome, tap the three-dot menu, then 'Add to Home Screen'. It installs like a native app instantly."
+        ],
+        [
+          "What devices does Memflect support?",
+          "Memflect works on any device with a modern browser — iPhone, Android, Mac, Windows, and tablets. For the best recording quality we recommend using Safari on iPhone or Chrome on Android with your device's built-in microphone."
+        ],
+        [
+          "Really — no subscription or account needed?",
+          "Correct. You try for free (30-second preview, no payment required). If you love it, you pay $3.99 once for the full 5-minute version. That's it. No monthly fees, no account required to create. Your Memflection is yours to keep forever."
+        ],
+        [
+          "What is the science behind Memflect?",
+          "Three bodies of research inform the Memflection: (1) Recalling positive memories significantly reduces cortisol and stress response — Speer & Delgado, Nature Human Behaviour (2017). (2) Music activates the hippocampus and amygdala, strengthening emotional memory processing — Koelsch, Frontiers in Neuroscience (2017). (3) Structured reflection on meaningful experiences builds resilience and promotes post-traumatic growth — American Psychological Association. A Memflection combines all three in one 5-minute experience."
+        ]
+      ].each do |question, answer| %>
+
+        <details style="background: white; border-radius: 16px; border: 1px solid rgba(26,10,46,0.08); overflow: hidden; box-shadow: 0 2px 12px rgba(26,10,46,0.04);">
+          <summary style="font-family: 'Bebas Neue', sans-serif; font-size: 1.05rem; letter-spacing: 0.06em; color: #1a0a2e; padding: 1.25rem 1.5rem; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; user-select: none;"
+                   onclick="this.parentNode.open ? this.querySelector('.faq-icon').textContent = '+' : this.querySelector('.faq-icon').textContent = '−'">
+            <%= question %>
+            <span class="faq-icon" style="font-size: 1.4rem; color: #c9a84c; flex-shrink: 0; margin-left: 1rem; font-family: monospace; font-weight: 300;">+</span>
+          </summary>
+          <div style="padding: 0 1.5rem 1.5rem;">
+            <p style="font-family: 'Lora', serif; font-size: 0.95rem; color: #5a3e2b; text-transform: none; letter-spacing: normal; line-height: 1.8; margin: 0;">
+              <%= answer %>
+            </p>
+          </div>
+        </details>
+
+      <% end %>
+
+    </div>
+  </div>
+</section>

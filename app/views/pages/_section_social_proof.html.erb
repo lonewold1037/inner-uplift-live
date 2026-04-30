@@ -1,0 +1,89 @@
+<%# ============================================================
+    SECTION: SOCIAL PROOF
+    File: app/views/pages/_section_social_proof.html.erb
+
+    TO ADD MORE SCREENSHOTS:
+    Add images to public/images/testimonials/ as t1.png, t2.png etc.
+    Add more <img> tags below following the same pattern.
+
+    TO ADD AUDIO SAMPLES:
+    Audio files live in public/audio/
+    ============================================================ %>
+
+<section class="scroll-reveal" style="background: white; padding: 5rem 1.5rem;">
+  <div style="max-width: 960px; margin: 0 auto;">
+
+    <div style="text-align: center; margin-bottom: 3rem;">
+      <p style="font-family: 'Bebas Neue', sans-serif; font-size: 0.8rem; letter-spacing: 0.2em; color: #c9a84c; margin: 0 0 0.75rem;">REAL REACTIONS</p>
+      <h2 style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(2rem, 6vw, 3rem); letter-spacing: 0.03em; color: #1a0a2e; margin: 0;">
+        They didn't expect it to hit this hard.
+      </h2>
+    </div>
+
+    <%# Screenshot grid — add/remove img tags freely %>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+
+      <% %w[t1.png t2.png t3.png].each do |f| %>
+        <% if File.exist?(Rails.root.join("public/images/testimonials/#{f}")) %>
+          <div style="border-radius: 20px; overflow: hidden; box-shadow: 0 4px 24px rgba(26,10,46,0.1); border: 1px solid rgba(26,10,46,0.06);">
+            <img src="/images/testimonials/<%= f %>"
+                 alt="Customer reaction"
+                 style="width: 100%; display: block;">
+          </div>
+        <% end %>
+      <% end %>
+
+    </div>
+
+    <%# Audio samples %>
+    <div style="background: #1a0a2e; border-radius: 24px; padding: 2.5rem; text-align: center;">
+      <p style="font-family: 'Bebas Neue', sans-serif; font-size: 0.8rem; letter-spacing: 0.2em; color: #f0d080; margin: 0 0 0.75rem;">HEAR A REAL MEMFLECTION</p>
+      <h3 style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.5rem, 4vw, 2rem); letter-spacing: 0.04em; color: white; margin: 0 0 1.75rem;">
+        Real voice. Real memory. Real feeling.
+      </h3>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 1.25rem; max-width: 560px; margin-left: auto; margin-right: auto;">
+        <% [
+          ["🌼", "Dandelion",  0, "/audio/homepage-sample-3.mp3", "A son's memory of giving his mom a flower"],
+          ["🌙", "Stillness",  1, "/audio/homepage-sample-4.mp3", "For someone who needed to hear they're not alone"],
+          ["🏈", "Seahawks",   2, "/audio/homepage-sample-6.mp3", "A 12th Man's letter to the Seahawks"]
+        ].each_with_index do |(emoji, name, idx, src, cap), i| %>
+          <button onclick="switchAudio(<%= idx %>)"
+                  id="audio-tab-<%= idx %>"
+                  data-src="<%= src %>"
+                  data-caption="<%= cap %>"
+                  style="<%= i == 0 ? 'background:#c9a84c;color:#1a0a2e;' : 'background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.55);' %>border:none;border-radius:12px;padding:0.625rem 0.4rem;font-family:'Lora',serif;font-size:0.75rem;text-transform:none;letter-spacing:normal;cursor:pointer;line-height:1.4;transition:all 0.2s;">
+            <%= emoji %><br><%= name %>
+          </button>
+        <% end %>
+      </div>
+
+      <audio id="sample-audio" controls preload="metadata"
+             style="width: 100%; max-width: 560px; border-radius: 10px; display: block; margin: 0 auto;">
+        <source id="sample-src" src="/audio/homepage-sample-3.mp3" type="audio/mpeg">
+      </audio>
+      <p id="sample-caption"
+         style="font-family:'Lora',serif;font-size:0.78rem;color:rgba(255,255,255,0.35);text-transform:none;letter-spacing:normal;margin:0.75rem 0 0;font-style:italic;">
+        A son's memory of giving his mom a flower
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  function switchAudio(idx) {
+    const tabs  = document.querySelectorAll('[id^="audio-tab-"]');
+    const audio = document.getElementById('sample-audio');
+    const src   = document.getElementById('sample-src');
+    const cap   = document.getElementById('sample-caption');
+    const el    = document.getElementById('audio-tab-' + idx);
+    tabs.forEach(t => { t.style.background = 'rgba(255,255,255,0.08)'; t.style.color = 'rgba(255,255,255,0.55)'; });
+    el.style.background = '#c9a84c';
+    el.style.color = '#1a0a2e';
+    audio.pause();
+    src.src = el.dataset.src;
+    audio.load();
+    cap.textContent = el.dataset.caption;
+  }
+</script>

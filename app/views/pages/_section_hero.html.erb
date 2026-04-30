@@ -1,0 +1,83 @@
+<%# ============================================================
+    SECTION: HERO
+    File: app/views/pages/_section_hero.html.erb
+
+    TO SWAP THE HERO IMAGE:
+    Save your new image to public/images/hero-bg.jpg
+    (or change the background-image path below to any filename)
+    ============================================================ %>
+
+<section style="position: relative; min-height: 92vh; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden;">
+
+  <%# ── Hero background image ── %>
+  <div style="position: absolute; inset: 0; z-index: 0;">
+    <img src="/images/hero-bg.jpg"
+         alt=""
+         style="width: 100%; height: 100%; object-fit: cover; object-position: center top;">
+    <%# Dark overlay so text is readable %>
+    <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(10,4,20,0.25) 0%, rgba(10,4,20,0.15) 40%, rgba(10,4,20,0.75) 80%, rgba(10,4,20,0.92) 100%);"></div>
+  </div>
+
+  <%# ── Headline block — sits over image at bottom ── %>
+  <div style="position: relative; z-index: 1; padding: 3rem 1.5rem 5rem; max-width: 860px; margin: 0 auto; width: 100%; text-align: center;">
+
+    <h1 style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 11vw, 8rem); line-height: 0.95; letter-spacing: 0.02em; color: white; margin: 0 0 0.25rem;
+               animation: fadeUp 0.8s ease forwards 0.1s; opacity: 0;">
+      Your memory.
+    </h1>
+    <h1 style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 11vw, 8rem); line-height: 0.95; letter-spacing: 0.02em; color: white; margin: 0 0 0.25rem;
+               animation: fadeUp 0.8s ease forwards 0.25s; opacity: 0;">
+      Your voice.
+    </h1>
+    <h1 style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 11vw, 8rem); line-height: 0.95; letter-spacing: 0.02em; color: white; margin: 0 0 0.25rem;
+               animation: fadeUp 0.8s ease forwards 0.4s; opacity: 0;">
+      Your photo.
+    </h1>
+
+    <%# Typewriter line in gold %>
+    <h1 style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 11vw, 8rem); line-height: 0.95; letter-spacing: 0.02em; margin: 0 0 2rem;
+               animation: fadeUp 0.8s ease forwards 0.55s; opacity: 0;">
+      Your <span id="typewriter-word" class="gold-shimmer"></span><span id="typewriter-cursor" style="color: #f0d080; animation: blink 1s step-end infinite;">|</span>
+    </h1>
+
+    <p style="font-family: 'Lora', serif; font-size: clamp(1rem, 2.5vw, 1.2rem); color: rgba(255,255,255,0.8); text-transform: none; letter-spacing: normal; line-height: 1.7; max-width: 560px; margin: 0 auto 2.5rem; font-style: italic;
+              animation: fadeUp 0.8s ease forwards 0.7s; opacity: 0;">
+      A personalised audio reflection you create for yourself — or someone you love.
+    </p>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;
+                animation: fadeUp 0.8s ease forwards 0.85s; opacity: 0;">
+      <%= link_to "Create a Memflection", new_reflection_path, class: "memflect-btn-primary",
+            style: "background: white; color: #1a0a2e;" %>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+</style>
+
+<script>
+  (function() {
+    const word = '"Memflection."';
+    const el   = document.getElementById('typewriter-word');
+    const cur  = document.getElementById('typewriter-cursor');
+    if (!el) return;
+    let i = 0;
+    // Wait for the line's fade-in to finish before typing
+    setTimeout(function type() {
+      if (i <= word.length) {
+        el.textContent = word.slice(0, i);
+        i++;
+        setTimeout(type, i === word.length ? 0 : 60);
+      } else {
+        // Hide cursor after typing finishes
+        setTimeout(() => { if (cur) cur.style.display = 'none'; }, 1200);
+      }
+    }, 900);
+  })();
+</script>
