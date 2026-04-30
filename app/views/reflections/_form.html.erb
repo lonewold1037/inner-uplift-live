@@ -19,14 +19,13 @@
     <% end %>
 
     <%# ── Gift Mode Toggle ── %>
-    <div style="background: white; border-radius: 24px; padding: 1.5rem; box-shadow: 0 4px 32px rgba(109,40,217,0.1); border: 1px solid rgba(109,40,217,0.08); overflow: hidden;">
+    <div style="background: white; border-radius: 24px; padding: 1.5rem; box-shadow: 0 4px 32px rgba(109,40,217,0.1); border: 1px solid rgba(109,40,217,0.08); overflow: hidden; margin-bottom: 1.5rem;"> rgba(109,40,217,0.08); overflow: hidden;">
       <label style="display: flex; align-items: center; gap: 0.875rem; cursor: pointer;">
         <input type="checkbox" id="gift-mode-toggle" name="reflection[mode]" value="gift"
                onchange="toggleGiftMode(this.checked)"
                style="width: 20px; height: 20px; accent-color: #7c3aed; cursor: pointer; flex-shrink: 0;">
         <div>
           <span style="font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.06em; color: #3b0764;">🎁 This is a gift for someone else</span>
-          <p style="font-family: 'Lora', serif; font-size: 0.8rem; color: #be185d; text-transform: none; letter-spacing: normal; margin: 0.2rem 0 0; opacity: 0.8;">Toggle this on to create a Memflection for someone you care about</p>
         </div>
       </label>
       <input type="hidden" name="reflection[mode]" value="self" id="gift-mode-hidden">
@@ -38,7 +37,7 @@
         Your name
       </label>
       <%= form.text_field :name_for_recap,
-            placeholder: "e.g. Ryan or Mum or Coach K",
+            placeholder: "e.g. Ryan or Mom",
             style: "width: 100%; background: #faf8ff; color: #1e1b4b; border: 1.5px solid rgba(109,40,217,0.2); border-radius: 12px; padding: 0.875rem 1rem; font-family: 'Lora', serif; font-size: 1rem; text-transform: none; letter-spacing: normal; box-sizing: border-box; outline: none; transition: border-color 0.2s;",
             onfocus: "this.style.borderColor='#7c3aed'",
             onblur: "this.style.borderColor='rgba(109,40,217,0.2)'" %>
