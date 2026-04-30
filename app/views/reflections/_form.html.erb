@@ -19,14 +19,14 @@
     <% end %>
 
     <%# ── Gift Mode Toggle ── %>
-    <div style="background: linear-gradient(135deg, #fdf4ff 0%, #fff0f6 100%); border: 1.5px solid rgba(244,114,182,0.3); border-radius: 16px; padding: 1.25rem 1.5rem; margin-bottom: 2rem;">
+    <div style="background: white; border-radius: 24px; padding: 1.5rem; box-shadow: 0 4px 32px rgba(109,40,217,0.1); border: 1px solid rgba(109,40,217,0.08); overflow: hidden;">
       <label style="display: flex; align-items: center; gap: 0.875rem; cursor: pointer;">
         <input type="checkbox" id="gift-mode-toggle" name="reflection[mode]" value="gift"
                onchange="toggleGiftMode(this.checked)"
                style="width: 20px; height: 20px; accent-color: #7c3aed; cursor: pointer; flex-shrink: 0;">
         <div>
           <span style="font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.06em; color: #3b0764;">🎁 This is a gift for someone else</span>
-          <p style="font-family: 'Lora', serif; font-size: 0.8rem; color: #be185d; text-transform: none; letter-spacing: normal; margin: 0.2rem 0 0; opacity: 0.8;">Toggle this on to create a Memflection for someone you love</p>
+          <p style="font-family: 'Lora', serif; font-size: 0.8rem; color: #be185d; text-transform: none; letter-spacing: normal; margin: 0.2rem 0 0; opacity: 0.8;">Toggle this on to create a Memflection for someone you care about</p>
         </div>
       </label>
       <input type="hidden" name="reflection[mode]" value="self" id="gift-mode-hidden">
@@ -57,7 +57,7 @@
     </div>
 
     <%# ── 4 Memory Fields ── %>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-bottom: 1.5rem;">
+    <div style="display: grid; grid-template-columns: 1fr; gap: 1.25rem; margin-bottom: 1.5rem;">
 
       <div>
         <label id="remember-label" style="display: block; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: #3b0764; margin-bottom: 0.5rem;">
@@ -111,7 +111,7 @@
 
     <%# ── Style Selector ── %>
     <div style="margin-bottom: 1.5rem;">
-      <%= form.label :style, "Choose a style for your Memflection:",
+      <%= form.label :style, "Choose a style for your Memflection's initial script:",
             style: "display: block; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: #3b0764; margin-bottom: 0.5rem;" %>
       <%= form.select :style,
             Reflection::STYLES,
@@ -125,7 +125,7 @@
         📷 Add a photo <span style="font-family: 'Lora', serif; font-size: 0.8rem; color: #a78bfa; text-transform: none; letter-spacing: normal; font-weight: 400;">(optional)</span>
       </label>
       <p style="font-family: 'Lora', serif; font-size: 0.82rem; color: #6d28d9; text-transform: none; letter-spacing: normal; margin: 0 0 0.75rem; opacity: 0.8; line-height: 1.5;">
-        A photo of the person, place, or moment. It will appear in the gift reveal with a warm nostalgic filter.
+        A photo of the person, place, or your personal moment. It will appear in the final cinematic reveal with a warm nostalgic filter.
       </p>
       <label for="cover-image-input" id="cover-image-label"
              style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; min-height: 120px; border: 2px dashed rgba(109,40,217,0.25); border-radius: 16px; cursor: pointer; background: #faf8ff; transition: all 0.2s; box-sizing: border-box;"
