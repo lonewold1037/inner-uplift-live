@@ -8,7 +8,11 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="<%= request.original_url %>">
   <meta property="og:site_name" content="Memflect">
-  <meta property="og:image" content="https://memflect.com/images/memflect-og-default.jpg">
+  <% if @reflection.cover_image.attached? %>
+    <meta property="og:image" content="<%= url_for(@reflection.cover_image) %>">
+  <% else %>
+    <meta property="og:image" content="https://memflect.com/images/memflect-og-default.jpg">
+  <% end %>
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
 
@@ -16,7 +20,11 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="<%= @reflection.title || "A Memflection" %>">
   <meta name="twitter:description" content="Tap to open the cinematic portal on Memflect.">
-  <meta name="twitter:image" content="https://memflect.com/images/memflect-og-default.jpg">
+  <% if @reflection.cover_image.attached? %>
+    <meta name="twitter:image" content="<%= url_for(@reflection.cover_image) %>">
+  <% else %>
+    <meta name="twitter:image" content="https://memflect.com/images/memflect-og-default.jpg">
+  <% end %>
 <% end %>
 
 <style>
