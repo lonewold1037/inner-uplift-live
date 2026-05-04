@@ -1,14 +1,32 @@
 <%# ========== OG META TAGS — for beautiful link previews ========== %>
 <% content_for :head do %>
   <title><%= @reflection.title || "A Memflection" %> — Memcard from Memflect</title>
+
+  <%# Open Graph %>
   <meta property="og:title" content="<%= @reflection.title || "A Memflection" %>">
-  <meta property="og:description" content="A personal Memflection — a 5-minute cinematic audio reflection. Tap to open the portal.">
+  <meta property="og:description" content="<%= @reflection.name_for_recap.present? ? "A Memflection from #{@reflection.name_for_recap}#{@reflection.recipient_name.present? ? " for #{@reflection.recipient_name}" : ""}. Tap to open the cinematic portal." : "A personal Memflection — a 5-minute cinematic audio reflection. Tap to open the portal." %>">
   <meta property="og:type" content="website">
   <meta property="og:url" content="<%= request.original_url %>">
+  <meta property="og:site_name" content="Memflect">
   <% if @reflection.cover_image.attached? %>
-    <meta property="og:image" content="<%= url_for(@reflection.cover_image) %>">
+    <meta property="og:image" content="<%= rails_blob_url(@reflection.cover_image, expires_in: 1.year) %>">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+  <% else %>
+    <meta property="og:image" content="https://memflect.com/images/memflect-og-default.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
   <% end %>
+
+  <%# Twitter/X %>
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= @reflection.title || "A Memflection" %>">
+  <meta name="twitter:description" content="Tap to open the cinematic portal on Memflect.">
+  <% if @reflection.cover_image.attached? %>
+    <meta name="twitter:image" content="<%= rails_blob_url(@reflection.cover_image, expires_in: 1.year) %>">
+  <% else %>
+    <meta name="twitter:image" content="https://memflect.com/images/memflect-og-default.jpg">
+  <% end %>
 <% end %>
 
 <style>
