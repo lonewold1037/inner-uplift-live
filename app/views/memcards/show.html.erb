@@ -9,7 +9,7 @@
   <meta property="og:url" content="<%= request.original_url %>">
   <meta property="og:site_name" content="Memflect">
   <% if @reflection.cover_image.attached? %>
-    <meta property="og:image" content="<%= rails_blob_url(@reflection.cover_image) %>">
+    <meta property="og:image" content="<%= @reflection.cover_image.blob.url %>">
   <% else %>
     <meta property="og:image" content="https://memflect.com/images/memflect-og-default.jpg">
   <% end %>
@@ -21,7 +21,7 @@
   <meta name="twitter:title" content="<%= @reflection.title || "A Memflection" %>">
   <meta name="twitter:description" content="Tap to open the cinematic portal on Memflect.">
   <% if @reflection.cover_image.attached? %>
-    <meta name="twitter:image" content="<%= rails_blob_url(@reflection.cover_image) %>">
+    <meta name="twitter:image" content="<%= @reflection.cover_image.blob.url %>">
   <% else %>
     <meta name="twitter:image" content="https://memflect.com/images/memflect-og-default.jpg">
   <% end %>
