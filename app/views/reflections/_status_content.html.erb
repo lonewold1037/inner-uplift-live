@@ -31,7 +31,7 @@
         <div style="width: 10px; height: 10px; background: #a78bfa; border-radius: 50%; animation: pulse 1.4s ease-in-out infinite 0.2s;"></div>
         <div style="width: 10px; height: 10px; background: #c4b5fd; border-radius: 50%; animation: pulse 1.4s ease-in-out infinite 0.4s;"></div>
       </div>
-      <p style="font-family: 'Lora', serif; font-size: 0.8rem; color: #a78bfa; text-transform: none; letter-spacing: normal; margin-top: 1.5rem;">This usually takes 30–60 seconds</p>
+      <p style="font-family: 'Lora', serif; font-size: 0.8rem; color: #a78bfa; text-transform: none; letter-spacing: normal; margin-top: 1.5rem;">This should only take a moment.</p>
     </div>
     <style>
       @keyframes pulse { 0%, 100% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } }
@@ -40,10 +40,10 @@
   <% when 'pending' %>
     <div style="text-align: center; margin-bottom: 2rem;">
       <h1 style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(2rem, 7vw, 3rem); letter-spacing: 0.04em; color: #3b0764; margin: 0 0 0.5rem;">
-        Your Script is Ready ✨
+        Your Script Preview is Ready ✨
       </h1>
       <p style="font-family: 'Lora', serif; font-size: 0.95rem; color: #6d28d9; text-transform: none; letter-spacing: normal; opacity: 0.8; margin: 0;">
-        Read it over — then record your voice on the next page.
+        Read it over — it should be an elegantly written extrapolation of your words. 
       </p>
     </div>
 
@@ -56,7 +56,7 @@
 
     <div style="background: white; border-radius: 20px; border: 1px solid rgba(109,40,217,0.1); padding: 2rem; box-shadow: 0 4px 24px rgba(109,40,217,0.08); margin-bottom: 1.5rem;">
       <p style="font-family: 'Lora', serif; font-size: 0.8rem; color: #a78bfa; text-transform: none; letter-spacing: normal; text-align: center; margin: 0 0 1.25rem;">
-        ✨ Your opening script — read this aloud when you record your voice
+        ✨ Your opening script — this what you will read when you record your voice next...
       </p>
       <div style="background: #faf8ff; border-radius: 14px; padding: 1.5rem; border-left: 4px solid #7c3aed;">
         <p style="font-family: 'Lora', serif; font-size: 1.05rem; line-height: 1.8; color: #1e1b4b; text-transform: none; letter-spacing: normal; margin: 0; font-style: italic;">
@@ -64,7 +64,7 @@
         </p>
       </div>
       <p style="font-family: 'Lora', serif; font-size: 0.78rem; color: #c4b5fd; text-transform: none; letter-spacing: normal; text-align: center; margin: 1rem 0 0;">
-        Happy with this? Proceed below — or start over for a different angle.
+        Happy with this? Proceed below — or go back to try a different angle. 👌
       </p>
     </div>
 
@@ -89,7 +89,7 @@
         Your Preview is Ready! 🎉
       </h1>
       <p style="font-family: 'Lora', serif; font-size: 0.95rem; color: #6d28d9; text-transform: none; letter-spacing: normal; opacity: 0.8; margin: 0;">
-        Listen below — then unlock the full 5-minute version.
+        Listen to your Memflection below. Note: You can remix the soundscape vibe as many times as needed before purchase. 🤙
       </p>
     </div>
 
@@ -127,7 +127,7 @@
           <%= form.select :soundscape_category,
                           options_for_select(soundscapes.map { |s| [s.category, s.category] }.uniq, selected: reflection.soundscape&.category),
                           {},
-                          style: "width: 100%; background: #faf8ff; color: #1e1b4b; border: 1.5px solid rgba(109,40,217,0.2); border-radius: 12px; padding: 0.875rem 1rem; font-family: 'Lora', serif; font-size: 0.95rem; text-transform: none; letter-spacing: normal; outline: none; cursor: pointer;" %>
+                          style: "width: 100%; background: #faf8ff; color: #1e1b4b; border: 1.5px solid rgba(109,40,217,0.2); border-radius: 12px; padding: 0.875rem 1rem; font-family: 'Lora', serif; font-size: 0.95rem; text-transform: none; letter-spacing: normal; outline: none; cursor: pointer; margin-bottom: 0.75rem;" %>
           <%= form.submit "Remix Audio",
                           style: "width: 100%; background: #7c3aed; color: white; border: none; border-radius: 12px; padding: 0.875rem; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; cursor: pointer;" %>
         <% end %>
@@ -152,7 +152,7 @@
           Want the full 5-minute version?
         </p>
         <p style="font-family: 'Lora', serif; font-size: 0.9rem; color: #166534; text-transform: none; letter-spacing: normal; text-align: center; margin: 0 0 1.25rem; opacity: 0.85;">
-          Unlock a deeper narrative, download to keep forever, and share as a gift.
+          Unlock your extended narrated version, download to keep forever, and share as a "Memcard" gift.
         </p>
         <div style="display: flex; flex-direction: column; gap: 0.625rem; margin-bottom: 0.25rem;">
           <% [
@@ -175,7 +175,7 @@
             Your email — for receipt & dashboard access:
           </label>
           <input type="email" name="customer_email" id="customer_email" required placeholder="you@example.com"
-                 style="width: 100%; background: #faf8ff; color: #1e1b4b; border: 1.5px solid rgba(109,40,217,0.2); border-radius: 12px; padding: 0.875rem 1rem; font-family: 'Lora', serif; font-size: 1rem; text-transform: none; letter-spacing: normal; box-sizing: border-box; outline: none;">
+                 style="width: 100%; background: #faf8ff; color: #1e1b4b; border: 1.5px solid rgba(109,40,217,0.2); border-radius: 12px; padding: 0.875rem 1rem; font-family: 'Lora', serif; font-size: 1rem; text-transform: none; letter-spacing: normal; box-sizing: border-box; outline: none; margin-bottom: 0.75rem;">
           <%= f.submit "Purchase Full Version — $3.99 USD",
                 style: "width: 100%; background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; border: none; border-radius: 100px; padding: 1.1rem; font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 0.1em; cursor: pointer; box-shadow: 0 6px 20px rgba(22,163,74,0.3);" %>
         <% end %>
@@ -185,9 +185,9 @@
         <p style="font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.08em; color: #a78bfa; text-align: center; margin: 0 0 0.875rem;">Have a gift code?</p>
         <%= form_with url: redeem_promo_reflection_path(reflection), method: :post, data: { turbo: false }, style: "display: flex; flex-direction: column; gap: 0.75rem;" do |f| %>
           <input type="email" name="customer_email" required placeholder="Your email"
-                 style="width: 100%; background: #faf8ff; color: #1e1b4b; border: 1.5px solid rgba(109,40,217,0.2); border-radius: 12px; padding: 0.875rem 1rem; font-family: 'Lora', serif; font-size: 1rem; text-transform: none; letter-spacing: normal; box-sizing: border-box; outline: none;">
+                 style="width: 100%; background: #faf8ff; color: #1e1b4b; border: 1.5px solid rgba(109,40,217,0.2); border-radius: 12px; padding: 0.875rem 1rem; font-family: 'Lora', serif; font-size: 1rem; text-transform: none; letter-spacing: normal; box-sizing: border-box; outline: none; margin-bottom: 0.75rem;">
           <input type="text" name="promo_code" required placeholder="Enter gift code"
-                 style="width: 100%; background: #faf8ff; color: #1e1b4b; border: 1.5px solid rgba(109,40,217,0.2); border-radius: 12px; padding: 0.875rem 1rem; font-family: 'Lora', serif; font-size: 1rem; text-transform: none; letter-spacing: normal; box-sizing: border-box; outline: none;">
+                 style="width: 100%; background: #faf8ff; color: #1e1b4b; border: 1.5px solid rgba(109,40,217,0.2); border-radius: 12px; padding: 0.875rem 1rem; font-family: 'Lora', serif; font-size: 1rem; text-transform: none; letter-spacing: normal; box-sizing: border-box; outline: none; margin-bottom: 0.75rem;">
           <%= f.submit "Redeem Gift Code",
                 style: "width: 100%; background: #7c3aed; color: white; border: none; border-radius: 100px; padding: 0.875rem; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; cursor: pointer;" %>
         <% end %>
