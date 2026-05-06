@@ -12,6 +12,8 @@ class ReflectionsController < ApplicationController
         "remember_when", "felt_like", "because_of", "lift_up_request",
         "name_for_recap", "style", "vibe", "setting", "mode", "recipient_name"
       ))
+    elsif session[:last_reflection_params].present?
+      @reflection = Reflection.new(session[:last_reflection_params])
     else
       @reflection = Reflection.new
     end
@@ -19,8 +21,9 @@ class ReflectionsController < ApplicationController
 
   def create
     @reflection = user_signed_in? ? current_user.reflections.build(reflection_params_for_create) : Reflection.new(reflection_params_for_create)
-
+    session[:last_reflection_params] = reflection_params_for_create.except(:cover_image).to_h
     if @reflection.save
+      
       session[:anonymous_reflection_id] = @reflection.id unless user_signed_in?
 
       @reflection.update(status: 'generating_recap')
