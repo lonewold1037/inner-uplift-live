@@ -1,4 +1,7 @@
-<%# ── Input + Label helpers (inline styles only, no Tailwind dependency) ── %>
+<%# ── Form partial — app/views/reflections/_form.html.erb ── %>
+<%# ── Handles new + returning users (via ?from=ID or session) ── %>
+
+<% source_reflection = params[:from].present? ? Reflection.find_by(id: params[:from]) : nil %>
 
 <div style="background: white; border-radius: 24px; padding: 2.5rem; box-shadow: 0 4px 32px rgba(109,40,217,0.1); border: 1px solid rgba(109,40,217,0.08);">
 
@@ -18,23 +21,35 @@
       </div>
     <% end %>
 
+    <%# ── Returning user banner ── %>
+    <% if source_reflection.present? %>
+      <div style="background: #f5f0ff; border: 1.5px solid rgba(109,40,217,0.2); border-radius: 14px; padding: 0.875rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem;">
+        <p style="font-family: 'Lora', serif; font-size: 0.85rem; color: #3b0764; text-transform: none; letter-spacing: normal; margin: 0; font-style: italic;">
+          ✨ Your previous answers are pre-filled — edit anything you like.
+        </p>
+        <%= link_to "Start completely fresh →", new_reflection_path(clear: true),
+              style: "font-family: 'Lora', serif; font-size: 0.8rem; color: #a78bfa; text-transform: none; letter-spacing: normal; text-decoration: none; white-space: nowrap; flex-shrink: 0;" %>
+      </div>
+    <% end %>
+
     <%# ── Gift Mode Toggle ── %>
     <div style="background: white; border-radius: 24px; padding: 1.5rem; box-shadow: 0 4px 32px rgba(109,40,217,0.1); border: 1px solid rgba(109,40,217,0.08); overflow: hidden; margin-bottom: 1.5rem;">
       <label style="display: flex; align-items: center; gap: 0.875rem; cursor: pointer;">
         <input type="checkbox" id="gift-mode-toggle" name="reflection[mode]" value="gift"
+               <%= reflection.mode == 'gift' ? 'checked' : '' %>
                onchange="toggleGiftMode(this.checked)"
                style="width: 20px; height: 20px; accent-color: #7c3aed; cursor: pointer; flex-shrink: 0;">
         <div>
           <span style="font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.06em; color: #3b0764;">🎁 This is a gift for someone else</span>
         </div>
       </label>
-      <input type="hidden" name="reflection[mode]" value="self" id="gift-mode-hidden">
+      <input type="hidden" name="reflection[mode]" value="self" id="gift-mode-hidden" <%= reflection.mode == 'gift' ? 'disabled' : '' %>>
     </div>
 
     <%# ── Your Name ── %>
     <div style="margin-bottom: 1.5rem;">
       <label id="name-label" style="display: block; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: #3b0764; margin-bottom: 0.5rem;">
-        Your name
+        <%= reflection.mode == 'gift' ? 'Your name' : 'Your name' %>
       </label>
       <%= form.text_field :name_for_recap,
             placeholder: "e.g. Ryan or Mom",
@@ -44,7 +59,7 @@
     </div>
 
     <%# ── Recipient Name (gift mode only) ── %>
-    <div id="recipient-name-field" style="display: none; margin-bottom: 1.5rem;">
+    <div id="recipient-name-field" style="display: <%= reflection.mode == 'gift' ? 'block' : 'none' %>; margin-bottom: 1.5rem;">
       <label style="display: block; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: #be185d; margin-bottom: 0.5rem;">
         🎁 Who is this gift for?
       </label>
@@ -60,7 +75,7 @@
 
       <div>
         <label id="remember-label" style="display: block; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: #3b0764; margin-bottom: 0.5rem;">
-          I remember...
+          <%= reflection.mode == 'gift' ? 'I remember when you...' : 'I remember...' %>
         </label>
         <p style="font-family: 'Lora', serif; font-size: 0.78rem; color: #7c3aed; text-transform: none; letter-spacing: normal; margin: 0 0 0.5rem; opacity: 0.8;">The moment or memory itself</p>
         <%= form.text_area :remember_when, rows: 4, id: "remember-field",
@@ -96,7 +111,7 @@
 
       <div>
         <label id="remind-label" style="display: block; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: #3b0764; margin-bottom: 0.5rem;">
-          I want to be reminded that...
+          <%= reflection.mode == 'gift' ? 'I want you to know that...' : 'I want to be reminded that...' %>
         </label>
         <p style="font-family: 'Lora', serif; font-size: 0.78rem; color: #7c3aed; text-transform: none; letter-spacing: normal; margin: 0 0 0.5rem; opacity: 0.8;">The takeaway or affirmation</p>
         <%= form.text_area :lift_up_request, rows: 4, id: "remind-field",
@@ -126,19 +141,36 @@
       <p style="font-family: 'Lora', serif; font-size: 0.82rem; color: #6d28d9; text-transform: none; letter-spacing: normal; margin: 0 0 0.75rem; opacity: 0.8; line-height: 1.5;">
         A photo of the person, place, or your personal moment. It will appear in the final cinematic reveal with a warm nostalgic filter.
       </p>
+
       <label for="cover-image-input" id="cover-image-label"
              style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; min-height: 120px; border: 2px dashed rgba(109,40,217,0.25); border-radius: 16px; cursor: pointer; background: #faf8ff; transition: all 0.2s; box-sizing: border-box;"
              onmouseover="this.style.borderColor='#7c3aed'; this.style.background='#f5f0ff';"
              onmouseout="this.style.borderColor='rgba(109,40,217,0.25)'; this.style.background='#faf8ff';">
-        <div id="cover-image-placeholder" style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 1.5rem;">
-          <svg width="32" height="32" fill="none" stroke="#a78bfa" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-          </svg>
-          <span style="font-family: 'Lora', serif; font-size: 0.875rem; color: #7c3aed; text-transform: none; letter-spacing: normal;">Click to upload a photo</span>
-          <span style="font-family: 'Lora', serif; font-size: 0.75rem; color: #c4b5fd; text-transform: none; letter-spacing: normal;">JPG, PNG up to 10MB</span>
-        </div>
+
+        <%# Show previous photo if returning via Try Another Angle %>
+        <% if source_reflection&.cover_image&.attached? %>
+          <div id="cover-image-placeholder" style="display: none;"></div>
+          <div id="previous-photo-display" style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 1rem;">
+            <img src="<%= url_for(source_reflection.cover_image) %>"
+                 style="max-height: 120px; border-radius: 12px; object-fit: cover; filter: sepia(30%) contrast(110%) brightness(95%) saturate(85%);">
+            <span style="font-family: 'Lora', serif; font-size: 0.78rem; color: #7c3aed; text-transform: none; letter-spacing: normal; text-align: center;">
+              ✓ Previous photo attached — click to upload a different one
+            </span>
+          </div>
+        <% else %>
+          <div id="cover-image-placeholder" style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 1.5rem;">
+            <svg width="32" height="32" fill="none" stroke="#a78bfa" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            <span style="font-family: 'Lora', serif; font-size: 0.875rem; color: #7c3aed; text-transform: none; letter-spacing: normal;">Click to upload a photo</span>
+            <span style="font-family: 'Lora', serif; font-size: 0.75rem; color: #c4b5fd; text-transform: none; letter-spacing: normal;">JPG, PNG up to 10MB</span>
+          </div>
+        <% end %>
+
+        <%# New photo preview (shown after user selects a new file) %>
         <img id="cover-image-preview" src="" alt="" style="display: none; max-height: 120px; border-radius: 12px; object-fit: cover; filter: sepia(30%) contrast(110%) brightness(95%) saturate(85%);">
       </label>
+
       <%= form.file_field :cover_image, id: "cover-image-input", accept: "image/jpeg,image/png,image/webp", style: "display: none;" %>
     </div>
 
@@ -150,21 +182,29 @@
       Generate My Preview ✨
     </button>
 
+    <%# ── Start fresh link ── %>
+    <div style="text-align: center; margin-top: 1rem;">
+      <%= link_to "↺ Start completely fresh", new_reflection_path(clear: true),
+            style: "font-family: 'Lora', serif; font-size: 0.8rem; color: #c4b5fd; text-transform: none; letter-spacing: normal; text-decoration: none;" %>
+    </div>
+
   <% end %>
 </div>
 
 <script>
-  <%# ── Photo preview ── %>
+  <%# ── Photo preview — when user picks a NEW file ── %>
   document.getElementById('cover-image-input').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
     reader.onload = function(ev) {
-      const preview = document.getElementById('cover-image-preview');
+      const preview  = document.getElementById('cover-image-preview');
       const placeholder = document.getElementById('cover-image-placeholder');
+      const prevPhoto = document.getElementById('previous-photo-display');
       preview.src = ev.target.result;
       preview.style.display = 'block';
-      placeholder.style.display = 'none';
+      if (placeholder) placeholder.style.display = 'none';
+      if (prevPhoto)   prevPhoto.style.display = 'none';
     };
     reader.readAsDataURL(file);
   });
@@ -172,43 +212,47 @@
   <%# ── Gift mode toggle ── %>
   function toggleGiftMode(isGift) {
     const recipientField = document.getElementById('recipient-name-field');
-    const hiddenMode = document.getElementById('gift-mode-hidden');
-    const nameLabel = document.getElementById('name-label');
-    const rememberLabel = document.getElementById('remember-label');
-    const feltLabel = document.getElementById('felt-label');
-    const becauseLabel = document.getElementById('because-label');
-    const remindLabel = document.getElementById('remind-label');
-    const rememberField = document.getElementById('remember-field');
-    const feltField = document.getElementById('felt-field');
-    const becauseField = document.getElementById('because-field');
-    const remindField = document.getElementById('remind-field');
+    const hiddenMode     = document.getElementById('gift-mode-hidden');
+    const nameLabel      = document.getElementById('name-label');
+    const rememberLabel  = document.getElementById('remember-label');
+    const feltLabel      = document.getElementById('felt-label');
+    const becauseLabel   = document.getElementById('because-label');
+    const remindLabel    = document.getElementById('remind-label');
+    const rememberField  = document.getElementById('remember-field');
+    const feltField      = document.getElementById('felt-field');
+    const becauseField   = document.getElementById('because-field');
+    const remindField    = document.getElementById('remind-field');
 
     if (isGift) {
       hiddenMode.disabled = true;
       recipientField.style.display = 'block';
-      nameLabel.textContent = 'Your name';
       rememberLabel.textContent = 'I remember when you...';
-      feltLabel.textContent = 'It made me feel...';
-      becauseLabel.textContent = 'But/And because...';
-      remindLabel.textContent = 'I want you to know that...';
+      feltLabel.textContent     = 'It made me feel...';
+      becauseLabel.textContent  = 'But/And because...';
+      remindLabel.textContent   = 'I want you to know that...';
       rememberField.placeholder = 'e.g. helped me through the hardest year of my life';
-      feltField.placeholder = 'e.g. like I finally had someone in my corner who truly understood';
-      becauseField.placeholder = 'e.g. I never told you how much that meant to me at the time';
-      remindField.placeholder = 'e.g. you are one of the most important people in my world';
+      feltField.placeholder     = 'e.g. like I finally had someone in my corner who truly understood';
+      becauseField.placeholder  = 'e.g. I never told you how much that meant to me at the time';
+      remindField.placeholder   = 'e.g. you are one of the most important people in my world';
     } else {
       hiddenMode.disabled = false;
       recipientField.style.display = 'none';
-      nameLabel.textContent = 'Your name';
       rememberLabel.textContent = 'I remember...';
-      feltLabel.textContent = 'It made me feel...';
-      becauseLabel.textContent = 'But/And because...';
-      remindLabel.textContent = 'I want to be reminded that...';
+      feltLabel.textContent     = 'It made me feel...';
+      becauseLabel.textContent  = 'But/And because...';
+      remindLabel.textContent   = 'I want to be reminded that...';
       rememberField.placeholder = 'e.g. I finally got over that major hurdle that had been weighing on me for months';
-      feltField.placeholder = 'e.g. Like I could take on anything — lighter, proud, genuinely surprised at my own strength';
-      becauseField.placeholder = 'e.g. I almost gave up so many times, but something kept pulling me forward';
-      remindField.placeholder = 'e.g. I am capable of hard things, and the struggle is what makes the victory real';
+      feltField.placeholder     = 'e.g. Like I could take on anything — lighter, proud, genuinely surprised at my own strength';
+      becauseField.placeholder  = 'e.g. I almost gave up so many times, but something kept pulling me forward';
+      remindField.placeholder   = 'e.g. I am capable of hard things, and the struggle is what makes the victory real';
     }
   }
+
+  <%# ── Restore gift mode state on page load if session pre-filled it ── %>
+  window.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.getElementById('gift-mode-toggle');
+    if (toggle && toggle.checked) toggleGiftMode(true);
+  });
 
   <%# ── Submit loading state ── %>
   const recapButton = document.getElementById('generate-recap');
