@@ -6,6 +6,7 @@ class ReflectionsController < ApplicationController
   before_action :set_soundscapes, only: [:show]
 
   def new
+    session.delete(:last_reflection_params) if params[:clear].present?
     if params[:from].present?
       source = Reflection.find_by(id: params[:from])
       @reflection = Reflection.new(source&.attributes&.slice(
