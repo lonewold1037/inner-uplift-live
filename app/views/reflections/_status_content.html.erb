@@ -13,7 +13,7 @@
     <%
       status_info = case reflection.status
         when 'generating_recap'   then { emoji: '✍️', title: 'Writing Your Script...', sub: 'GPT-4 is crafting your personalised narrative.' }
-        when 'processing_voice'   then { emoji: '🎤', title: 'Cloning Your Voice...', sub: 'ElevenLabs is learning the sound of you.' }
+        when 'processing_voice'   then { emoji: '🎤', title: 'Cloning Your Voice...', sub: 'Memflect is now learning the sound of you.' }
         when 'generating_preview' then { emoji: '🎵', title: 'Generating Audio...', sub: 'Your voice is being rendered into the narration.' }
         when 'mixing'             then { emoji: '🎚️', title: 'Mixing the Final Track...', sub: 'Blending your voice with the perfect soundscape.' }
       end
