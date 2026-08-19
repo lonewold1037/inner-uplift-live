@@ -5,8 +5,8 @@
     ============================================================ %>
 
 <%# ── CAMPAIGN BANNER CONFIG ── %>
-<% banner_text = "🎁 Father's Day is June 15" %>
-<% banner_url  = new_reflection_path %>
+#<% banner_text = "🎁 Father's Day is June 15" %>
+#<% banner_url  = new_reflection_path %>
 
 <% content_for :head do %>
   <style>
@@ -75,11 +75,11 @@
   <div style="background: #1a0a2e; padding: 0.55rem 1.5rem; text-align: center; position: relative; z-index: 10;">
     <p style="font-family: 'Lora', serif; font-size: 0.85rem; color: rgba(255,255,255,0.85); text-transform: none; letter-spacing: normal; margin: 0;">
       <%= banner_text %> —
-      <%= link_to "Create him something special →", banner_url,
-            style: "color: #f0d080; font-weight: 600; text-decoration: none;" %>
+      #<%= link_to "Create him something special →", banner_url,
+            #style: "color: #f0d080; font-weight: 600; text-decoration: none;" %>
     </p>
   </div>
-  %>
+  %>#
 
   <%# ══════════════════════════════════════
       SECTIONS — comment out any to hide it
